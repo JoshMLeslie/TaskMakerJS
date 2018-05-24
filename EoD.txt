@@ -1,0 +1,3 @@
+180524 - day 2
+  Got the static elements down in canvas.
+  Made a pale blue character dot, need to figure out how to call its rendering and clear it out on each render. I think I need to push up something to the main render from character? cause right now it's just kinda hanging out / running on its own and just being instantiated by the main render.

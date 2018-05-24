@@ -126,6 +126,91 @@ var Stamina = exports.Stamina = "#3B9D34";
 
 /***/ }),
 
+/***/ "./app/components/character/character.js":
+/*!***********************************************!*\
+  !*** ./app/components/character/character.js ***!
+  \***********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _font_colors = __webpack_require__(/*! ../../assets/font_colors */ "./app/assets/font_colors.js");
+
+var Colors = _interopRequireWildcard(_font_colors);
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Character = function () {
+  function Character(canvasEl, ctx) {
+    _classCallCheck(this, Character);
+
+    this.ctx = ctx;
+    this.width = 10;
+    this.height = 10;
+
+    this.x = 450;
+    this.y = 250;
+
+    this.move = this.move.bind(this);
+    window.addEventListener("keydown", this.move);
+  }
+
+  _createClass(Character, [{
+    key: "keyToVal",
+    value: function keyToVal(e) {
+      // 37, left // 38, up // 39, right // 40, down
+      switch (e) {
+        case 37:
+          return [-10, 0];
+        case 38:
+          return [0, -10];
+        case 39:
+          return [10, 0];
+        case 40:
+          return [0, 10];
+      }
+    }
+  }, {
+    key: "move",
+    value: function move(e) {
+
+      var temp = this.keyToVal(e.keyCode);
+      var dx = temp[0];
+      var dy = temp[1];
+      // debugger
+      this.x += dx;
+      this.y += dy;
+      // debugger
+      this.draw();
+    }
+  }, {
+    key: "draw",
+    value: function draw() {
+      var ctx = this.ctx;
+
+      ctx.beginPath();
+      ctx.fillStyle = "#98C0D0"; // pale blue dot
+      ctx.fillRect(this.x, this.y, this.width, this.height);
+    }
+  }]);
+
+  return Character;
+}();
+
+exports.default = Character;
+
+/***/ }),
+
 /***/ "./app/components/main_render.js":
 /*!***************************************!*\
   !*** ./app/components/main_render.js ***!
@@ -154,14 +239,19 @@ var _stats_area = __webpack_require__(/*! ./stats_area/stats_area */ "./app/comp
 
 var _stats_area2 = _interopRequireDefault(_stats_area);
 
+var _character = __webpack_require__(/*! ./character/character */ "./app/components/character/character.js");
+
+var _character2 = _interopRequireDefault(_character);
+
+var _font_colors = __webpack_require__(/*! ../assets/font_colors */ "./app/assets/font_colors.js");
+
+var Colors = _interopRequireWildcard(_font_colors);
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var backgroundGray = "#BEBEBE";
-var borderGray = "#9B9B9B";
-var textGray = "#4C4C4C";
-var textBlack = "#000000"; // I know this is just black.
 
 var MainRender = function () {
 
@@ -173,11 +263,24 @@ var MainRender = function () {
     this.canvasEl = canvasEl;
     this.ctx = ctx;
 
-    this.canvasEl.width = 790; // this is the max width the element occupies
+    this.canvasEl.width = 790; // this is the max width the game occupies
     this.canvasEl.height = 500; // borders and stuff exist inside of this area
+
   }
 
   _createClass(MainRender, [{
+    key: 'drawBackground',
+    value: function drawBackground() {
+      var ctx = this.ctx;
+      // background render area
+      ctx.beginPath();
+      ctx.fillStyle = "#242424";
+      ctx.fillRect(0, 0, 790, 500);
+
+      this.playAreaContainer();
+      this.textAndStatsContainer();
+    }
+  }, {
     key: 'directions',
     value: function directions() {
       // brace yourself.
@@ -208,7 +311,7 @@ var MainRender = function () {
 
       for (var key in cardinals) {
         ctx.beginPath();
-        ctx.fillStyle = textGray;
+        ctx.fillStyle = Colors.textGray;
         ctx.font = "12px serif";
 
         if (cardinals[key] instanceof Array) {
@@ -232,23 +335,23 @@ var MainRender = function () {
       // playarea box
 
       ctx.beginPath();
-      ctx.fillStyle = backgroundGray;
+      ctx.fillStyle = Colors.backgroundGray;
       ctx.fillRect(325, 35, 460, 460);
       // x, y, w, h
 
       ctx.beginPath(); // border
-      ctx.strokeStyle = borderGray;
+      ctx.strokeStyle = Colors.borderGray;
       ctx.lineWidth = "2";
       ctx.strokeRect(328, 38, 454, 454);
 
       ctx.beginPath(); // filled circle around 'N'
-      ctx.fillStyle = backgroundGray;
+      ctx.fillStyle = Colors.backgroundGray;
       ctx.arc(561, 40, 30, 0, Math.PI * 2);
       // x, y, radius, startAngle, endAngle, anticlockwiseBool
       ctx.fill();
 
       ctx.beginPath(); // border within circle to match
-      ctx.fillStyle = borderGray;
+      ctx.fillStyle = Colors.borderGray;
       ctx.arc(561, 40, 28, Math.PI, 0); // half-circle - passable.
       ctx.stroke();
 
@@ -260,17 +363,17 @@ var MainRender = function () {
       var ctx = this.ctx;
 
       ctx.beginPath();
-      ctx.fillStyle = backgroundGray; // hey bebebe
+      ctx.fillStyle = Colors.backgroundGray; // hey bebebe
       ctx.fillRect(5, 5, 315, 490);
 
       ctx.beginPath(); // border
-      ctx.strokeStyle = borderGray;
+      ctx.strokeStyle = Colors.borderGray;
       ctx.lineWidth = "2";
       ctx.strokeRect(8, 8, 309, 484);
 
       ctx.beginPath(); // border line between text and stats
       ctx.moveTo(9, 262); // (-1, +2) adjustment for line overlap / thickness
-      ctx.strokeStyle = borderGray;
+      ctx.strokeStyle = Colors.borderGray;
       ctx.lineWidth = "2";
       ctx.lineTo(316, 262);
       ctx.stroke();
@@ -281,27 +384,29 @@ var MainRender = function () {
       var ctx = this.ctx;
       ctx.clearRect(0, 0, this.canvasEl.width, this.canvasEl.height);
 
-      // whole render area
-      ctx.beginPath();
-      ctx.fillStyle = "#242424";
-      ctx.fillRect(0, 0, 800, 500);
-
-      this.playAreaContainer();
-      this.textAndStatsContainer();
+      this.drawBackground();
 
       // modules
       var playarea = new _play_area2.default(this.canvasEl, this.ctx);
       var textarea = new _text_area2.default(this.canvasEl, this.ctx);
       var statsarea = new _stats_area2.default(this.canvasEl, this.ctx);
+      var character = new _character2.default(this.canvasEl, this.ctx);
+
+      textarea.draw();
+
+      textarea.displayText("Magic Mouth", "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi convallis gravida commodo. Vestibulum vel velit eget est pretium eleifend. Nulla ex ex, semper sit amet commodo at, tincidunt nec erat.");
 
       playarea.draw();
-      textarea.draw();
       statsarea.draw();
+      character.draw();
     }
   }]);
 
   return MainRender;
 }();
+
+// textarea.displayText("Magic Mouth", "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi convallis gravida commodo. Vestibulum vel velit eget est pretium eleifend. Nulla ex ex, semper sit amet commodo at, tincidunt nec erat. Pellentesque id justo consectetur, posuere est eu, pulvinar ipsum. Praesent rutrum malesuada lacus quis bibendum. Suspendisse sed est luctus mi commodo luctus. Vestibulum ipsum sem, imperdiet at purus vehicula, commodo porttitor enim. Ut id sem nunc. Duis sollicitudin purus sagittis, consequat enim dignissim, pretium eros. Aenean nisi purus, bibendum vel pretium eget, varius id turpis. Etiam eu quam a nisl lobortis egestas nec id felis. Mauris vitae finibus eros. Duis viverra blandit nibh, a fringilla justo ultricies ac.");
+
 
 exports.default = MainRender;
 
@@ -341,6 +446,8 @@ var PlayArea = function () {
   _createClass(PlayArea, [{
     key: "draw",
     value: function draw() {
+      this.ctx.clearRect(this.x, this.y, this.width, this.height);
+
       this.ctx.fillStyle = "black";
       this.ctx.fillRect(this.x, this.y, this.height, this.width);
     }
@@ -557,6 +664,12 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+var _font_colors = __webpack_require__(/*! ../../assets/font_colors */ "./app/assets/font_colors.js");
+
+var Colors = _interopRequireWildcard(_font_colors);
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var TextArea = function () {
@@ -567,15 +680,55 @@ var TextArea = function () {
     this.width = 305;
     this.height = 250;
 
+    this.currentText = [];
+
     this.x = 10;
     this.y = 10;
   }
 
   _createClass(TextArea, [{
+    key: "parseText",
+    value: function parseText(text) {
+      // parses a string into chunks of 44 characters:
+      // max width of disp @ font = 16px
+
+      // improve to only break on white space nearest 44
+      var result = [];
+      for (var i = 0; i < Math.ceil(text.length / 44); i++) {
+        var start = i * 44;
+        var end = (i + 1) * 44;
+        result.push(text.slice(start, end));
+      }
+      return result;
+    }
+  }, {
+    key: "displayText",
+    value: function displayText(speaker, text) {
+      var parsedText = this.parseText(text);
+
+      var ctx = this.ctx;
+      // this.currentText.push([speaker,text]);
+
+      ctx.beginPath(); // disp speaker
+      ctx.fillStyle = Colors.textBlack;
+      ctx.font = "16px serif";
+      ctx.fillText(speaker, 15, 30);
+
+      var start = 40;
+      parsedText.forEach(function (text) {
+        ctx.beginPath(); // disp speaker
+        ctx.fillStyle = Colors.textBlack;
+        ctx.font = "16px serif";
+        ctx.fillText(text, 15, start += 15);
+      });
+    }
+  }, {
     key: "draw",
     value: function draw() {
       this.ctx.fillStyle = "#FFFFCF";
       this.ctx.fillRect(this.x, this.y, this.width, this.height);
+
+      // this.displayText("Magic Mouth", "Who is bob?Who is bob?Who is bob?Who is bob?Who is bob?Who is bob?Who is bob?Who is bob?Who is bob?Who is bob?Who is bob?Who is bob?.");
     }
   }]);
 

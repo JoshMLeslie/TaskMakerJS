@@ -11,6 +11,8 @@ export default class PlayArea {
   }
 
    draw () {
+    this.ctx.clearRect(this.x, this.y, this.width, this.height);
+
     this.ctx.fillStyle = "black";
     this.ctx.fillRect(this.x, this.y, this.height, this.width);
   }
