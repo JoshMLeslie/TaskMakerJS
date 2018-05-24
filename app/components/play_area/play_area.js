@@ -6,8 +6,8 @@ export default class PlayArea {
     this.height = 415;
 
     const centering = (canvasEl.height - this.height) / 2;
-    this.x = canvasEl.width - this.width + 5 - centering;
-    this.y = (canvasEl.height - this.height + 10 - centering) ;
+    this.x = canvasEl.width - this.width - centering + 15;
+    this.y = canvasEl.height - this.height - centering + 10 ;
   }
 
    draw () {

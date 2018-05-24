@@ -1,6 +1,6 @@
 import TextArea from './text_area/text_area';
 import PlayArea from './play_area/play_area';
-// import StatsArea from './stats_area/stats_area';
+import StatsArea from './stats_area/stats_area';
 
 const backgroundGray = "#BEBEBE";
 const borderGray = "#9B9B9B";
@@ -15,8 +15,7 @@ export default class MainRender {
     this.canvasEl = canvasEl;
     this.ctx = ctx;
 
-
-    this.canvasEl.width = 800;  // this is the max width the element occupies
+    this.canvasEl.width = 790;  // this is the max width the element occupies
     this.canvasEl.height = 500; // borders and stuff exist inside of this area
   }
 
@@ -24,20 +23,26 @@ export default class MainRender {
     // brace yourself.
     const ctx = this.ctx;
 
+    let vPos = 245;
+    let vPos2 = 245; // since it gets called twice
+    const vAdj = 15;
+
     const cardinals = {
+      // keys are rendered relative to x,y vals.
+      // N => "N" @ 555, 40, EAST => "E" @ ... "A" @ .... "S" ...
       N: [555, 40],
       EAST: {
-        E: [768, 250],
-        A: [767.5, 265],
-        S: [769, 280],
-        T: [768, 295],
+        E: [768, vPos], // micro adjustments
+        A: [767.5, vPos += vAdj],
+        S: [769, vPos += vAdj],
+        T: [768, vPos += vAdj],
       },
       SOUTH: [540, 482.5],
       WEST: {
-        W: [331, 250],
-        E: [333, 265],
-        S: [333, 280],
-        T: [332, 295]
+        W: [331, vPos2],
+        E: [333, vPos2 += vAdj],
+        S: [333, vPos2 += vAdj],
+        T: [332, vPos2 += vAdj]
       }
     };
 
@@ -46,21 +51,17 @@ export default class MainRender {
       ctx.fillStyle = textGray;
       ctx.font = "12px serif";
 
-      if (cardinals[key] instanceof Array) {
+      if (cardinals[key] instanceof Array) { // if first level is an array
         if (key === "N") { ctx.font = "20px serif"; }
-
         ctx.fillText(key, cardinals[key][0], cardinals[key][1]);
-      } else {
+      } else { // else first level contains another object (E / W)
         for (let subkey in cardinals[key]) {
           ctx.fillText(
             subkey,
             cardinals[key][subkey][0],
             cardinals[key][subkey][1]
           );
-        }
-      }
-    }
-  }
+  } } } }
 
   playAreaContainer () {
     const ctx = this.ctx;
@@ -76,7 +77,7 @@ export default class MainRender {
       ctx.lineWidth="2";
     ctx.strokeRect(328,38,454,454);
 
-    ctx.beginPath(); // circle around 'N'
+    ctx.beginPath(); // filled circle around 'N'
       ctx.fillStyle = backgroundGray;
       ctx.arc(561, 40, 30, 0, Math.PI*2);
       // x, y, radius, startAngle, endAngle, anticlockwiseBool
@@ -84,15 +85,15 @@ export default class MainRender {
 
     ctx.beginPath(); // border within circle to match
       ctx.fillStyle = borderGray;
-      ctx.arc(561, 40, 28, Math.PI,0);
-      // half-circle - not perfect but works for now
+      ctx.arc(561, 40, 28, Math.PI,0); // half-circle - passable.
     ctx.stroke();
 
-    this.directions();
+    this.directions(); // render lettering ontop of everything above
   }
 
   textAndStatsContainer () {
     const ctx = this.ctx;
+
     ctx.beginPath();
       ctx.fillStyle = backgroundGray; // hey bebebe
       ctx.fillRect(5, 5, 315, 490);
@@ -129,9 +130,11 @@ export default class MainRender {
     // modules
     const playarea = new PlayArea(this.canvasEl, this.ctx);
     const textarea = new TextArea(this.canvasEl, this.ctx);
+    const statsarea = new StatsArea(this.canvasEl, this.ctx);
 
     playarea.draw();
     textarea.draw();
+    statsarea.draw();
   }
 
 }
