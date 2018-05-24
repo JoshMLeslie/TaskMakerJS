@@ -1,13 +1,20 @@
-// import TextArea from './components/text_area/text_area';
+import TextArea from './text_area/text_area';
 import PlayArea from './play_area/play_area';
-// import StatsArea from './components/stats_area/stats_area';
+// import StatsArea from './stats_area/stats_area';
+
+const backgroundGray = "#BEBEBE";
+const borderGray = "#9B9B9B";
+const textGray = "#4C4C4C";
+const textBlack = "#000000"; // I know this is just black.
 
 export default class MainRender {
+
   // renders the background and static containers
 
   constructor (canvasEl, ctx) {
     this.canvasEl = canvasEl;
     this.ctx = ctx;
+
 
     this.canvasEl.width = 800;  // this is the max width the element occupies
     this.canvasEl.height = 500; // borders and stuff exist inside of this area
@@ -36,7 +43,7 @@ export default class MainRender {
 
     for (let key in cardinals) {
       ctx.beginPath();
-      ctx.fillStyle = "gray";
+      ctx.fillStyle = textGray;
       ctx.font = "12px serif";
 
       if (cardinals[key] instanceof Array) {
@@ -60,15 +67,26 @@ export default class MainRender {
     // playarea box
 
     ctx.beginPath();
-      ctx.fillStyle = "#bebebe";
+      ctx.fillStyle = backgroundGray;
     ctx.fillRect(325, 35, 460, 460);
     // x, y, w, h
 
-    ctx.beginPath();
-      ctx.fillStyle = "#bebebe";
+    ctx.beginPath(); // border
+      ctx.strokeStyle=borderGray;
+      ctx.lineWidth="2";
+    ctx.strokeRect(328,38,454,454);
+
+    ctx.beginPath(); // circle around 'N'
+      ctx.fillStyle = backgroundGray;
       ctx.arc(561, 40, 30, 0, Math.PI*2);
       // x, y, radius, startAngle, endAngle, anticlockwiseBool
     ctx.fill();
+
+    ctx.beginPath(); // border within circle to match
+      ctx.fillStyle = borderGray;
+      ctx.arc(561, 40, 28, Math.PI,0);
+      // half-circle - not perfect but works for now
+    ctx.stroke();
 
     this.directions();
   }
@@ -76,18 +94,20 @@ export default class MainRender {
   textAndStatsContainer () {
     const ctx = this.ctx;
     ctx.beginPath();
-      ctx.fillStyle = "#bebebe";
+      ctx.fillStyle = backgroundGray; // hey bebebe
       ctx.fillRect(5, 5, 315, 490);
 
-    ctx.beginPath(); // outer border
-      ctx.strokeStyle="#adadad";
-      ctx.lineWidth="2";
-    ctx.strokeRect(6,6,313,488);
-
-    ctx.beginPath(); // inner-outer border
-      ctx.strokeStyle="#9b9b9b";
-      ctx.lineWidth="2";
+    ctx.beginPath(); // border
+      ctx.strokeStyle = borderGray;
+      ctx.lineWidth = "2";
     ctx.strokeRect(8,8,309,484);
+
+    ctx.beginPath(); // border line between text and stats
+      ctx.moveTo(9,262); // (-1, +2) adjustment for line overlap / thickness
+      ctx.strokeStyle = borderGray;
+      ctx.lineWidth = "2";
+      ctx.lineTo(316,262);
+    ctx.stroke();
 
 
   }
@@ -106,11 +126,12 @@ export default class MainRender {
     this.playAreaContainer();
     this.textAndStatsContainer();
 
-
-    // text, x, y
-
+    // modules
     const playarea = new PlayArea(this.canvasEl, this.ctx);
-    return playarea.draw();
+    const textarea = new TextArea(this.canvasEl, this.ctx);
+
+    playarea.draw();
+    textarea.draw();
   }
 
 }

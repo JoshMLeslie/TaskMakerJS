@@ -111,8 +111,11 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); // import TextArea from './components/text_area/text_area';
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+var _text_area = __webpack_require__(/*! ./text_area/text_area */ "./app/components/text_area/text_area.js");
+
+var _text_area2 = _interopRequireDefault(_text_area);
 
 var _play_area = __webpack_require__(/*! ./play_area/play_area */ "./app/components/play_area/play_area.js");
 
@@ -122,9 +125,15 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-// import StatsArea from './components/stats_area/stats_area';
+// import StatsArea from './stats_area/stats_area';
+
+var backgroundGray = "#BEBEBE";
+var borderGray = "#9B9B9B";
+var textGray = "#4C4C4C";
+var textBlack = "#000000"; // I know this is just black.
 
 var MainRender = function () {
+
   // renders the background and static containers
 
   function MainRender(canvasEl, ctx) {
@@ -138,7 +147,7 @@ var MainRender = function () {
   }
 
   _createClass(MainRender, [{
-    key: "directions",
+    key: 'directions',
     value: function directions() {
       // brace yourself.
       var ctx = this.ctx;
@@ -162,7 +171,7 @@ var MainRender = function () {
 
       for (var key in cardinals) {
         ctx.beginPath();
-        ctx.fillStyle = "gray";
+        ctx.fillStyle = textGray;
         ctx.font = "12px serif";
 
         if (cardinals[key] instanceof Array) {
@@ -179,44 +188,57 @@ var MainRender = function () {
       }
     }
   }, {
-    key: "playAreaContainer",
+    key: 'playAreaContainer',
     value: function playAreaContainer() {
       var ctx = this.ctx;
       // playarea box
 
       ctx.beginPath();
-      ctx.fillStyle = "#bebebe";
+      ctx.fillStyle = backgroundGray;
       ctx.fillRect(325, 35, 460, 460);
       // x, y, w, h
 
-      ctx.beginPath();
-      ctx.fillStyle = "#bebebe";
+      ctx.beginPath(); // border
+      ctx.strokeStyle = borderGray;
+      ctx.lineWidth = "2";
+      ctx.strokeRect(328, 38, 454, 454);
+
+      ctx.beginPath(); // circle around 'N'
+      ctx.fillStyle = backgroundGray;
       ctx.arc(561, 40, 30, 0, Math.PI * 2);
       // x, y, radius, startAngle, endAngle, anticlockwiseBool
       ctx.fill();
 
+      ctx.beginPath(); // border within circle to match
+      ctx.fillStyle = borderGray;
+      ctx.arc(561, 40, 28, Math.PI, 0);
+      // half-circle - not perfect but works for now
+      ctx.stroke();
+
       this.directions();
     }
   }, {
-    key: "textAndStatsContainer",
+    key: 'textAndStatsContainer',
     value: function textAndStatsContainer() {
       var ctx = this.ctx;
       ctx.beginPath();
-      ctx.fillStyle = "#bebebe";
+      ctx.fillStyle = backgroundGray; // hey bebebe
       ctx.fillRect(5, 5, 315, 490);
 
-      ctx.beginPath(); // outer border
-      ctx.strokeStyle = "#adadad";
-      ctx.lineWidth = "2";
-      ctx.strokeRect(6, 6, 313, 488);
-
-      ctx.beginPath(); // inner-outer border
-      ctx.strokeStyle = "#9b9b9b";
+      ctx.beginPath(); // border
+      ctx.strokeStyle = borderGray;
       ctx.lineWidth = "2";
       ctx.strokeRect(8, 8, 309, 484);
+
+      ctx.beginPath(); // border line between text and stats
+      ctx.moveTo(9, 262); // (-1, +2) adjustment for line overlap / thickness
+      ctx.strokeStyle = borderGray;
+      ctx.lineWidth = "2";
+      ctx.lineTo(316, 262);
+      ctx.stroke();
     }
   }, {
-    key: "draw",
+    key: 'draw',
     value: function draw() {
       var ctx = this.ctx;
       ctx.clearRect(0, 0, this.canvasEl.width, this.canvasEl.height);
@@ -229,10 +251,12 @@ var MainRender = function () {
       this.playAreaContainer();
       this.textAndStatsContainer();
 
-      // text, x, y
-
+      // modules
       var playarea = new _play_area2.default(this.canvasEl, this.ctx);
-      return playarea.draw();
+      var textarea = new _text_area2.default(this.canvasEl, this.ctx);
+
+      playarea.draw();
+      textarea.draw();
     }
   }]);
 
@@ -270,14 +294,14 @@ var PlayArea = function () {
     this.height = 415;
 
     var centering = (canvasEl.height - this.height) / 2;
-    this.y = canvasEl.height - this.height + 10 - centering;
     this.x = canvasEl.width - this.width + 5 - centering;
+    this.y = canvasEl.height - this.height + 10 - centering;
   }
 
   _createClass(PlayArea, [{
     key: "draw",
     value: function draw() {
-      this.ctx.fillStyle = "black"; // hey bebebe
+      this.ctx.fillStyle = "black";
       this.ctx.fillRect(this.x, this.y, this.height, this.width);
     }
   }]);
@@ -286,6 +310,51 @@ var PlayArea = function () {
 }();
 
 exports.default = PlayArea;
+
+/***/ }),
+
+/***/ "./app/components/text_area/text_area.js":
+/*!***********************************************!*\
+  !*** ./app/components/text_area/text_area.js ***!
+  \***********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var TextArea = function () {
+  function TextArea(canvasEl, ctx) {
+    _classCallCheck(this, TextArea);
+
+    this.ctx = ctx;
+    this.width = 250;
+    this.height = 305;
+
+    this.x = 10;
+    this.y = 10;
+  }
+
+  _createClass(TextArea, [{
+    key: "draw",
+    value: function draw() {
+      this.ctx.fillStyle = "#FFFFCF";
+      this.ctx.fillRect(this.x, this.y, this.height, this.width);
+    }
+  }]);
+
+  return TextArea;
+}();
+
+exports.default = TextArea;
 
 /***/ })
 
