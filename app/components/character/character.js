@@ -47,7 +47,7 @@ export default class Character {
     const ctx = this.ctx;
 
     ctx.beginPath();
-      ctx.fillStyle="#98C0D0"; // pale blue dot
+      ctx.fillStyle="#9cd0e5"; // pale blue dot
     ctx.fillRect(this.x, this.y, this.width, this.height);
   }
 }

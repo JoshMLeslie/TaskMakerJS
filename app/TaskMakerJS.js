@@ -7,8 +7,16 @@ document.addEventListener("DOMContentLoaded", function(){
 
   const mainrender = new MainRender(canvasEl, ctx);
 
-  console.log("I'm not refreshing because setInterval is commented out");
-  mainrender.draw();
-  // setInterval( mainrender.draw, 10 );
-
+  runOnce(mainrender, true);
+  // remove 'true' or set to false to run on setInterval
 });
+
+const runOnce = (mainrender, bool) => {
+  if (bool) {
+    console.log(
+      "I'm not refreshing on purpose, see line:10");
+    mainrender.draw();
+  } else {
+    setInterval( mainrender.draw, 10 );
+  }
+};

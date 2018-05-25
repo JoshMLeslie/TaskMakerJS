@@ -93,10 +93,18 @@ document.addEventListener("DOMContentLoaded", function () {
 
   var mainrender = new _main_render2.default(canvasEl, ctx);
 
-  console.log("I'm not refreshing because setInterval is commented out");
-  mainrender.draw();
-  // setInterval( mainrender.draw, 10 );
+  runOnce(mainrender, true);
+  // remove 'true' or set to false to run on setInterval
 });
+
+var runOnce = function runOnce(mainrender, bool) {
+  if (bool) {
+    console.log("I'm not refreshing on purpose, see line:10");
+    mainrender.draw();
+  } else {
+    setInterval(mainrender.draw, 10);
+  }
+};
 
 /***/ }),
 
@@ -495,7 +503,7 @@ var Character = function () {
       var ctx = this.ctx;
 
       ctx.beginPath();
-      ctx.fillStyle = "#98C0D0"; // pale blue dot
+      ctx.fillStyle = "#9cd0e5"; // pale blue dot
       ctx.fillRect(this.x, this.y, this.width, this.height);
     }
   }]);
@@ -504,6 +512,38 @@ var Character = function () {
 }();
 
 exports.default = Character;
+
+/***/ }),
+
+/***/ "./app/components/levels/levelOne.js":
+/*!*******************************************!*\
+  !*** ./app/components/levels/levelOne.js ***!
+  \*******************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var topLeftX = 353;
+var topLeftY = 88;
+
+var levelOne = exports.levelOne = {
+  walls: {
+    one: {
+      color: "red",
+      x: topLeftX,
+      y: topLeftY,
+      width: 45,
+      height: 45
+    }
+  },
+
+  floors: {}
+};
 
 /***/ }),
 
@@ -643,6 +683,8 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+var _levelOne = __webpack_require__(/*! ../levels/levelOne */ "./app/components/levels/levelOne.js");
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var PlayArea = function () {
@@ -659,12 +701,43 @@ var PlayArea = function () {
   }
 
   _createClass(PlayArea, [{
+    key: "drawLevels",
+    value: function drawLevels(levels) {
+      var _this = this;
+
+      levels.forEach(function (level) {
+        _this.drawLevel(level);
+      });
+    }
+  }, {
+    key: "drawLevel",
+    value: function drawLevel(level) {
+      var ctx = this.ctx;
+      // 'level' is a (complex) POJO
+
+      for (var key in level) {
+        for (var object in level[key]) {
+          switch (key) {// key == wall, floor, etc.
+            case "walls":
+              var obj = level[key][object];
+              ctx.fillStyle = obj.color;
+              ctx.fillRect(obj.x, obj.y, obj.height, obj.width);
+          }
+        }
+      }
+    }
+  }, {
     key: "draw",
     value: function draw() {
-      this.ctx.clearRect(this.x, this.y, this.width, this.height);
+      var ctx = this.ctx;
+      ctx.clearRect(this.x, this.y, this.width, this.height);
 
-      this.ctx.fillStyle = "black";
-      this.ctx.fillRect(this.x, this.y, this.height, this.width);
+      ctx.fillStyle = "black";
+      ctx.fillRect(this.x, this.y, this.height, this.width);
+
+      var levels = [_levelOne.levelOne];
+
+      this.drawLevels(levels);
     }
   }]);
 
