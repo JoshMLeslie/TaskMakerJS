@@ -92,7 +92,8 @@ document.addEventListener("DOMContentLoaded", function () {
   var ctx = canvasEl.getContext("2d");
 
   var mainrender = new _main_render2.default(canvasEl, ctx);
-  setInterval(mainrender.draw(), 10);
+  // mainrender.draw();
+  setInterval(mainrender.draw, 10);
 });
 
 /***/ }),
@@ -162,7 +163,6 @@ var Character = function () {
     this.y = 250;
 
     this.move = this.move.bind(this);
-    window.addEventListener("keydown", this.move);
   }
 
   _createClass(Character, [{
@@ -178,6 +178,8 @@ var Character = function () {
           return [10, 0];
         case 40:
           return [0, 10];
+        default:
+          return [0, 0];
       }
     }
   }, {
@@ -266,6 +268,14 @@ var MainRender = function () {
     this.canvasEl.width = 790; // this is the max width the game occupies
     this.canvasEl.height = 500; // borders and stuff exist inside of this area
 
+    this.playarea = new _play_area2.default(this.canvasEl, this.ctx);
+    this.textarea = new _text_area2.default(this.canvasEl, this.ctx);
+    this.statsarea = new _stats_area2.default(this.canvasEl, this.ctx);
+    this.character = new _character2.default(this.canvasEl, this.ctx);
+
+    window.addEventListener("keydown", this.character.move);
+
+    this.draw = this.draw.bind(this);
   }
 
   _createClass(MainRender, [{
@@ -382,23 +392,21 @@ var MainRender = function () {
     key: 'draw',
     value: function draw() {
       var ctx = this.ctx;
-      ctx.clearRect(0, 0, this.canvasEl.width, this.canvasEl.height);
+      // console.log(Date.now());
+      this.ctx.clearRect(0, 0, this.canvasEl.width, this.canvasEl.height);
 
       this.drawBackground();
 
       // modules
-      var playarea = new _play_area2.default(this.canvasEl, this.ctx);
-      var textarea = new _text_area2.default(this.canvasEl, this.ctx);
-      var statsarea = new _stats_area2.default(this.canvasEl, this.ctx);
-      var character = new _character2.default(this.canvasEl, this.ctx);
 
-      textarea.draw();
 
-      textarea.displayText("Magic Mouth", "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi convallis gravida commodo. Vestibulum vel velit eget est pretium eleifend. Nulla ex ex, semper sit amet commodo at, tincidunt nec erat.");
+      this.textarea.draw();
 
-      playarea.draw();
-      statsarea.draw();
-      character.draw();
+      this.textarea.displayText("Magic Mouth", "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi convallis gravida commodo. Vestibulum vel velit eget est pretium eleifend. Nulla ex ex, semper sit amet commodo at, tincidunt nec erat.");
+
+      this.playarea.draw();
+      this.statsarea.draw();
+      this.character.draw();
     }
   }]);
 

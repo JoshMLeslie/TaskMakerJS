@@ -10,7 +10,7 @@ export default class Character {
     this.y = 250;
 
     this.move = this.move.bind(this);
-    window.addEventListener("keydown", this.move);
+
   }
 
   keyToVal(e) {
@@ -24,6 +24,8 @@ export default class Character {
         return [10, 0];
       case 40:
         return [0, 10];
+      default:
+        return [0,0];
     }
   }
 

@@ -16,7 +16,14 @@ export default class MainRender {
     this.canvasEl.width = 790;  // this is the max width the game occupies
     this.canvasEl.height = 500; // borders and stuff exist inside of this area
 
+    this.playarea = new PlayArea(this.canvasEl, this.ctx);
+    this.textarea = new TextArea(this.canvasEl, this.ctx);
+    this.statsarea = new StatsArea(this.canvasEl, this.ctx);
+    this.character = new Character(this.canvasEl, this.ctx);
 
+    window.addEventListener("keydown", this.character.move);
+
+    this.draw = this.draw.bind(this);
   }
 
   drawBackground () {
@@ -125,23 +132,21 @@ export default class MainRender {
 
   draw () {
     const ctx = this.ctx;
-    ctx.clearRect(0, 0, this.canvasEl.width, this.canvasEl.height);
+    // console.log(Date.now());
+    this.ctx.clearRect(0, 0, this.canvasEl.width, this.canvasEl.height);
 
     this.drawBackground();
 
     // modules
-    const playarea = new PlayArea(this.canvasEl, this.ctx);
-    const textarea = new TextArea(this.canvasEl, this.ctx);
-    const statsarea = new StatsArea(this.canvasEl, this.ctx);
-    const character = new Character(this.canvasEl, this.ctx);
 
-    textarea.draw();
 
-    textarea.displayText("Magic Mouth", "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi convallis gravida commodo. Vestibulum vel velit eget est pretium eleifend. Nulla ex ex, semper sit amet commodo at, tincidunt nec erat.");
+    this.textarea.draw();
 
-    playarea.draw();
-    statsarea.draw();
-    character.draw();
+    this.textarea.displayText("Magic Mouth", "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi convallis gravida commodo. Vestibulum vel velit eget est pretium eleifend. Nulla ex ex, semper sit amet commodo at, tincidunt nec erat.");
+
+    this.playarea.draw();
+    this.statsarea.draw();
+    this.character.draw();
   }
 
 }
