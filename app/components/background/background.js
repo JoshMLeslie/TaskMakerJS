@@ -7,6 +7,41 @@ export default class Background {
     this.name = name;
     this.width = canvasEl.width;  // this is the max width the game occupies
     this.height = canvasEl.height; // borders and stuff exist inside of this area
+
+    this.buttonClick = this.buttonClick.bind(this);
+    this.canvasEl.addEventListener('click', this.buttonClick, false);
+  }
+
+  getMousePos(e) {
+
+    let canvasArea = this.canvasEl.getBoundingClientRect();
+    return {
+      x: e.clientX - canvasArea.left,
+      y: e.clientY - canvasArea.top
+    };
+  }
+
+  isInside (pos, rect) {
+    const posX = pos.x > rect.x;
+    const widthX = pos.x < rect.x+rect.width;
+    const widthY = pos.y < rect.y+rect.height;
+    return posX && widthX && widthY;
+  }
+
+  buttonClick(e) {
+    // https://stackoverflow.com/questions/24384368/simple-button-in-html5-canvas
+    const buttonArea = {
+      x: 18,
+      y: 8,
+      width: 16,
+      height: 16
+    };
+
+    const mousePos = this.getMousePos(e);
+    
+    if (this.isInside(mousePos, buttonArea)) {
+      window.alert('Button clicked!');
+    }
   }
 
   drawTopBar () {

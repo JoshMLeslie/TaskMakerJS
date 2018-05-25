@@ -17,7 +17,7 @@ export default class MainRender {
     this.canvasEl.width = 790;  // this is the max width the game occupies
     this.canvasEl.height = 530;
 
-    let name = "Josh";
+    let name = "Josh"; // eventually replace with input from a login screen.
 
     this.background = new Background(name, canvasEl, ctx);
     this.playarea = new PlayArea(canvasEl, ctx);

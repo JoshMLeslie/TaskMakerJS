@@ -162,10 +162,48 @@ var Background = function () {
     this.name = name;
     this.width = canvasEl.width; // this is the max width the game occupies
     this.height = canvasEl.height; // borders and stuff exist inside of this area
+
+    this.buttonClick = this.buttonClick.bind(this);
+    this.canvasEl.addEventListener('click', this.buttonClick, false);
   }
 
   _createClass(Background, [{
-    key: "drawTopBar",
+    key: 'getMousePos',
+    value: function getMousePos(e) {
+
+      var canvasArea = this.canvasEl.getBoundingClientRect();
+      return {
+        x: e.clientX - canvasArea.left,
+        y: e.clientY - canvasArea.top
+      };
+    }
+  }, {
+    key: 'isInside',
+    value: function isInside(pos, rect) {
+      var posX = pos.x > rect.x;
+      var widthX = pos.x < rect.x + rect.width;
+      var widthY = pos.y < rect.y + rect.height;
+      return posX && widthX && widthY;
+    }
+  }, {
+    key: 'buttonClick',
+    value: function buttonClick(e) {
+      // https://stackoverflow.com/questions/24384368/simple-button-in-html5-canvas
+      var buttonArea = {
+        x: 18,
+        y: 8,
+        width: 16,
+        height: 16
+      };
+
+      var mousePos = this.getMousePos(e);
+
+      if (this.isInside(mousePos, buttonArea)) {
+        window.alert('Button clicked!');
+      }
+    }
+  }, {
+    key: 'drawTopBar',
     value: function drawTopBar() {
       var ctx = this.ctx;
       // for-now-fake top bar
@@ -195,7 +233,7 @@ var Background = function () {
       this.drawButton();
     }
   }, {
-    key: "drawName",
+    key: 'drawName',
     value: function drawName() {
       var long = this.name.length;
       var width = long * 8.5 + (long > 10 ? 0 : 10); // well enough.
@@ -212,7 +250,7 @@ var Background = function () {
       ctx.fillText(this.name, centering + 5, 22.5); // +5 for padding
     }
   }, {
-    key: "drawButton",
+    key: 'drawButton',
     value: function drawButton() {
       var ctx = this.ctx;
 
@@ -259,7 +297,7 @@ var Background = function () {
       ctx.stroke();
     }
   }, {
-    key: "drawCardinals",
+    key: 'drawCardinals',
     value: function drawCardinals() {
       // brace yourself.
       var ctx = this.ctx;
@@ -309,7 +347,7 @@ var Background = function () {
 
 
   }, {
-    key: "drawPlayAreaContainer",
+    key: 'drawPlayAreaContainer',
     value: function drawPlayAreaContainer() {
       var ctx = this.ctx;
       // playarea box
@@ -338,7 +376,7 @@ var Background = function () {
       this.drawCardinals(); // render lettering ontop of everything above
     }
   }, {
-    key: "drawTextAndStatsContainer",
+    key: 'drawTextAndStatsContainer',
     value: function drawTextAndStatsContainer() {
       var ctx = this.ctx;
 
@@ -359,7 +397,7 @@ var Background = function () {
       ctx.stroke();
     }
   }, {
-    key: "draw",
+    key: 'draw',
     value: function draw() {
       var ctx = this.ctx;
       // background render area
@@ -527,7 +565,7 @@ var MainRender = function () {
     this.canvasEl.width = 790; // this is the max width the game occupies
     this.canvasEl.height = 530;
 
-    var name = "Josh";
+    var name = "Josh"; // eventually replace with input from a login screen.
 
     this.background = new _background2.default(name, canvasEl, ctx);
     this.playarea = new _play_area2.default(canvasEl, ctx);
