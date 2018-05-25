@@ -3,12 +3,12 @@ import * as Colors from '../../assets/font_colors';
 export default class Character {
   constructor (canvasEl, ctx) {
     this.ctx = ctx;
-    this.size = 15;
+    this.size = 45;
     this.width = this.size;
     this.height = this.size;
 
-    this.x = 435;
-    this.y = 245;
+    this.x = 533; // center x
+    this.y = 268; // center y
 
     this.move = this.move.bind(this);
   }
@@ -36,7 +36,7 @@ export default class Character {
     const checkX = this.x + dx;
     const checkY = this.y + dy;
 
-    if ( (checkX > 340 && checkX < 755 ) && (checkY > 75 && checkY < 490) ) {
+    if ( (checkX > 345 && checkX < 750 ) && (checkY > 80 && checkY < 485) ) {
       this.x += dx;
       this.y += dy;
       this.draw();

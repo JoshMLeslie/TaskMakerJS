@@ -447,12 +447,12 @@ var Character = function () {
     _classCallCheck(this, Character);
 
     this.ctx = ctx;
-    this.size = 15;
+    this.size = 45;
     this.width = this.size;
     this.height = this.size;
 
-    this.x = 435;
-    this.y = 245;
+    this.x = 533; // center x
+    this.y = 268; // center y
 
     this.move = this.move.bind(this);
   }
@@ -483,7 +483,7 @@ var Character = function () {
       var checkX = this.x + dx;
       var checkY = this.y + dy;
 
-      if (checkX > 340 && checkX < 755 && checkY > 75 && checkY < 490) {
+      if (checkX > 345 && checkX < 750 && checkY > 80 && checkY < 485) {
         this.x += dx;
         this.y += dy;
         this.draw();
@@ -650,8 +650,8 @@ var PlayArea = function () {
     _classCallCheck(this, PlayArea);
 
     this.ctx = ctx;
-    this.width = 420;
-    this.height = 420;
+    this.width = 405;
+    this.height = 405;
 
     var centering = (canvasEl.height - this.height) / 2;
     this.x = canvasEl.width - this.width - centering + 30;

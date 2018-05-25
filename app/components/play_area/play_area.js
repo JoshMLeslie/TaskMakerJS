@@ -2,8 +2,8 @@ export default class PlayArea {
 
   constructor (canvasEl, ctx) {
     this.ctx = ctx;
-    this.width = 420;
-    this.height = 420;
+    this.width = 405;
+    this.height = 405;
 
     const centering = (canvasEl.height - this.height) / 2;
     this.x = canvasEl.width - this.width - centering + 30;
