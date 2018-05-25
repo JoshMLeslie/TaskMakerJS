@@ -6,7 +6,9 @@ document.addEventListener("DOMContentLoaded", function(){
   const ctx = canvasEl.getContext("2d");
 
   const mainrender = new MainRender(canvasEl, ctx);
-  // mainrender.draw();
-  setInterval( mainrender.draw, 10 );
+
+  console.log("I'm not refreshing because setInterval is commented out");
+  mainrender.draw();
+  // setInterval( mainrender.draw, 10 );
 
 });

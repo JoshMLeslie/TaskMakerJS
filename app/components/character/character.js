@@ -10,12 +10,11 @@ export default class Character {
     this.y = 250;
 
     this.move = this.move.bind(this);
-
   }
 
-  keyToVal(e) {
+  keyToMove(key) {
     // 37, left // 38, up // 39, right // 40, down
-    switch (e){
+    switch (key){
       case 37:
         return [-10, 0];
       case 38:
@@ -29,9 +28,9 @@ export default class Character {
     }
   }
 
-  move(e) {
+  move(key) {
 
-    const temp = this.keyToVal(e.keyCode);
+    const temp = this.keyToMove(key);
     const dx = temp[0];
     const dy = temp[1];
     // debugger

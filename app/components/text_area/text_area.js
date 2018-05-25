@@ -9,7 +9,7 @@ export default class TextArea {
     this.currentText = [];
 
     this.x = 10;
-    this.y = 10;
+    this.y = 40;
   }
 
   parseText(text) {
@@ -18,7 +18,7 @@ export default class TextArea {
 
     // improve to only break on white space nearest 44
     let result = [];
-    for (var i = 0; i < Math.ceil(text.length/44); i++) {
+    for (let i = 0; i < Math.ceil(text.length/44); i++) {
       let start = i * 44;
       let end = (i + 1) * 44;
       result.push(text.slice(start,end) );
@@ -32,13 +32,16 @@ export default class TextArea {
 
     const ctx = this.ctx;
     // this.currentText.push([speaker,text]);
+    let start = 60;
+    // needs to be adjusted based on collective displayed text.
+    // or just render one chunk of text at a time, sounds easier for now than keeping track of it all.
 
     ctx.beginPath(); // disp speaker
       ctx.fillStyle = Colors.textBlack;
       ctx.font = "16px serif";
-    ctx.fillText(speaker, 15, 30);
+    ctx.fillText(speaker, 15, start);
 
-    let start = 40;
+    start += 10; // bump down.
     parsedText.forEach(text => {
       ctx.beginPath(); // disp speaker
       ctx.fillStyle = Colors.textBlack;

@@ -9,16 +9,30 @@ export default class StatsArea {
     this.height = 227;
 
     this.x = 10;
-    this.y = 263;
+    this.y = 293;
+
+    this.statVals = {
+      // starting vals ( 20, 20 )
+      // starting vals ( 20, 30 ) to display hatch
+      Food: [20, 30],
+      Health: [20, 30],
+      Spirit: [20, 30],
+      Strength: [20, 30],
+      Agility: [20, 30],
+      Intellect: [20, 30],
+      Stamina: [20, 30],
+    };
   }
 
   displayScore (score=0) {
     const ctx = this.ctx;
 
+    const vPos = 315;
+
     ctx.beginPath(); // disp "Score"
       ctx.fillStyle = Colors.textBlack;
       ctx.font = "20px serif";
-    ctx.fillText("Score", 20, 285);
+    ctx.fillText("Score", 20, vPos);
 
     let horizontalAdj = 295;
     if (score >= 10 && score < 99) { horizontalAdj -= 10; }
@@ -29,7 +43,14 @@ export default class StatsArea {
     ctx.beginPath();
       ctx.fillStyle = Colors.textBlack;
       ctx.font = "18px serif";
-    ctx.fillText(score, horizontalAdj, 285);
+    ctx.fillText(score, horizontalAdj, vPos);
+
+    ctx.beginPath(); // border line between score and stats
+      ctx.moveTo(7,vPos + 10);
+      ctx.strokeStyle = Colors.borderGray;
+      ctx.lineWidth = "2";
+      ctx.lineTo(317,vPos + 10);
+    ctx.stroke();
   }
 
   hatchRect (x1, y1, dx, dy, delta, color) {
@@ -59,7 +80,7 @@ export default class StatsArea {
     const ctx = this.ctx;
     const width = 225;
     const height = 20;
-    const x = pos[0] + 65;
+    const x = pos[0] + 65; // relative to parent 'vPos'
     const y = pos[1] - 15;
 
     ctx.beginPath(); // background
@@ -80,14 +101,14 @@ export default class StatsArea {
 
   }
 
-  displayStats (statVals) {
+  displayStats () {
     // statVals is a hash of matching k-v pairs
     // statVals = {
     //   Food = [current, max],
     //   ...
     // }
     const ctx = this.ctx;
-    let vPos = 320;
+    let vPos = 350;
     const adj = 27;
     const h = 20;
 
@@ -107,7 +128,7 @@ export default class StatsArea {
         ctx.font = "16px serif";
       ctx.fillText(key, stats[key][0], stats[key][1]);
 
-      this.statBar(key, stats[key], statVals[key]); // actual bar
+      this.statBar(key, stats[key], this.statVals[key]); // actual bar
     }
   }
 
@@ -116,26 +137,9 @@ export default class StatsArea {
     ctx.fillStyle = "#DFDFDF";
     ctx.fillRect(this.x, this.y, this.width, this.height);
 
-    ctx.beginPath(); // border line between score and stats
-      ctx.moveTo(7,294);
-      ctx.strokeStyle = Colors.borderGray;
-      ctx.lineWidth = "2";
-      ctx.lineTo(317,294);
-    ctx.stroke();
 
-
-    const statVals = {
-      // here for testing, but also seem to be good starting vals.( 20, 20 )
-      Food: [20, 30],
-      Health: [20, 30],
-      Spirit: [20, 30],
-      Strength: [20, 30],
-      Agility: [20, 30],
-      Intellect: [20, 30],
-      Stamina: [20, 30],
-    };
 
     this.displayScore(314);
-    this.displayStats(statVals);
+    this.displayStats();
   }
 }

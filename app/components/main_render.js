@@ -1,3 +1,4 @@
+import Background from './background/background';
 import TextArea from './text_area/text_area';
 import PlayArea from './play_area/play_area';
 import StatsArea from './stats_area/stats_area';
@@ -14,132 +15,48 @@ export default class MainRender {
     this.ctx = ctx;
 
     this.canvasEl.width = 790;  // this is the max width the game occupies
-    this.canvasEl.height = 500; // borders and stuff exist inside of this area
+    this.canvasEl.height = 530;
 
-    this.playarea = new PlayArea(this.canvasEl, this.ctx);
-    this.textarea = new TextArea(this.canvasEl, this.ctx);
-    this.statsarea = new StatsArea(this.canvasEl, this.ctx);
-    this.character = new Character(this.canvasEl, this.ctx);
+    let name = "Josh";
 
-    window.addEventListener("keydown", this.character.move);
+    this.background = new Background(name, canvasEl, ctx);
+    this.playarea = new PlayArea(canvasEl, ctx);
+    this.textarea = new TextArea(canvasEl, ctx);
+    this.statsarea = new StatsArea(canvasEl, ctx);
+    this.character = new Character(canvasEl, ctx);
 
     this.draw = this.draw.bind(this);
+    this.inputSelector = this.inputSelector.bind(this);
+
+    // inputSelector needs to be bound first.
+    window.addEventListener("keydown", this.inputSelector);
   }
 
-  drawBackground () {
-    const ctx = this.ctx;
-  // background render area
-    ctx.beginPath();
-    ctx.fillStyle = "#242424";
-    ctx.fillRect(0, 0, 790, 500);
-
-    this.playAreaContainer();
-    this.textAndStatsContainer();
+  inputSelector (e) {
+    switch (e.keyCode) {
+      case 37: case 38: case 39: case 40:
+        this.character.move(e.keyCode);
+        break;
+      case 65:
+        window.alert("action!");
+        break;
+      case 69:
+        window.alert("examine!");
+        break;
+      // default:
+      //   window.alert(`${e.key} is not bound`);
+    }
   }
 
-  directions () {
-    // brace yourself.
-    const ctx = this.ctx;
-
-    let vPos = 245;
-    let vPos2 = 245; // since it gets called twice
-    const vAdj = 15;
-
-    const cardinals = {
-      // keys are rendered relative to x,y vals.
-      // N => "N" @ 555, 40, EAST => "E" @ ... "A" @ .... "S" ...
-      N: [555, 40],
-      EAST: {
-        E: [768, vPos], // micro adjustments
-        A: [767.5, vPos += vAdj],
-        S: [769, vPos += vAdj],
-        T: [768, vPos += vAdj],
-      },
-      SOUTH: [540, 482.5],
-      WEST: {
-        W: [331, vPos2],
-        E: [333, vPos2 += vAdj],
-        S: [333, vPos2 += vAdj],
-        T: [332, vPos2 += vAdj]
-      }
-    };
-
-    for (let key in cardinals) {
-      ctx.beginPath();
-      ctx.fillStyle = Colors.textGray;
-      ctx.font = "12px serif";
-
-      if (cardinals[key] instanceof Array) { // if first level is an array
-        if (key === "N") { ctx.font = "20px serif"; }
-        ctx.fillText(key, cardinals[key][0], cardinals[key][1]);
-      } else { // else first level contains another object (E / W)
-        for (let subkey in cardinals[key]) {
-          ctx.fillText(
-            subkey,
-            cardinals[key][subkey][0],
-            cardinals[key][subkey][1]
-          );
-  } } } }
-
-  playAreaContainer () {
-    const ctx = this.ctx;
-    // playarea box
-
-    ctx.beginPath();
-      ctx.fillStyle = Colors.backgroundGray;
-    ctx.fillRect(325, 35, 460, 460);
-    // x, y, w, h
-
-    ctx.beginPath(); // border
-      ctx.strokeStyle=Colors.borderGray;
-      ctx.lineWidth="2";
-    ctx.strokeRect(328,38,454,454);
-
-    ctx.beginPath(); // filled circle around 'N'
-      ctx.fillStyle = Colors.backgroundGray;
-      ctx.arc(561, 40, 30, 0, Math.PI*2);
-      // x, y, radius, startAngle, endAngle, anticlockwiseBool
-    ctx.fill();
-
-    ctx.beginPath(); // border within circle to match
-      ctx.fillStyle = Colors.borderGray;
-      ctx.arc(561, 40, 28, Math.PI,0); // half-circle - passable.
-    ctx.stroke();
-
-    this.directions(); // render lettering ontop of everything above
-  }
-
-  textAndStatsContainer () {
-    const ctx = this.ctx;
-
-    ctx.beginPath();
-      ctx.fillStyle = Colors.backgroundGray; // hey bebebe
-      ctx.fillRect(5, 5, 315, 490);
-
-    ctx.beginPath(); // border
-      ctx.strokeStyle = Colors.borderGray;
-      ctx.lineWidth = "2";
-    ctx.strokeRect(8,8,309,484);
-
-    ctx.beginPath(); // border line between text and stats
-      ctx.moveTo(9,262); // (-1, +2) adjustment for line overlap / thickness
-      ctx.strokeStyle = Colors.borderGray;
-      ctx.lineWidth = "2";
-      ctx.lineTo(316,262);
-    ctx.stroke();
-  }
 
 
   draw () {
     const ctx = this.ctx;
-    // console.log(Date.now());
-    this.ctx.clearRect(0, 0, this.canvasEl.width, this.canvasEl.height);
 
-    this.drawBackground();
+    ctx.clearRect(0, 0, 790, 530);
 
     // modules
-
-
+    this.background.draw();
     this.textarea.draw();
 
     this.textarea.displayText("Magic Mouth", "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi convallis gravida commodo. Vestibulum vel velit eget est pretium eleifend. Nulla ex ex, semper sit amet commodo at, tincidunt nec erat.");

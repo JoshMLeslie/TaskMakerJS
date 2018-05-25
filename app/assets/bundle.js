@@ -92,8 +92,10 @@ document.addEventListener("DOMContentLoaded", function () {
   var ctx = canvasEl.getContext("2d");
 
   var mainrender = new _main_render2.default(canvasEl, ctx);
-  // mainrender.draw();
-  setInterval(mainrender.draw, 10);
+
+  console.log("I'm not refreshing because setInterval is commented out");
+  mainrender.draw();
+  // setInterval( mainrender.draw, 10 );
 });
 
 /***/ }),
@@ -124,6 +126,259 @@ var Strength = exports.Strength = "#996934";
 var Agility = exports.Agility = "#342B9A";
 var Intellect = exports.Intellect = "#9A95FF";
 var Stamina = exports.Stamina = "#3B9D34";
+
+/***/ }),
+
+/***/ "./app/components/background/background.js":
+/*!*************************************************!*\
+  !*** ./app/components/background/background.js ***!
+  \*************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _font_colors = __webpack_require__(/*! ../../assets/font_colors */ "./app/assets/font_colors.js");
+
+var Colors = _interopRequireWildcard(_font_colors);
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Background = function () {
+  function Background(name, canvasEl, ctx) {
+    _classCallCheck(this, Background);
+
+    this.canvasEl = canvasEl;
+    this.ctx = ctx;
+    this.name = name;
+    this.width = canvasEl.width; // this is the max width the game occupies
+    this.height = canvasEl.height; // borders and stuff exist inside of this area
+  }
+
+  _createClass(Background, [{
+    key: "drawTopBar",
+    value: function drawTopBar() {
+      var ctx = this.ctx;
+      // for-now-fake top bar
+
+      ctx.beginPath(); // bar background
+      ctx.fillStyle = "#F8F8F5";
+      ctx.fillRect(2, 2, 786, 30);
+
+      ctx.beginPath(); // bottom border bar
+      ctx.moveTo(2, 32);
+      ctx.strokeStyle = "#C0C0C0";
+      ctx.lineWidth = "2";
+      ctx.lineTo(788, 32);
+      ctx.stroke();
+
+      for (var i = 6; i < 28; i += 4) {
+        // horizontal striations
+        ctx.beginPath();
+        ctx.moveTo(4, i);
+        ctx.strokeStyle = "#C0C0C0";
+        ctx.lineWidth = "2";
+        ctx.lineTo(786, i);
+        ctx.stroke();
+      }
+
+      this.drawName();
+      this.drawButton();
+    }
+  }, {
+    key: "drawName",
+    value: function drawName() {
+      var long = this.name.length;
+      var width = long * 8.5 + (long > 10 ? 0 : 10); // well enough.
+      var centering = (790 - width) / 2;
+
+      var ctx = this.ctx;
+      ctx.beginPath();
+      ctx.fillStyle = "#F8F8F5";
+      ctx.fillRect(centering, 4, width, 24);
+
+      ctx.beginPath(); // disp speaker
+      ctx.fillStyle = Colors.textBlack;
+      ctx.font = "20px serif";
+      ctx.fillText(this.name, centering + 5, 22.5); // +5 for padding
+    }
+  }, {
+    key: "drawButton",
+    value: function drawButton() {
+      var ctx = this.ctx;
+
+      ctx.beginPath(); // non-func click-box
+      ctx.fillStyle = "#AEAEAE";
+      ctx.fillRect(18, 8, 16, 16);
+
+      ctx.beginPath(); // inner sq. border
+      ctx.strokeStyle = "#CFCDFF";
+      ctx.lineWidth = "2";
+      ctx.strokeRect(18, 8, 18, 18);
+
+      ctx.beginPath(); // outer sq. border
+      ctx.strokeStyle = "#F8F8F5";
+      ctx.lineWidth = "2";
+      ctx.strokeRect(14, 4, 24, 24);
+
+      ctx.beginPath(); // upper shadow border
+      ctx.moveTo(15, 6);
+      ctx.strokeStyle = "#343169";
+      ctx.lineWidth = "2";
+      ctx.lineTo(37, 6);
+      ctx.stroke();
+
+      ctx.beginPath(); // left shadow border
+      ctx.moveTo(16, 6);
+      ctx.strokeStyle = "#343169";
+      ctx.lineWidth = "2";
+      ctx.lineTo(16, 27);
+      ctx.stroke();
+
+      ctx.beginPath(); // lower shadow border
+      ctx.moveTo(19, 24);
+      ctx.strokeStyle = "#343169";
+      ctx.lineWidth = "2";
+      ctx.lineTo(35, 24);
+      ctx.stroke();
+
+      ctx.beginPath(); // right shadow border
+      ctx.moveTo(34, 9);
+      ctx.strokeStyle = "#343169";
+      ctx.lineWidth = "2";
+      ctx.lineTo(34, 25);
+      ctx.stroke();
+    }
+  }, {
+    key: "drawCardinals",
+    value: function drawCardinals() {
+      // brace yourself.
+      var ctx = this.ctx;
+
+      var vPos = 275;
+      var vPos2 = 275; // since it gets called twice
+      var vAdj = 15;
+
+      var cardinals = {
+        // keys are rendered relative to x,y vals.
+        // N => "N" @ 555, 40, EAST => "E" @ ... "A" @ .... "S" ...
+        N: [555, 70],
+        EAST: {
+          E: [768, vPos], // micro adjustments
+          A: [767.5, vPos += vAdj],
+          S: [769, vPos += vAdj],
+          T: [768, vPos += vAdj]
+        },
+        SOUTH: [540, 512.5],
+        WEST: {
+          W: [331, vPos2],
+          E: [333, vPos2 += vAdj],
+          S: [333, vPos2 += vAdj],
+          T: [332, vPos2 += vAdj]
+        }
+      };
+
+      for (var key in cardinals) {
+        ctx.beginPath();
+        ctx.fillStyle = Colors.textGray;
+        ctx.font = "12px serif";
+
+        if (cardinals[key] instanceof Array) {
+          // if first level is an array
+          if (key === "N") {
+            ctx.font = "20px serif";
+          }
+          ctx.fillText(key, cardinals[key][0], cardinals[key][1]);
+        } else {
+          // else first level contains another object (E / W)
+          for (var subkey in cardinals[key]) {
+            ctx.fillText(subkey, cardinals[key][subkey][0], cardinals[key][subkey][1]);
+          }
+        }
+      }
+    } // cardinals() end
+
+
+  }, {
+    key: "drawPlayAreaContainer",
+    value: function drawPlayAreaContainer() {
+      var ctx = this.ctx;
+      // playarea box
+
+      ctx.beginPath();
+      ctx.fillStyle = Colors.backgroundGray;
+      ctx.fillRect(325, 65, 460, 460);
+      // x, y, w, h
+
+      ctx.beginPath(); // border
+      ctx.strokeStyle = Colors.borderGray;
+      ctx.lineWidth = "2";
+      ctx.strokeRect(328, 68, 454, 454);
+
+      ctx.beginPath(); // filled circle around 'N'
+      ctx.fillStyle = Colors.backgroundGray;
+      ctx.arc(561, 70, 30, 0, Math.PI * 2);
+      // x, y, radius, startAngle, endAngle, anticlockwiseBool
+      ctx.fill();
+
+      ctx.beginPath(); // border within circle to match
+      ctx.fillStyle = Colors.borderGray;
+      ctx.arc(561, 70, 28, Math.PI, 0); // half-circle - passable.
+      ctx.stroke();
+
+      this.drawCardinals(); // render lettering ontop of everything above
+    }
+  }, {
+    key: "drawTextAndStatsContainer",
+    value: function drawTextAndStatsContainer() {
+      var ctx = this.ctx;
+
+      ctx.beginPath();
+      ctx.fillStyle = Colors.backgroundGray; // hey bebebe
+      ctx.fillRect(5, 35, 315, 490);
+
+      ctx.beginPath(); // border
+      ctx.strokeStyle = Colors.borderGray;
+      ctx.lineWidth = "2";
+      ctx.strokeRect(8, 38, 309, 484);
+
+      ctx.beginPath(); // border line between text and stats
+      ctx.moveTo(9, 292); // (-1, +2) adjustment for line overlap / thickness
+      ctx.strokeStyle = Colors.borderGray;
+      ctx.lineWidth = "2";
+      ctx.lineTo(316, 292);
+      ctx.stroke();
+    }
+  }, {
+    key: "draw",
+    value: function draw() {
+      var ctx = this.ctx;
+      // background render area
+
+      ctx.beginPath();
+      ctx.fillStyle = "#242424"; // background black
+      ctx.fillRect(0, 0, 790, 530);
+
+      this.drawTopBar();
+
+      this.drawPlayAreaContainer();
+      this.drawTextAndStatsContainer();
+    }
+  }]);
+
+  return Background;
+}();
+
+exports.default = Background;
 
 /***/ }),
 
@@ -166,10 +421,10 @@ var Character = function () {
   }
 
   _createClass(Character, [{
-    key: "keyToVal",
-    value: function keyToVal(e) {
+    key: "keyToMove",
+    value: function keyToMove(key) {
       // 37, left // 38, up // 39, right // 40, down
-      switch (e) {
+      switch (key) {
         case 37:
           return [-10, 0];
         case 38:
@@ -184,9 +439,9 @@ var Character = function () {
     }
   }, {
     key: "move",
-    value: function move(e) {
+    value: function move(key) {
 
-      var temp = this.keyToVal(e.keyCode);
+      var temp = this.keyToMove(key);
       var dx = temp[0];
       var dy = temp[1];
       // debugger
@@ -229,6 +484,10 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+var _background = __webpack_require__(/*! ./background/background */ "./app/components/background/background.js");
+
+var _background2 = _interopRequireDefault(_background);
+
 var _text_area = __webpack_require__(/*! ./text_area/text_area */ "./app/components/text_area/text_area.js");
 
 var _text_area2 = _interopRequireDefault(_text_area);
@@ -266,140 +525,49 @@ var MainRender = function () {
     this.ctx = ctx;
 
     this.canvasEl.width = 790; // this is the max width the game occupies
-    this.canvasEl.height = 500; // borders and stuff exist inside of this area
+    this.canvasEl.height = 530;
 
-    this.playarea = new _play_area2.default(this.canvasEl, this.ctx);
-    this.textarea = new _text_area2.default(this.canvasEl, this.ctx);
-    this.statsarea = new _stats_area2.default(this.canvasEl, this.ctx);
-    this.character = new _character2.default(this.canvasEl, this.ctx);
+    var name = "Josh";
 
-    window.addEventListener("keydown", this.character.move);
+    this.background = new _background2.default(name, canvasEl, ctx);
+    this.playarea = new _play_area2.default(canvasEl, ctx);
+    this.textarea = new _text_area2.default(canvasEl, ctx);
+    this.statsarea = new _stats_area2.default(canvasEl, ctx);
+    this.character = new _character2.default(canvasEl, ctx);
 
     this.draw = this.draw.bind(this);
+    this.inputSelector = this.inputSelector.bind(this);
+
+    // inputSelector needs to be bound first.
+    window.addEventListener("keydown", this.inputSelector);
   }
 
   _createClass(MainRender, [{
-    key: 'drawBackground',
-    value: function drawBackground() {
-      var ctx = this.ctx;
-      // background render area
-      ctx.beginPath();
-      ctx.fillStyle = "#242424";
-      ctx.fillRect(0, 0, 790, 500);
-
-      this.playAreaContainer();
-      this.textAndStatsContainer();
-    }
-  }, {
-    key: 'directions',
-    value: function directions() {
-      // brace yourself.
-      var ctx = this.ctx;
-
-      var vPos = 245;
-      var vPos2 = 245; // since it gets called twice
-      var vAdj = 15;
-
-      var cardinals = {
-        // keys are rendered relative to x,y vals.
-        // N => "N" @ 555, 40, EAST => "E" @ ... "A" @ .... "S" ...
-        N: [555, 40],
-        EAST: {
-          E: [768, vPos], // micro adjustments
-          A: [767.5, vPos += vAdj],
-          S: [769, vPos += vAdj],
-          T: [768, vPos += vAdj]
-        },
-        SOUTH: [540, 482.5],
-        WEST: {
-          W: [331, vPos2],
-          E: [333, vPos2 += vAdj],
-          S: [333, vPos2 += vAdj],
-          T: [332, vPos2 += vAdj]
-        }
-      };
-
-      for (var key in cardinals) {
-        ctx.beginPath();
-        ctx.fillStyle = Colors.textGray;
-        ctx.font = "12px serif";
-
-        if (cardinals[key] instanceof Array) {
-          // if first level is an array
-          if (key === "N") {
-            ctx.font = "20px serif";
-          }
-          ctx.fillText(key, cardinals[key][0], cardinals[key][1]);
-        } else {
-          // else first level contains another object (E / W)
-          for (var subkey in cardinals[key]) {
-            ctx.fillText(subkey, cardinals[key][subkey][0], cardinals[key][subkey][1]);
-          }
-        }
+    key: 'inputSelector',
+    value: function inputSelector(e) {
+      switch (e.keyCode) {
+        case 37:case 38:case 39:case 40:
+          this.character.move(e.keyCode);
+          break;
+        case 65:
+          window.alert("action!");
+          break;
+        case 69:
+          window.alert("examine!");
+          break;
+        // default:
+        //   window.alert(`${e.key} is not bound`);
       }
-    }
-  }, {
-    key: 'playAreaContainer',
-    value: function playAreaContainer() {
-      var ctx = this.ctx;
-      // playarea box
-
-      ctx.beginPath();
-      ctx.fillStyle = Colors.backgroundGray;
-      ctx.fillRect(325, 35, 460, 460);
-      // x, y, w, h
-
-      ctx.beginPath(); // border
-      ctx.strokeStyle = Colors.borderGray;
-      ctx.lineWidth = "2";
-      ctx.strokeRect(328, 38, 454, 454);
-
-      ctx.beginPath(); // filled circle around 'N'
-      ctx.fillStyle = Colors.backgroundGray;
-      ctx.arc(561, 40, 30, 0, Math.PI * 2);
-      // x, y, radius, startAngle, endAngle, anticlockwiseBool
-      ctx.fill();
-
-      ctx.beginPath(); // border within circle to match
-      ctx.fillStyle = Colors.borderGray;
-      ctx.arc(561, 40, 28, Math.PI, 0); // half-circle - passable.
-      ctx.stroke();
-
-      this.directions(); // render lettering ontop of everything above
-    }
-  }, {
-    key: 'textAndStatsContainer',
-    value: function textAndStatsContainer() {
-      var ctx = this.ctx;
-
-      ctx.beginPath();
-      ctx.fillStyle = Colors.backgroundGray; // hey bebebe
-      ctx.fillRect(5, 5, 315, 490);
-
-      ctx.beginPath(); // border
-      ctx.strokeStyle = Colors.borderGray;
-      ctx.lineWidth = "2";
-      ctx.strokeRect(8, 8, 309, 484);
-
-      ctx.beginPath(); // border line between text and stats
-      ctx.moveTo(9, 262); // (-1, +2) adjustment for line overlap / thickness
-      ctx.strokeStyle = Colors.borderGray;
-      ctx.lineWidth = "2";
-      ctx.lineTo(316, 262);
-      ctx.stroke();
     }
   }, {
     key: 'draw',
     value: function draw() {
       var ctx = this.ctx;
-      // console.log(Date.now());
-      this.ctx.clearRect(0, 0, this.canvasEl.width, this.canvasEl.height);
 
-      this.drawBackground();
+      ctx.clearRect(0, 0, 790, 530);
 
       // modules
-
-
+      this.background.draw();
       this.textarea.draw();
 
       this.textarea.displayText("Magic Mouth", "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi convallis gravida commodo. Vestibulum vel velit eget est pretium eleifend. Nulla ex ex, semper sit amet commodo at, tincidunt nec erat.");
@@ -447,8 +615,8 @@ var PlayArea = function () {
     this.height = 415;
 
     var centering = (canvasEl.height - this.height) / 2;
-    this.x = canvasEl.width - this.width - centering + 15;
-    this.y = canvasEl.height - this.height - centering + 10;
+    this.x = canvasEl.width - this.width - centering + 30;
+    this.y = canvasEl.height - this.height - centering + 40;
   }
 
   _createClass(PlayArea, [{
@@ -507,7 +675,19 @@ var StatsArea = function () {
     this.height = 227;
 
     this.x = 10;
-    this.y = 263;
+    this.y = 293;
+
+    this.statVals = {
+      // starting vals ( 20, 20 )
+      // starting vals ( 20, 30 ) to display hatch
+      Food: [20, 30],
+      Health: [20, 30],
+      Spirit: [20, 30],
+      Strength: [20, 30],
+      Agility: [20, 30],
+      Intellect: [20, 30],
+      Stamina: [20, 30]
+    };
   }
 
   _createClass(StatsArea, [{
@@ -517,10 +697,12 @@ var StatsArea = function () {
 
       var ctx = this.ctx;
 
+      var vPos = 315;
+
       ctx.beginPath(); // disp "Score"
       ctx.fillStyle = Colors.textBlack;
       ctx.font = "20px serif";
-      ctx.fillText("Score", 20, 285);
+      ctx.fillText("Score", 20, vPos);
 
       var horizontalAdj = 295;
       if (score >= 10 && score < 99) {
@@ -536,7 +718,14 @@ var StatsArea = function () {
       ctx.beginPath();
       ctx.fillStyle = Colors.textBlack;
       ctx.font = "18px serif";
-      ctx.fillText(score, horizontalAdj, 285);
+      ctx.fillText(score, horizontalAdj, vPos);
+
+      ctx.beginPath(); // border line between score and stats
+      ctx.moveTo(7, vPos + 10);
+      ctx.strokeStyle = Colors.borderGray;
+      ctx.lineWidth = "2";
+      ctx.lineTo(317, vPos + 10);
+      ctx.stroke();
     }
   }, {
     key: 'hatchRect',
@@ -568,7 +757,7 @@ var StatsArea = function () {
       var ctx = this.ctx;
       var width = 225;
       var height = 20;
-      var x = pos[0] + 65;
+      var x = pos[0] + 65; // relative to parent 'vPos'
       var y = pos[1] - 15;
 
       ctx.beginPath(); // background
@@ -589,14 +778,14 @@ var StatsArea = function () {
     }
   }, {
     key: 'displayStats',
-    value: function displayStats(statVals) {
+    value: function displayStats() {
       // statVals is a hash of matching k-v pairs
       // statVals = {
       //   Food = [current, max],
       //   ...
       // }
       var ctx = this.ctx;
-      var vPos = 320;
+      var vPos = 350;
       var adj = 27;
       var h = 20;
 
@@ -616,7 +805,7 @@ var StatsArea = function () {
         ctx.font = "16px serif";
         ctx.fillText(key, stats[key][0], stats[key][1]);
 
-        this.statBar(key, stats[key], statVals[key]); // actual bar
+        this.statBar(key, stats[key], this.statVals[key]); // actual bar
       }
     }
   }, {
@@ -626,26 +815,8 @@ var StatsArea = function () {
       ctx.fillStyle = "#DFDFDF";
       ctx.fillRect(this.x, this.y, this.width, this.height);
 
-      ctx.beginPath(); // border line between score and stats
-      ctx.moveTo(7, 294);
-      ctx.strokeStyle = Colors.borderGray;
-      ctx.lineWidth = "2";
-      ctx.lineTo(317, 294);
-      ctx.stroke();
-
-      var statVals = {
-        // here for testing, but also seem to be good starting vals.( 20, 20 )
-        Food: [20, 30],
-        Health: [20, 30],
-        Spirit: [20, 30],
-        Strength: [20, 30],
-        Agility: [20, 30],
-        Intellect: [20, 30],
-        Stamina: [20, 30]
-      };
-
       this.displayScore(314);
-      this.displayStats(statVals);
+      this.displayStats();
     }
   }]);
 
@@ -691,7 +862,7 @@ var TextArea = function () {
     this.currentText = [];
 
     this.x = 10;
-    this.y = 10;
+    this.y = 40;
   }
 
   _createClass(TextArea, [{
@@ -716,13 +887,16 @@ var TextArea = function () {
 
       var ctx = this.ctx;
       // this.currentText.push([speaker,text]);
+      var start = 60;
+      // needs to be adjusted based on collective displayed text.
+      // or just render one chunk of text at a time, sounds easier for now than keeping track of it all.
 
       ctx.beginPath(); // disp speaker
       ctx.fillStyle = Colors.textBlack;
       ctx.font = "16px serif";
-      ctx.fillText(speaker, 15, 30);
+      ctx.fillText(speaker, 15, start);
 
-      var start = 40;
+      start += 10; // bump down.
       parsedText.forEach(function (text) {
         ctx.beginPath(); // disp speaker
         ctx.fillStyle = Colors.textBlack;
