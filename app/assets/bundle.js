@@ -160,8 +160,8 @@ var Background = function () {
     this.canvasEl = canvasEl;
     this.ctx = ctx;
     this.name = name;
-    this.width = canvasEl.width; // this is the max width the game occupies
-    this.height = canvasEl.height; // borders and stuff exist inside of this area
+    this.width = canvasEl.width; // max width the game occupies
+    this.height = canvasEl.height; // borders etc should exist within this area
 
     this.buttonClick = this.buttonClick.bind(this);
     this.canvasEl.addEventListener('click', this.buttonClick, false);
@@ -170,7 +170,6 @@ var Background = function () {
   _createClass(Background, [{
     key: 'getMousePos',
     value: function getMousePos(e) {
-
       var canvasArea = this.canvasEl.getBoundingClientRect();
       return {
         x: e.clientX - canvasArea.left,
@@ -195,7 +194,6 @@ var Background = function () {
         width: 16,
         height: 16
       };
-
       var mousePos = this.getMousePos(e);
 
       if (this.isInside(mousePos, buttonArea)) {
@@ -213,10 +211,10 @@ var Background = function () {
       ctx.fillRect(2, 2, 786, 30);
 
       ctx.beginPath(); // bottom border bar
-      ctx.moveTo(2, 32);
+      ctx.moveTo(2, 31);
       ctx.strokeStyle = "#C0C0C0";
       ctx.lineWidth = "2";
-      ctx.lineTo(788, 32);
+      ctx.lineTo(788, 31);
       ctx.stroke();
 
       for (var i = 6; i < 28; i += 4) {
@@ -449,28 +447,29 @@ var Character = function () {
     _classCallCheck(this, Character);
 
     this.ctx = ctx;
-    this.width = 10;
-    this.height = 10;
+    this.size = 15;
+    this.width = this.size;
+    this.height = this.size;
 
-    this.x = 450;
-    this.y = 250;
+    this.x = 435;
+    this.y = 245;
 
     this.move = this.move.bind(this);
   }
 
   _createClass(Character, [{
-    key: "keyToMove",
-    value: function keyToMove(key) {
+    key: "mapKeyToMove",
+    value: function mapKeyToMove(key) {
       // 37, left // 38, up // 39, right // 40, down
       switch (key) {
         case 37:
-          return [-10, 0];
+          return [-this.size, 0];
         case 38:
-          return [0, -10];
+          return [0, -this.size];
         case 39:
-          return [10, 0];
+          return [this.size, 0];
         case 40:
-          return [0, 10];
+          return [0, this.size];
         default:
           return [0, 0];
       }
@@ -478,15 +477,17 @@ var Character = function () {
   }, {
     key: "move",
     value: function move(key) {
+      var movement = this.mapKeyToMove(key);
+      var dx = movement[0];
+      var dy = movement[1];
+      var checkX = this.x + dx;
+      var checkY = this.y + dy;
 
-      var temp = this.keyToMove(key);
-      var dx = temp[0];
-      var dy = temp[1];
-      // debugger
-      this.x += dx;
-      this.y += dy;
-      // debugger
-      this.draw();
+      if (checkX > 340 && checkX < 755 && checkY > 75 && checkY < 490) {
+        this.x += dx;
+        this.y += dy;
+        this.draw();
+      }
     }
   }, {
     key: "draw",
@@ -649,12 +650,12 @@ var PlayArea = function () {
     _classCallCheck(this, PlayArea);
 
     this.ctx = ctx;
-    this.width = 415;
-    this.height = 415;
+    this.width = 420;
+    this.height = 420;
 
     var centering = (canvasEl.height - this.height) / 2;
     this.x = canvasEl.width - this.width - centering + 30;
-    this.y = canvasEl.height - this.height - centering + 40;
+    this.y = canvasEl.height - this.height - centering + 25;
   }
 
   _createClass(PlayArea, [{

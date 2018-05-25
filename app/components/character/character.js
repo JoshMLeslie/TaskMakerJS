@@ -3,41 +3,44 @@ import * as Colors from '../../assets/font_colors';
 export default class Character {
   constructor (canvasEl, ctx) {
     this.ctx = ctx;
-    this.width = 10;
-    this.height = 10;
+    this.size = 15;
+    this.width = this.size;
+    this.height = this.size;
 
-    this.x = 450;
-    this.y = 250;
+    this.x = 435;
+    this.y = 245;
 
     this.move = this.move.bind(this);
   }
 
-  keyToMove(key) {
+  mapKeyToMove(key) {
     // 37, left // 38, up // 39, right // 40, down
     switch (key){
       case 37:
-        return [-10, 0];
+        return [-this.size, 0];
       case 38:
-        return [0, -10];
+        return [0, -this.size];
       case 39:
-        return [10, 0];
+        return [this.size, 0];
       case 40:
-        return [0, 10];
+        return [0, this.size];
       default:
         return [0,0];
     }
   }
 
   move(key) {
+    const movement = this.mapKeyToMove(key);
+    const dx = movement[0];
+    const dy = movement[1];
+    const checkX = this.x + dx;
+    const checkY = this.y + dy;
 
-    const temp = this.keyToMove(key);
-    const dx = temp[0];
-    const dy = temp[1];
-    // debugger
-    this.x += dx;
-    this.y += dy;
-    // debugger
-    this.draw();
+    if ( (checkX > 340 && checkX < 755 ) && (checkY > 75 && checkY < 490) ) {
+      this.x += dx;
+      this.y += dy;
+      this.draw();
+    }
   }
 
   draw () {

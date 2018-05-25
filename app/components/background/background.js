@@ -5,15 +5,14 @@ export default class Background {
     this.canvasEl = canvasEl;
     this.ctx = ctx;
     this.name = name;
-    this.width = canvasEl.width;  // this is the max width the game occupies
-    this.height = canvasEl.height; // borders and stuff exist inside of this area
+    this.width = canvasEl.width;  // max width the game occupies
+    this.height = canvasEl.height; // borders etc should exist within this area
 
     this.buttonClick = this.buttonClick.bind(this);
     this.canvasEl.addEventListener('click', this.buttonClick, false);
   }
 
   getMousePos(e) {
-
     let canvasArea = this.canvasEl.getBoundingClientRect();
     return {
       x: e.clientX - canvasArea.left,
@@ -36,9 +35,8 @@ export default class Background {
       width: 16,
       height: 16
     };
-
     const mousePos = this.getMousePos(e);
-    
+
     if (this.isInside(mousePos, buttonArea)) {
       window.alert('Button clicked!');
     }
@@ -53,10 +51,10 @@ export default class Background {
     ctx.fillRect(2, 2, 786, 30);
 
     ctx.beginPath(); // bottom border bar
-      ctx.moveTo(2,32);
+      ctx.moveTo(2,31);
       ctx.strokeStyle = "#C0C0C0";
       ctx.lineWidth = "2";
-      ctx.lineTo(788,32);
+      ctx.lineTo(788,31);
     ctx.stroke();
 
     for (let i = 6; i < 28; i += 4) {
