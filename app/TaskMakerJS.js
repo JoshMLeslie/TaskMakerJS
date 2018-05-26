@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", function(){
 
 
 
-  runOnce(mainrender, true, 10);
+  runOnce(mainrender, false, 10);
   // render, once?, interval
 });
 

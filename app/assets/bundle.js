@@ -95,7 +95,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   var mainrender = new _main_render2.default(canvasEl, ctx);
 
-  runOnce(mainrender, true, 10);
+  runOnce(mainrender, false, 10);
   // render, once?, interval
 });
 
@@ -422,6 +422,12 @@ var _font_colors = __webpack_require__(/*! ../../util/font_colors */ "./app/util
 
 var Colors = _interopRequireWildcard(_font_colors);
 
+var _sprite = __webpack_require__(/*! ../../util/sprite */ "./app/util/sprite.js");
+
+var _sprite2 = _interopRequireDefault(_sprite);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -434,32 +440,87 @@ var Character = function () {
     this.size = 45;
     this.width = this.size;
     this.height = this.size;
+    this.image_url = "app/assets/sprites/char/char_up_down.png";
+    // init facing down
+    this.direction = "down";
 
     this.x = 533; // center x
     this.y = 268; // center y
 
     this.move = this.move.bind(this);
+    this.isFacing = this.isFacing.bind(this);
+    this.imageDirectionData = this.imageDirectionData.bind(this);
   }
 
   _createClass(Character, [{
-    key: "mapKeyToMove",
+    key: 'mapKeyToMove',
     value: function mapKeyToMove(key) {
       // 37, left // 38, up // 39, right // 40, down
       switch (key) {
         case 37:
-          return [-this.size, 0];
+          if (this.isFacing("left")) {
+            return [-this.size, 0]; // then move left
+          } else {
+            return [0, 0];
+          }
+          break; // linters
         case 38:
-          return [0, -this.size];
+          if (this.isFacing("up")) {
+            return [0, -this.size];
+          } else {
+            return [0, 0];
+          }
+          break;
         case 39:
-          return [this.size, 0];
+          if (this.isFacing("right")) {
+            return [this.size, 0];
+          } else {
+            return [0, 0];
+          }
+          break;
         case 40:
-          return [0, this.size];
+          if (this.isFacing("down")) {
+            return [0, this.size];
+          } else {
+            return [0, 0];
+          }
+          break;
         default:
           return [0, 0];
       }
     }
   }, {
-    key: "move",
+    key: 'isFacing',
+    value: function isFacing(direction) {
+      if (this.direction !== direction) {
+        this.direction = direction;
+        return false;
+      } // else this.dir === dir
+      return true;
+    }
+  }, {
+    key: 'imageDirectionData',
+    value: function imageDirectionData() {
+      switch (this.direction) {
+        case "up":
+          this.image_url = "app/assets/sprites/char/char_up_down.png";
+          return [45, 0];
+        case "down":
+          this.image_url = "app/assets/sprites/char/char_up_down.png";
+          return [0, 0];
+        case "left":
+          this.image_url = "app/assets/sprites/char/char_left_right.png";
+          return [0, 0];
+        case "right":
+          this.image_url = "app/assets/sprites/char/char_left_right.png";
+          return [45, 0];
+        default:
+          this.image_url = "app/assets/sprites/char/char_up_down.png";
+          return [0, 0];
+      }
+    }
+  }, {
+    key: 'move',
     value: function move(key) {
       var movement = this.mapKeyToMove(key);
       var dx = movement[0];
@@ -474,13 +535,17 @@ var Character = function () {
       }
     }
   }, {
-    key: "draw",
+    key: 'draw',
     value: function draw() {
       var ctx = this.ctx;
+      var sprite_data = this.imageDirectionData();
+      // updates image url, exports relevant image positioning since L-R and Up-Dw are combinded png's
 
-      ctx.beginPath();
-      ctx.fillStyle = "#9cd0e5"; // pale blue dot
-      ctx.fillRect(this.x, this.y, this.width, this.height);
+      new _sprite2.default(this.ctx, this.image_url, this.x, this.y, sprite_data[0], sprite_data[1]);
+
+      // ctx.beginPath();
+      //   ctx.fillStyle="#9cd0e5"; // pale blue dot
+      // ctx.fillRect(this.x, this.y, this.width, this.height);
     }
   }]);
 
@@ -504,25 +569,24 @@ exports.default = Character;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.entryRoom = undefined;
-
-var _sprite = __webpack_require__(/*! ../../util/sprite */ "./app/util/sprite.js");
-
-var _sprite2 = _interopRequireDefault(_sprite);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+// from the top left, right, then down.
 
 var topLeftX = 353;
 var topLeftY = 88;
+var stone_wall_url = "app/assets/sprites/walls/wall.png";
 
 var entryRoom = exports.entryRoom = {
   walls: {
     one: {
-      image_url: "app/assets/sprites/walls/stone_wall.png",
+      image_url: stone_wall_url,
       x: topLeftX,
       y: topLeftY
     },
-    two: {}
+    two: {
+      image_url: stone_wall_url,
+      x: topLeftX += 45,
+      y: topLeftY
+    }
   },
 
   floors: {}
@@ -730,7 +794,12 @@ var PlayArea = function () {
           switch (type_key) {// key == wall, floor, etc.
             case "walls":
 
-              new _sprite2.default(this.ctx, sprite_data.image_url, sprite_data.x, sprite_data.y);
+            // new Sprite (
+            //   this.ctx,
+            //   sprite_data.image_url,
+            //   sprite_data.x,
+            //   sprite_data.y
+            // );
           }
         }
       }
@@ -1262,10 +1331,13 @@ var Sprite = function () {
   // https://github.com/jlongster/canvas-game-bootstrap/blob/a878158f39a91b19725f726675c752683c9e1c08/js/sprite.js
 
   function Sprite(ctx, image_url, x, y) {
+    var srcX = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 0;
+    var srcY = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : 0;
+
     var _this = this;
 
-    var width = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 45;
-    var height = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : 45;
+    var width = arguments.length > 6 && arguments[6] !== undefined ? arguments[6] : 45;
+    var height = arguments.length > 7 && arguments[7] !== undefined ? arguments[7] : 45;
 
     _classCallCheck(this, Sprite);
 
@@ -1274,12 +1346,14 @@ var Sprite = function () {
     this.image.src = image_url;
     this.x = x;
     this.y = y;
+    this.srcX = srcX;
+    this.srcY = srcY;
     this.width = width;
     this.height = height;
 
     this.image.onload = function () {
       _this.draw();
-      // for illustration, but will need to look into making 'resources' actually work so I can call when I need to instead of instantly? Or load the whole level at once?
+      // for illustration, but will need to look into making 'resources' actually work so I can call when I need to instead of instantly? Or load the whole level at once? Sounds like a bad idea but functionally easier?
     };
 
     this.draw = this.draw.bind(this);
@@ -1295,7 +1369,7 @@ var Sprite = function () {
       dx, dy,
       dWidth, dHeight
       ) */
-      this.ctx.drawImage(this.image, 0, 0, 35, 35, this.x, this.y, this.width, this.height);
+      this.ctx.drawImage(this.image, this.srcX, this.srcY, 45, 45, this.x, this.y, this.width, this.height);
     }
   }]);
 

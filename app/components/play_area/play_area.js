@@ -34,16 +34,16 @@ export default class PlayArea {
 
       for (let object_key in room[type_key]) {
         let sprite_data = room[type_key][object_key];
-        
+
         switch(type_key) { // key == wall, floor, etc.
           case "walls":
 
-            new Sprite (
-              this.ctx,
-              sprite_data.image_url,
-              sprite_data.x,
-              sprite_data.y
-            );
+            // new Sprite (
+            //   this.ctx,
+            //   sprite_data.image_url,
+            //   sprite_data.x,
+            //   sprite_data.y
+            // );
         }
       }
     }
