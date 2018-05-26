@@ -3,10 +3,12 @@ import _ from 'underscore';
 
 
 export default class StatsArea {
-  constructor (canvasEl, ctx) {
+  constructor (canvasEl, ctx, score) {
     this.ctx = ctx;
     this.width = 305;
     this.height = 227;
+
+    this.score = score || 0;
 
     this.x = 10;
     this.y = 293;
@@ -22,6 +24,27 @@ export default class StatsArea {
       Intellect: [20, 30],
       Stamina: [20, 30],
     };
+
+    this.updateStat = this.updateStat.bind(this);
+    this.boostStat = this.boostStat.bind(this);
+    this.draw = this.draw.bind(this);
+  }
+
+  updateStat(stat, dVal) { // for affecting the pool
+    if (dVal === "max") {
+      const setVal = Object.assign(this.statVals[stat][1]);
+      this.statVals[stat][0] = setVal;
+    } else {
+      if (this.statVals[stat][0] > 0) {
+        this.statVals[stat][0] += dVal;
+      } else {
+        window.alert("You must rest! Press 'r' ");
+      }
+    }
+  }
+
+  boostStat(stat, dVal) { // for increasing the maximum
+    this.statVals[stat][1] += dVal;
   }
 
   displayScore (score=0) {
@@ -102,7 +125,7 @@ export default class StatsArea {
   }
 
   displayStats () {
-    // statVals is a hash of matching k-v pairs
+    // this.statVals is a hash of matching k-v pairs
     // statVals = {
     //   Food = [current, max],
     //   ...

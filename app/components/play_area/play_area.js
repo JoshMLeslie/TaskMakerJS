@@ -15,27 +15,35 @@ export default class PlayArea {
   }
 
   drawLevels(levels) {
-    for (let key in levels) {
-      const level = levels[key];
+    for (let level_key in levels) {
+      const level = levels[level_key];
 
-      for (let room in level) {
-        this.drawLevel(level[room]);
+      for (let room_key in level) {
+        this.drawLevel(level[room_key]);
       }
     }
   }
 
-  drawLevel(level) {
+  drawLevel(room) {
     const ctx = this.ctx;
     // dev: make objects from top left, snake right, then down, for consistency's sake.
 
     // 'level' is a (complex) POJO
-    for (let key in level) {
-      for (let object in level[key]) {
-        switch(key) { // key == wall, floor, etc.
+    for (let type_key in room) {
+      // type_key == 'wall', 'floor', etc.
+
+      for (let object_key in room[type_key]) {
+        let sprite_data = room[type_key][object_key];
+        
+        switch(type_key) { // key == wall, floor, etc.
           case "walls":
-            const obj = level[key][object];
-            ctx.fillStyle = obj.color;
-            ctx.fillRect(obj.x, obj.y, obj.height, obj.width);
+
+            new Sprite (
+              this.ctx,
+              sprite_data.image_url,
+              sprite_data.x,
+              sprite_data.y
+            );
         }
       }
     }
@@ -47,24 +55,26 @@ export default class PlayArea {
 
     // const wallSprite = new Sprite (
     //   this.ctx,
-    //   45, 45,
-    //   "app/assets/sprites/walls/stone_wall.png"
+    //   "app/assets/sprites/walls/stone_wall.png",
+    //   375,175
     // );
-    const img =  new Image ();
+    // same same
 
-    img.onload = () => {
-      debugger
-
-      this.ctx.drawImage(
-        img,
-          0, 0,
-          35, 35,
-          400, 150,
-          45, 45
-      );
-    };
-
-    img.src = "app/assets/sprites/walls/stone_wall.png";
+    // const img =  new Image ();
+    //
+    // img.onload = () => {
+    //   debugger
+    //
+    //   this.ctx.drawImage(
+    //     img,
+    //       0, 0,
+    //       35, 35,
+    //       400, 150,
+    //       45, 45
+    //   );
+    // };
+    //
+    // img.src = "app/assets/sprites/walls/stone_wall.png";
 
 
 
@@ -78,13 +88,13 @@ export default class PlayArea {
 
     ctx.fillStyle = "black";
     ctx.fillRect(this.x, this.y, this.height, this.width);
-    // this.drawLevels({
-    //   levelOne
-    // });
+    this.drawLevels({
+      levelOne
+    });
     // resources.load([
     //   "../../assets/sprites/walls/stone_wall.png"
     // ]);
     // resources.onReady(this.makeAwall);
-    this.makeAwall();
+    // this.makeAwall();
   }
 }

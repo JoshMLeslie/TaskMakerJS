@@ -504,25 +504,25 @@ exports.default = Character;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.entryRoom = undefined;
+
+var _sprite = __webpack_require__(/*! ../../util/sprite */ "./app/util/sprite.js");
+
+var _sprite2 = _interopRequireDefault(_sprite);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 var topLeftX = 353;
 var topLeftY = 88;
 
 var entryRoom = exports.entryRoom = {
   walls: {
     one: {
-      color: "red",
+      image_url: "app/assets/sprites/walls/stone_wall.png",
       x: topLeftX,
-      y: topLeftY,
-      width: 45,
-      height: 45
+      y: topLeftY
     },
-    two: {
-      color: "red",
-      x: topLeftX += 45,
-      y: topLeftY,
-      width: 45,
-      height: 45
-    }
+    two: {}
   },
 
   floors: {}
@@ -612,10 +612,16 @@ var MainRender = function () {
           this.character.move(e.keyCode);
           break;
         case 65:
-          window.alert("action!");
+          // 'a' - action, drains stamina
+          this.statsarea.updateStat("Stamina", -2);
           break;
         case 69:
+          // 'e' - examine
           window.alert("examine!");
+          break;
+        case 82:
+          // 'r' - rest // replenishes stamina
+          this.statsarea.updateStat("Stamina", "max");
           break;
         // default:
         //   window.alert(`${e.key} is not bound`);
@@ -700,28 +706,31 @@ var PlayArea = function () {
   _createClass(PlayArea, [{
     key: 'drawLevels',
     value: function drawLevels(levels) {
-      for (var key in levels) {
-        var level = levels[key];
+      for (var level_key in levels) {
+        var level = levels[level_key];
 
-        for (var room in level) {
-          this.drawLevel(level[room]);
+        for (var room_key in level) {
+          this.drawLevel(level[room_key]);
         }
       }
     }
   }, {
     key: 'drawLevel',
-    value: function drawLevel(level) {
+    value: function drawLevel(room) {
       var ctx = this.ctx;
       // dev: make objects from top left, snake right, then down, for consistency's sake.
 
       // 'level' is a (complex) POJO
-      for (var key in level) {
-        for (var object in level[key]) {
-          switch (key) {// key == wall, floor, etc.
+      for (var type_key in room) {
+        // type_key == 'wall', 'floor', etc.
+
+        for (var object_key in room[type_key]) {
+          var sprite_data = room[type_key][object_key];
+
+          switch (type_key) {// key == wall, floor, etc.
             case "walls":
-              var obj = level[key][object];
-              ctx.fillStyle = obj.color;
-              ctx.fillRect(obj.x, obj.y, obj.height, obj.width);
+
+              new _sprite2.default(this.ctx, sprite_data.image_url, sprite_data.x, sprite_data.y);
           }
         }
       }
@@ -729,22 +738,31 @@ var PlayArea = function () {
   }, {
     key: 'makeAwall',
     value: function makeAwall() {
-      var _this = this;
 
       // const wallSprite = new Sprite (
       //   this.ctx,
-      //   45, 45,
-      //   "app/assets/sprites/walls/stone_wall.png"
+      //   "app/assets/sprites/walls/stone_wall.png",
+      //   375,175
       // );
-      var img = new Image();
+      // same same
 
-      img.onload = function () {
-        debugger;
+      // const img =  new Image ();
+      //
+      // img.onload = () => {
+      //   debugger
+      //
+      //   this.ctx.drawImage(
+      //     img,
+      //       0, 0,
+      //       35, 35,
+      //       400, 150,
+      //       45, 45
+      //   );
+      // };
+      //
+      // img.src = "app/assets/sprites/walls/stone_wall.png";
 
-        _this.ctx.drawImage(img, 0, 0, 35, 35, 400, 150, 45, 45);
-      };
 
-      img.src = "app/assets/sprites/walls/stone_wall.png";
     }
   }, {
     key: 'draw',
@@ -754,14 +772,14 @@ var PlayArea = function () {
 
       ctx.fillStyle = "black";
       ctx.fillRect(this.x, this.y, this.height, this.width);
-      // this.drawLevels({
-      //   levelOne
-      // });
+      this.drawLevels({
+        levelOne: levelOne
+      });
       // resources.load([
       //   "../../assets/sprites/walls/stone_wall.png"
       // ]);
       // resources.onReady(this.makeAwall);
-      this.makeAwall();
+      // this.makeAwall();
     }
   }]);
 
@@ -803,12 +821,14 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var StatsArea = function () {
-  function StatsArea(canvasEl, ctx) {
+  function StatsArea(canvasEl, ctx, score) {
     _classCallCheck(this, StatsArea);
 
     this.ctx = ctx;
     this.width = 305;
     this.height = 227;
+
+    this.score = score || 0;
 
     this.x = 10;
     this.y = 293;
@@ -824,9 +844,34 @@ var StatsArea = function () {
       Intellect: [20, 30],
       Stamina: [20, 30]
     };
+
+    this.updateStat = this.updateStat.bind(this);
+    this.boostStat = this.boostStat.bind(this);
+    this.draw = this.draw.bind(this);
   }
 
   _createClass(StatsArea, [{
+    key: 'updateStat',
+    value: function updateStat(stat, dVal) {
+      // for affecting the pool
+      if (dVal === "max") {
+        var setVal = Object.assign(this.statVals[stat][1]);
+        this.statVals[stat][0] = setVal;
+      } else {
+        if (this.statVals[stat][0] > 0) {
+          this.statVals[stat][0] += dVal;
+        } else {
+          window.alert("You must rest! Press 'r' ");
+        }
+      }
+    }
+  }, {
+    key: 'boostStat',
+    value: function boostStat(stat, dVal) {
+      // for increasing the maximum
+      this.statVals[stat][1] += dVal;
+    }
+  }, {
     key: 'displayScore',
     value: function displayScore() {
       var score = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
@@ -915,7 +960,7 @@ var StatsArea = function () {
   }, {
     key: 'displayStats',
     value: function displayStats() {
-      // statVals is a hash of matching k-v pairs
+      // this.statVals is a hash of matching k-v pairs
       // statVals = {
       //   Food = [current, max],
       //   ...
@@ -1216,18 +1261,25 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 var Sprite = function () {
   // https://github.com/jlongster/canvas-game-bootstrap/blob/a878158f39a91b19725f726675c752683c9e1c08/js/sprite.js
 
-  function Sprite(ctx, width, height, image_url) {
+  function Sprite(ctx, image_url, x, y) {
     var _this = this;
+
+    var width = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 45;
+    var height = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : 45;
 
     _classCallCheck(this, Sprite);
 
     this.ctx = ctx;
+    this.image = new Image();
+    this.image.src = image_url;
+    this.x = x;
+    this.y = y;
     this.width = width;
     this.height = height;
-    this.image = new Image();
 
     this.image.onload = function () {
-      _this.image.src = image_url;
+      _this.draw();
+      // for illustration, but will need to look into making 'resources' actually work so I can call when I need to instead of instantly? Or load the whole level at once?
     };
 
     this.draw = this.draw.bind(this);
@@ -1243,8 +1295,7 @@ var Sprite = function () {
       dx, dy,
       dWidth, dHeight
       ) */
-      debugger;
-      this.ctx.drawImage(this.image, 0, 0, 35, 35, 400, 150, this.width, this.height);
+      this.ctx.drawImage(this.image, 0, 0, 35, 35, this.x, this.y, this.width, this.height);
     }
   }]);
 

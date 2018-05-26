@@ -37,11 +37,14 @@ export default class MainRender {
       case 37: case 38: case 39: case 40:
         this.character.move(e.keyCode);
         break;
-      case 65:
-        window.alert("action!");
+      case 65: // 'a' - action, drains stamina
+        this.statsarea.updateStat("Stamina", -2);
         break;
-      case 69:
+      case 69: // 'e' - examine
         window.alert("examine!");
+        break;
+      case 82: // 'r' - rest // replenishes stamina
+        this.statsarea.updateStat("Stamina", "max");
         break;
       // default:
       //   window.alert(`${e.key} is not bound`);
@@ -58,7 +61,7 @@ export default class MainRender {
     // modules
     this.background.draw();
     this.textarea.draw();
-    
+
     this.textarea.displayText("Magic Mouth", "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi convallis gravida commodo. Vestibulum vel velit eget est pretium eleifend. Nulla ex ex, semper sit amet commodo at, tincidunt nec erat.");
 
     this.playarea.draw();
