@@ -87,53 +87,29 @@ var _main_render2 = _interopRequireDefault(_main_render);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+// import requestAnimFrame from './assets/animation_frame';
+
 document.addEventListener("DOMContentLoaded", function () {
   var canvasEl = document.getElementById("myCanvas");
   var ctx = canvasEl.getContext("2d");
 
   var mainrender = new _main_render2.default(canvasEl, ctx);
 
-  runOnce(mainrender, true);
-  // remove 'true' or set to false to run on setInterval
+  runOnce(mainrender, true, 10);
+  // render, once?, interval
 });
 
-var runOnce = function runOnce(mainrender, bool) {
+var runOnce = function runOnce(mainrender, bool, time) {
   if (bool) {
     console.log("I'm not refreshing on purpose, see line:10");
     mainrender.draw();
   } else {
-    setInterval(mainrender.draw, 10);
+    if (time > 10) {
+      console.log("I'm rendering slowly on purpose");
+    }
+    setInterval(mainrender.draw, time);
   }
 };
-
-/***/ }),
-
-/***/ "./app/assets/font_colors.js":
-/*!***********************************!*\
-  !*** ./app/assets/font_colors.js ***!
-  \***********************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-var backgroundGray = exports.backgroundGray = "#BEBEBE";
-var borderGray = exports.borderGray = "#9B9B9B";
-var textGray = exports.textGray = "#4C4C4C";
-var textBlack = exports.textBlack = "#000000";
-
-// stat colors
-var Food = exports.Food = "#064700";
-var Health = exports.Health = "#AC0002";
-var Spirit = exports.Spirit = "#FED136";
-var Strength = exports.Strength = "#996934";
-var Agility = exports.Agility = "#342B9A";
-var Intellect = exports.Intellect = "#9A95FF";
-var Stamina = exports.Stamina = "#3B9D34";
 
 /***/ }),
 
@@ -153,7 +129,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _font_colors = __webpack_require__(/*! ../../assets/font_colors */ "./app/assets/font_colors.js");
+var _font_colors = __webpack_require__(/*! ../../util/font_colors */ "./app/util/font_colors.js");
 
 var Colors = _interopRequireWildcard(_font_colors);
 
@@ -442,7 +418,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _font_colors = __webpack_require__(/*! ../../assets/font_colors */ "./app/assets/font_colors.js");
+var _font_colors = __webpack_require__(/*! ../../util/font_colors */ "./app/util/font_colors.js");
 
 var Colors = _interopRequireWildcard(_font_colors);
 
@@ -531,11 +507,18 @@ Object.defineProperty(exports, "__esModule", {
 var topLeftX = 353;
 var topLeftY = 88;
 
-var levelOne = exports.levelOne = {
+var entryRoom = exports.entryRoom = {
   walls: {
     one: {
       color: "red",
       x: topLeftX,
+      y: topLeftY,
+      width: 45,
+      height: 45
+    },
+    two: {
+      color: "red",
+      x: topLeftX += 45,
       y: topLeftY,
       width: 45,
       height: 45
@@ -583,7 +566,7 @@ var _character = __webpack_require__(/*! ./character/character */ "./app/compone
 
 var _character2 = _interopRequireDefault(_character);
 
-var _font_colors = __webpack_require__(/*! ../assets/font_colors */ "./app/assets/font_colors.js");
+var _font_colors = __webpack_require__(/*! ../util/font_colors */ "./app/util/font_colors.js");
 
 var Colors = _interopRequireWildcard(_font_colors);
 
@@ -685,6 +668,20 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _levelOne = __webpack_require__(/*! ../levels/levelOne */ "./app/components/levels/levelOne.js");
 
+var levelOne = _interopRequireWildcard(_levelOne);
+
+var _sprite = __webpack_require__(/*! ../../util/sprite */ "./app/util/sprite.js");
+
+var _sprite2 = _interopRequireDefault(_sprite);
+
+var _load_resources = __webpack_require__(/*! ../../util/load_resources */ "./app/util/load_resources.js");
+
+var _load_resources2 = _interopRequireDefault(_load_resources);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var PlayArea = function () {
@@ -701,20 +698,23 @@ var PlayArea = function () {
   }
 
   _createClass(PlayArea, [{
-    key: "drawLevels",
+    key: 'drawLevels',
     value: function drawLevels(levels) {
-      var _this = this;
+      for (var key in levels) {
+        var level = levels[key];
 
-      levels.forEach(function (level) {
-        _this.drawLevel(level);
-      });
+        for (var room in level) {
+          this.drawLevel(level[room]);
+        }
+      }
     }
   }, {
-    key: "drawLevel",
+    key: 'drawLevel',
     value: function drawLevel(level) {
       var ctx = this.ctx;
-      // 'level' is a (complex) POJO
+      // dev: make objects from top left, snake right, then down, for consistency's sake.
 
+      // 'level' is a (complex) POJO
       for (var key in level) {
         for (var object in level[key]) {
           switch (key) {// key == wall, floor, etc.
@@ -727,17 +727,41 @@ var PlayArea = function () {
       }
     }
   }, {
-    key: "draw",
+    key: 'makeAwall',
+    value: function makeAwall() {
+      var _this = this;
+
+      // const wallSprite = new Sprite (
+      //   this.ctx,
+      //   45, 45,
+      //   "app/assets/sprites/walls/stone_wall.png"
+      // );
+      var img = new Image();
+
+      img.onload = function () {
+        debugger;
+
+        _this.ctx.drawImage(img, 0, 0, 35, 35, 400, 150, 45, 45);
+      };
+
+      img.src = "app/assets/sprites/walls/stone_wall.png";
+    }
+  }, {
+    key: 'draw',
     value: function draw() {
       var ctx = this.ctx;
       ctx.clearRect(this.x, this.y, this.width, this.height);
 
       ctx.fillStyle = "black";
       ctx.fillRect(this.x, this.y, this.height, this.width);
-
-      var levels = [_levelOne.levelOne];
-
-      this.drawLevels(levels);
+      // this.drawLevels({
+      //   levelOne
+      // });
+      // resources.load([
+      //   "../../assets/sprites/walls/stone_wall.png"
+      // ]);
+      // resources.onReady(this.makeAwall);
+      this.makeAwall();
     }
   }]);
 
@@ -764,7 +788,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _font_colors = __webpack_require__(/*! ../../assets/font_colors */ "./app/assets/font_colors.js");
+var _font_colors = __webpack_require__(/*! ../../util/font_colors */ "./app/util/font_colors.js");
 
 var Colors = _interopRequireWildcard(_font_colors);
 
@@ -955,7 +979,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _font_colors = __webpack_require__(/*! ../../assets/font_colors */ "./app/assets/font_colors.js");
+var _font_colors = __webpack_require__(/*! ../../util/font_colors */ "./app/util/font_colors.js");
 
 var Colors = _interopRequireWildcard(_font_colors);
 
@@ -1030,6 +1054,204 @@ var TextArea = function () {
 }();
 
 exports.default = TextArea;
+
+/***/ }),
+
+/***/ "./app/util/font_colors.js":
+/*!*********************************!*\
+  !*** ./app/util/font_colors.js ***!
+  \*********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var backgroundGray = exports.backgroundGray = "#BEBEBE";
+var borderGray = exports.borderGray = "#9B9B9B";
+var textGray = exports.textGray = "#4C4C4C";
+var textBlack = exports.textBlack = "#000000";
+
+// stat colors
+var Food = exports.Food = "#064700";
+var Health = exports.Health = "#AC0002";
+var Spirit = exports.Spirit = "#FED136";
+var Strength = exports.Strength = "#996934";
+var Agility = exports.Agility = "#342B9A";
+var Intellect = exports.Intellect = "#9A95FF";
+var Stamina = exports.Stamina = "#3B9D34";
+
+/***/ }),
+
+/***/ "./app/util/load_resources.js":
+/*!************************************!*\
+  !*** ./app/util/load_resources.js ***!
+  \************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+// adapted from https://jlongster.com/Making-Sprite-based-Games-with-Canvas
+
+/*
+resources.load([
+    'img/sprites.png',
+    'img/terrain.png'
+]);
+resources.onReady(game_setup_fn => game_run_fn);
+*/
+var Resources = function () {
+    function Resources() {
+        _classCallCheck(this, Resources);
+
+        this.resourceCache = {};
+        this.loading = [];
+        this.readyCallbacks = [];
+    }
+
+    _createClass(Resources, [{
+        key: "load",
+        value: function load(urlOrArr) {
+            var _this = this;
+
+            if (urlOrArr instanceof Array) {
+                urlOrArr.forEach(function (url) {
+                    _this._load(url);
+                });
+            } else {
+                this._load(urlOrArr);
+            }
+        }
+    }, {
+        key: "_load",
+        value: function _load(url) {
+            var _this2 = this;
+
+            if (this.resourceCache[url]) {
+                return this.resourceCache[url];
+            } else {
+                var img = new Image();
+                img.onload = function () {
+                    _this2.resourceCache[url] = img;
+
+                    if (_this2.isReady()) {
+                        _this2.readyCallbacks.forEach(function (func) {
+                            func();
+                        });
+                    }
+                };
+                this.resourceCache[url] = false;
+                img.src = url;
+            }
+        }
+    }, {
+        key: "get",
+        value: function get(url) {
+            return this.resourceCache[url];
+        }
+    }, {
+        key: "isReady",
+        value: function isReady() {
+            var ready = true;
+
+            for (var key in this.resourceCache) {
+                if (this.resourceCache.hasOwnProperty(key) && !this.resourceCache[key]) {
+                    ready = false;
+                }
+            }
+            return ready;
+        }
+    }, {
+        key: "onReady",
+        value: function onReady(func) {
+            this.readyCallbacks.push(func);
+        }
+    }, {
+        key: "load_resources",
+        value: function load_resources() {
+            this.resourceCache = {};
+            this.loading = [];
+            this.readyCallbacks = [];
+        }
+    }]);
+
+    return Resources;
+}();
+
+exports.default = Resources;
+
+/***/ }),
+
+/***/ "./app/util/sprite.js":
+/*!****************************!*\
+  !*** ./app/util/sprite.js ***!
+  \****************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Sprite = function () {
+  // https://github.com/jlongster/canvas-game-bootstrap/blob/a878158f39a91b19725f726675c752683c9e1c08/js/sprite.js
+
+  function Sprite(ctx, width, height, image_url) {
+    var _this = this;
+
+    _classCallCheck(this, Sprite);
+
+    this.ctx = ctx;
+    this.width = width;
+    this.height = height;
+    this.image = new Image();
+
+    this.image.onload = function () {
+      _this.image.src = image_url;
+    };
+
+    this.draw = this.draw.bind(this);
+  }
+
+  _createClass(Sprite, [{
+    key: "draw",
+    value: function draw() {
+      /* (
+      image,
+      sx, sy,
+      sWidth, sHeight,
+      dx, dy,
+      dWidth, dHeight
+      ) */
+      debugger;
+      this.ctx.drawImage(this.image, 0, 0, 35, 35, 400, 150, this.width, this.height);
+    }
+  }]);
+
+  return Sprite;
+}();
+
+exports.default = Sprite;
 
 /***/ }),
 

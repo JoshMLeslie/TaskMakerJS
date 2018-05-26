@@ -4,7 +4,7 @@ import PlayArea from './play_area/play_area';
 import StatsArea from './stats_area/stats_area';
 import Character from './character/character';
 
-import * as Colors from '../assets/font_colors';
+import * as Colors from '../util/font_colors';
 
 export default class MainRender {
 
@@ -58,7 +58,7 @@ export default class MainRender {
     // modules
     this.background.draw();
     this.textarea.draw();
-
+    
     this.textarea.displayText("Magic Mouth", "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi convallis gravida commodo. Vestibulum vel velit eget est pretium eleifend. Nulla ex ex, semper sit amet commodo at, tincidunt nec erat.");
 
     this.playarea.draw();

@@ -1,3 +1,9 @@
+180525 - day 3
+  Some aesthetic tweaks. Got the character to move and render properly, plus boundaries within the main game box. The blocks are going to be tricky.
+
+  Fuck sprites and images. Got them working, now have to get them working cleaner. More cleanly. cleanerly. Better. Going home.
+
+
 180524 - day 2
   Got the static elements down in canvas.
   Made a pale blue character dot, need to figure out how to call its rendering and clear it out on each render. I think I need to push up something to the main render from character? cause right now it's just kinda hanging out / running on its own and just being instantiated by the main render.

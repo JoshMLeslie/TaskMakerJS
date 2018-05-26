@@ -1,4 +1,6 @@
-import {levelOne} from '../levels/levelOne';
+import * as levelOne from '../levels/levelOne';
+import Sprite from '../../util/sprite';
+import Resources from '../../util/load_resources';
 
 export default class PlayArea {
 
@@ -13,13 +15,20 @@ export default class PlayArea {
   }
 
   drawLevels(levels) {
-    levels.forEach(level => { this.drawLevel(level); });
+    for (let key in levels) {
+      const level = levels[key];
+
+      for (let room in level) {
+        this.drawLevel(level[room]);
+      }
+    }
   }
 
-  drawLevel (level) {
+  drawLevel(level) {
     const ctx = this.ctx;
-    // 'level' is a (complex) POJO
+    // dev: make objects from top left, snake right, then down, for consistency's sake.
 
+    // 'level' is a (complex) POJO
     for (let key in level) {
       for (let object in level[key]) {
         switch(key) { // key == wall, floor, etc.
@@ -32,6 +41,36 @@ export default class PlayArea {
     }
   }
 
+
+
+  makeAwall () {
+
+    // const wallSprite = new Sprite (
+    //   this.ctx,
+    //   45, 45,
+    //   "app/assets/sprites/walls/stone_wall.png"
+    // );
+    const img =  new Image ();
+
+    img.onload = () => {
+      debugger
+
+      this.ctx.drawImage(
+        img,
+          0, 0,
+          35, 35,
+          400, 150,
+          45, 45
+      );
+    };
+
+    img.src = "app/assets/sprites/walls/stone_wall.png";
+
+
+
+  }
+
+
   draw () {
     const ctx = this.ctx;
     ctx.clearRect(this.x, this.y, this.width, this.height);
@@ -39,9 +78,13 @@ export default class PlayArea {
 
     ctx.fillStyle = "black";
     ctx.fillRect(this.x, this.y, this.height, this.width);
-    
-    const levels = [levelOne];
-
-    this.drawLevels(levels);
+    // this.drawLevels({
+    //   levelOne
+    // });
+    // resources.load([
+    //   "../../assets/sprites/walls/stone_wall.png"
+    // ]);
+    // resources.onReady(this.makeAwall);
+    this.makeAwall();
   }
 }

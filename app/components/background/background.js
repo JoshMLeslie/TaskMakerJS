@@ -1,4 +1,4 @@
-import * as Colors from '../../assets/font_colors';
+import * as Colors from '../../util/font_colors';
 
 export default class Background {
   constructor (name, canvasEl, ctx) {
