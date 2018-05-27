@@ -231,7 +231,8 @@ export default class Background {
     // background render area
 
     ctx.beginPath();
-    ctx.fillStyle = "#242424"; // background black
+    ctx.fillStyle = "#242424";
+    // background black
     ctx.fillRect(0, 0, 790, 530);
 
     this.drawTopBar();

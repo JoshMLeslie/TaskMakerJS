@@ -1,3 +1,4 @@
+import requestAnimFrame from '../util/animation_frame';
 import Background from './background/background';
 import TextArea from './text_area/text_area';
 import PlayArea from './play_area/play_area';
@@ -26,10 +27,11 @@ export default class MainRender {
     this.character = new Character(canvasEl, ctx);
 
     this.draw = this.draw.bind(this);
+    this.run = this.run.bind(this);
     this.inputSelector = this.inputSelector.bind(this);
 
     // inputSelector needs to be bound first.
-    window.addEventListener("keydown", this.inputSelector);
+    window.addEventListener("keydown", this.run);
   }
 
   inputSelector (e) {
@@ -37,19 +39,23 @@ export default class MainRender {
       case 37: case 38: case 39: case 40:
         this.statsarea.updateStat("Stamina", -0.5);
         this.character.move(e.keyCode);
+        return true; // prevent reloading on unbound keys
 
-        break;
       case 65: // 'a' - action, drains stamina
-        this.statsarea.updateStat("Stamina", -2);
-        break;
+        this.statsarea.updateStat("Stamina", -1);
+        return true;
+
       case 69: // 'e' - examine
         window.alert("examine!");
-        break;
+        return true;
+
       case 82: // 'r' - rest // replenishes stamina
         this.statsarea.updateStat("Stamina", "max");
-        break;
-      // default:
+        return true;
+        
+      default:
       //   window.alert(`${e.key} is not bound`);
+        return false;
     }
   }
 
@@ -69,6 +75,12 @@ export default class MainRender {
     this.playarea.draw();
     this.statsarea.draw();
     this.character.draw();
+  }
+
+  run (e) {
+    if ( this.inputSelector(e) ) {
+      this.draw();
+    }
   }
 
 }

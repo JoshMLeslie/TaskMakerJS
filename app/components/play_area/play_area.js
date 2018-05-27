@@ -1,4 +1,5 @@
 import * as levelOne from '../levels/levelOne';
+import * as Colors from '../../util/font_colors';
 import Sprite from '../../util/sprite';
 import Resources from '../../util/load_resources';
 
@@ -39,33 +40,25 @@ export default class PlayArea {
     const ctx = this.ctx;
     // dev: make objects from top left, right, then typerwritter down, for consistency's sake.
 
-    // 'room' is a (big) POJO
-    for (let type_key in room) {
-      // type_key == 'wall', 'floor', etc.
-      // room[type_key] => array
+    // 'room' is a (big) array / POJO
 
-      room[type_key].forEach((obj, obj_idx) => {
-        switch(type_key) { // key == wall, floor, etc.
-          case "walls":
+    room.forEach((obj, obj_idx) => {
+      if (!obj.srcX) {
+        // ensure attr's
+        obj.srcX = 0;
+        obj.srcY = 0;
+      }
 
-            if (!obj.srcX) {
-              // ensure attr's
-              obj.srcX = 0;
-              obj.srcY = 0;
-            }
-
-            new Sprite (
-              this.ctx,
-              obj.image_url,
-              this.spriteX(obj_idx),
-              this.spriteY(obj_idx),
-              obj.srcX,
-              obj.srcY
-              // this.type = type_key // ??
-            );
-        }
-      });
-    }
+      new Sprite (
+        this.ctx,
+        obj.image_url,
+        this.spriteX(obj_idx),
+        this.spriteY(obj_idx),
+        obj.srcX,
+        obj.srcY
+        // type = obj.type // ??
+      );
+    });
   }
 
   draw () {

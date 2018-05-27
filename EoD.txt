@@ -1,3 +1,8 @@
+180526 - day 4
+  Got some real work done today. The first entry room is fully rendered now, sans collision detection with the environment. That's going to be its whole own thing.
+
+  Need to solve the flickering problem when actually running the rendering (vs a static display) - something about doing it in onload in the sprite's constructor.
+
 180525 - day 3
   Some aesthetic tweaks. Got the character to move and render properly, plus boundaries within the main game box. The blocks are going to be tricky.
 

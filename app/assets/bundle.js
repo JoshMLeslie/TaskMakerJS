@@ -87,22 +87,22 @@ var _main_render2 = _interopRequireDefault(_main_render);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-// import requestAnimFrame from './assets/animation_frame';
-
 document.addEventListener("DOMContentLoaded", function () {
   var canvasEl = document.getElementById("myCanvas");
   var ctx = canvasEl.getContext("2d");
 
   var mainrender = new _main_render2.default(canvasEl, ctx);
 
-  runOnce(mainrender, true, 10);
-  // ( renderObj [, once?, interval if false] )
+  mainrender.draw(); // kick it off
 });
 
-var runOnce = function runOnce(mainrender, bool, time) {
+// runOnce( mainrender.draw, true, 10 );
+// ( renderObj [, once?, interval if false] )
+
+var runOnce = function runOnce(callback, bool, time) {
   if (bool) {
     console.log("I'm not refreshing on purpose, see line:10");
-    mainrender.draw();
+    callback();
   } else {
     if (time > 10) {
       console.log("I'm rendering slowly on purpose");
@@ -113,10 +113,10 @@ var runOnce = function runOnce(mainrender, bool, time) {
 
 /***/ }),
 
-/***/ "./app/assets/sprites/walls/wall_urls.js":
-/*!***********************************************!*\
-  !*** ./app/assets/sprites/walls/wall_urls.js ***!
-  \***********************************************/
+/***/ "./app/assets/sprites/walls/urls.js":
+/*!******************************************!*\
+  !*** ./app/assets/sprites/walls/urls.js ***!
+  \******************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -493,7 +493,8 @@ var Background = function () {
       // background render area
 
       ctx.beginPath();
-      ctx.fillStyle = "#242424"; // background black
+      ctx.fillStyle = "#242424";
+      // background black
       ctx.fillRect(0, 0, 790, 530);
 
       this.drawTopBar();
@@ -679,9 +680,9 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.entryRoom = undefined;
 
-var _wall_urls = __webpack_require__(/*! ../../assets/sprites/walls/wall_urls */ "./app/assets/sprites/walls/wall_urls.js");
+var _urls = __webpack_require__(/*! ../../assets/sprites/walls/urls */ "./app/assets/sprites/walls/urls.js");
 
-var wall_urls = _interopRequireWildcard(_wall_urls);
+var urls = _interopRequireWildcard(_urls);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
@@ -690,114 +691,110 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 var topLeftX = 353;
 var topLeftY = 88;
 
-var alphabet = wall_urls.alphabet;
-var brick = wall_urls.brick;
-var stone_wall = wall_urls.stone_wall;
-var bush = wall_urls.bush;
-var flowers = wall_urls.flowers;
-var left_arrow = wall_urls.left_arrow;
-var right_arrow = wall_urls.right_arrow;
-var magic_mouth = wall_urls.magic_mouth;
-var rich_soil = wall_urls.rich_soil;
-var shrubs = wall_urls.shrubs;
+var alphabet = urls.alphabet;
+var brick = urls.brick;
+var stone_wall = urls.stone_wall;
+var bush = urls.bush;
+var flowers = urls.flowers;
+var left_arrow = urls.left_arrow;
+var right_arrow = urls.right_arrow;
+var magic_mouth = urls.magic_mouth;
+var rich_soil = urls.rich_soil;
+var shrubs = urls.shrubs;
 
-var posOf = wall_urls.posOf;
+var posOf = urls.posOf;
 
-var entryRoom = exports.entryRoom = {
-  walls: [{
-    image_url: stone_wall }, {
-    image_url: alphabet, srcX: posOf("T") }, {
-    image_url: alphabet, srcX: posOf("U") }, {
-    image_url: alphabet, srcX: posOf("T") }, {
-    image_url: alphabet, srcX: posOf("O") }, {
-    image_url: alphabet, srcX: posOf("R") }, {
-    image_url: alphabet, srcX: posOf("I") }, {
-    image_url: alphabet, srcX: posOf("A") }, {
-    image_url: alphabet, srcX: posOf("L")
-  }, { // 2nd row
-    image_url: stone_wall }, {
-    image_url: bush }, {
-    image_url: shrubs }, {
-    image_url: flowers }, {
-    image_url: flowers }, {
-    image_url: flowers }, {
-    image_url: shrubs }, {
-    image_url: bush }, {
-    image_url: stone_wall
-  }, { // 3rd row
-    image_url: alphabet, srcX: posOf("W") }, {
-    image_url: shrubs }, {
-    image_url: rich_soil }, {
-    image_url: rich_soil }, {
-    image_url: rich_soil }, {
-    image_url: rich_soil }, {
-    image_url: rich_soil }, {
-    image_url: shrubs }, {
-    image_url: alphabet, srcX: posOf("W")
-  }, { // 4th row
-    image_url: alphabet, srcX: posOf("E") }, {
-    image_url: flowers }, {
-    image_url: rich_soil }, {
-    image_url: brick }, {
-    image_url: brick }, {
-    image_url: brick }, {
-    image_url: rich_soil }, {
-    image_url: flowers }, {
-    image_url: alphabet, srcX: posOf("E")
-  }, { // 5th row
-    image_url: alphabet, srcX: posOf("L") }, {
-    image_url: flowers }, {
-    image_url: rich_soil }, {
-    image_url: brick }, {
-    image_url: brick }, {
-    image_url: brick }, {
-    image_url: rich_soil }, {
-    image_url: flowers }, {
-    image_url: alphabet, srcX: posOf("L")
-  }, { // 6th row
-    image_url: alphabet, srcX: posOf("C") }, {
-    image_url: flowers }, {
-    image_url: rich_soil }, {
-    image_url: brick }, {
-    image_url: brick }, {
-    image_url: brick }, {
-    image_url: rich_soil }, {
-    image_url: flowers }, {
-    image_url: alphabet, srcX: posOf("C")
-  }, { // 7th row
-    image_url: alphabet, srcX: posOf("O") }, {
-    image_url: shrubs }, {
-    image_url: rich_soil }, {
-    image_url: rich_soil }, {
-    image_url: brick }, {
-    image_url: rich_soil }, {
-    image_url: rich_soil }, {
-    image_url: shrubs }, {
-    image_url: alphabet, srcX: posOf("O")
-  }, { // 8th row
-    image_url: alphabet, srcX: posOf("M") }, {
-    image_url: bush }, {
-    image_url: shrubs }, {
-    image_url: rich_soil }, {
-    image_url: brick }, {
-    image_url: rich_soil }, {
-    image_url: shrubs }, {
-    image_url: bush }, {
-    image_url: alphabet, srcX: posOf("M")
-  }, { // 9th row
-    image_url: alphabet, srcX: posOf("E") }, {
-    image_url: stone_wall }, {
-    image_url: right_arrow }, {
-    image_url: right_arrow }, {
-    image_url: magic_mouth }, {
-    image_url: left_arrow }, {
-    image_url: left_arrow }, {
-    image_url: stone_wall }, {
-    image_url: alphabet, srcX: posOf("E")
-  }],
-
-  floors: [{}]
-};
+var entryRoom = exports.entryRoom = [{ // 1st row
+  image_url: stone_wall }, {
+  image_url: alphabet, srcX: posOf("T") }, {
+  image_url: alphabet, srcX: posOf("U") }, {
+  image_url: alphabet, srcX: posOf("T") }, {
+  image_url: alphabet, srcX: posOf("O") }, {
+  image_url: alphabet, srcX: posOf("R") }, {
+  image_url: alphabet, srcX: posOf("I") }, {
+  image_url: alphabet, srcX: posOf("A") }, {
+  image_url: alphabet, srcX: posOf("L")
+}, { // 2nd row
+  image_url: stone_wall }, {
+  image_url: bush }, {
+  image_url: shrubs }, {
+  image_url: flowers }, {
+  image_url: flowers }, {
+  image_url: flowers }, {
+  image_url: shrubs }, {
+  image_url: bush }, {
+  image_url: stone_wall
+}, { // 3rd row
+  image_url: alphabet, srcX: posOf("W") }, {
+  image_url: shrubs }, {
+  image_url: rich_soil }, {
+  image_url: rich_soil }, {
+  image_url: rich_soil }, {
+  image_url: rich_soil }, {
+  image_url: rich_soil }, {
+  image_url: shrubs }, {
+  image_url: alphabet, srcX: posOf("W")
+}, { // 4th row
+  image_url: alphabet, srcX: posOf("E") }, {
+  image_url: flowers }, {
+  image_url: rich_soil }, {
+  image_url: brick }, {
+  image_url: brick }, {
+  image_url: brick }, {
+  image_url: rich_soil }, {
+  image_url: flowers }, {
+  image_url: alphabet, srcX: posOf("E")
+}, { // 5th row
+  image_url: alphabet, srcX: posOf("L") }, {
+  image_url: flowers }, {
+  image_url: rich_soil }, {
+  image_url: brick }, {
+  image_url: brick }, {
+  image_url: brick }, {
+  image_url: rich_soil }, {
+  image_url: flowers }, {
+  image_url: alphabet, srcX: posOf("L")
+}, { // 6th row
+  image_url: alphabet, srcX: posOf("C") }, {
+  image_url: flowers }, {
+  image_url: rich_soil }, {
+  image_url: brick }, {
+  image_url: brick }, {
+  image_url: brick }, {
+  image_url: rich_soil }, {
+  image_url: flowers }, {
+  image_url: alphabet, srcX: posOf("C")
+}, { // 7th row
+  image_url: alphabet, srcX: posOf("O") }, {
+  image_url: shrubs }, {
+  image_url: rich_soil }, {
+  image_url: rich_soil }, {
+  image_url: brick }, {
+  image_url: rich_soil }, {
+  image_url: rich_soil }, {
+  image_url: shrubs }, {
+  image_url: alphabet, srcX: posOf("O")
+}, { // 8th row
+  image_url: alphabet, srcX: posOf("M") }, {
+  image_url: bush }, {
+  image_url: shrubs }, {
+  image_url: rich_soil }, {
+  image_url: brick }, {
+  image_url: rich_soil }, {
+  image_url: shrubs }, {
+  image_url: bush }, {
+  image_url: alphabet, srcX: posOf("M")
+}, { // 9th row
+  image_url: alphabet, srcX: posOf("E") }, {
+  image_url: stone_wall }, {
+  image_url: right_arrow }, {
+  image_url: right_arrow }, {
+  image_url: magic_mouth }, {
+  image_url: left_arrow }, {
+  image_url: left_arrow }, {
+  image_url: stone_wall }, {
+  image_url: alphabet, srcX: posOf("E")
+}]; // room end
 
 /***/ }),
 
@@ -816,6 +813,10 @@ Object.defineProperty(exports, "__esModule", {
 });
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _animation_frame = __webpack_require__(/*! ../util/animation_frame */ "./app/util/animation_frame.js");
+
+var _animation_frame2 = _interopRequireDefault(_animation_frame);
 
 var _background = __webpack_require__(/*! ./background/background */ "./app/components/background/background.js");
 
@@ -869,10 +870,11 @@ var MainRender = function () {
     this.character = new _character2.default(canvasEl, ctx);
 
     this.draw = this.draw.bind(this);
+    this.run = this.run.bind(this);
     this.inputSelector = this.inputSelector.bind(this);
 
     // inputSelector needs to be bound first.
-    window.addEventListener("keydown", this.inputSelector);
+    window.addEventListener("keydown", this.run);
   }
 
   _createClass(MainRender, [{
@@ -882,22 +884,26 @@ var MainRender = function () {
         case 37:case 38:case 39:case 40:
           this.statsarea.updateStat("Stamina", -0.5);
           this.character.move(e.keyCode);
+          return true; // prevent reloading on unbound keys
 
-          break;
         case 65:
           // 'a' - action, drains stamina
-          this.statsarea.updateStat("Stamina", -2);
-          break;
+          this.statsarea.updateStat("Stamina", -1);
+          return true;
+
         case 69:
           // 'e' - examine
           window.alert("examine!");
-          break;
+          return true;
+
         case 82:
           // 'r' - rest // replenishes stamina
           this.statsarea.updateStat("Stamina", "max");
-          break;
-        // default:
-        //   window.alert(`${e.key} is not bound`);
+          return true;
+
+        default:
+          //   window.alert(`${e.key} is not bound`);
+          return false;
       }
     }
   }, {
@@ -916,6 +922,13 @@ var MainRender = function () {
       this.playarea.draw();
       this.statsarea.draw();
       this.character.draw();
+    }
+  }, {
+    key: 'run',
+    value: function run(e) {
+      if (this.inputSelector(e)) {
+        this.draw();
+      }
     }
   }]);
 
@@ -948,6 +961,10 @@ var _createClass = function () { function defineProperties(target, props) { for 
 var _levelOne = __webpack_require__(/*! ../levels/levelOne */ "./app/components/levels/levelOne.js");
 
 var levelOne = _interopRequireWildcard(_levelOne);
+
+var _font_colors = __webpack_require__(/*! ../../util/font_colors */ "./app/util/font_colors.js");
+
+var Colors = _interopRequireWildcard(_font_colors);
 
 var _sprite = __webpack_require__(/*! ../../util/sprite */ "./app/util/sprite.js");
 
@@ -1012,32 +1029,19 @@ var PlayArea = function () {
       var ctx = this.ctx;
       // dev: make objects from top left, right, then typerwritter down, for consistency's sake.
 
-      // 'room' is a (big) POJO
+      // 'room' is a (big) array / POJO
 
-      var _loop = function _loop(type_key) {
-        // type_key == 'wall', 'floor', etc.
-        // room[type_key] => array
+      room.forEach(function (obj, obj_idx) {
+        if (!obj.srcX) {
+          // ensure attr's
+          obj.srcX = 0;
+          obj.srcY = 0;
+        }
 
-        room[type_key].forEach(function (obj, obj_idx) {
-          switch (type_key) {// key == wall, floor, etc.
-            case "walls":
-
-              if (!obj.srcX) {
-                // ensure attr's
-                obj.srcX = 0;
-                obj.srcY = 0;
-              }
-
-              new _sprite2.default(_this.ctx, obj.image_url, _this.spriteX(obj_idx), _this.spriteY(obj_idx), obj.srcX, obj.srcY
-              // this.type = type_key // ??
-              );
-          }
-        });
-      };
-
-      for (var type_key in room) {
-        _loop(type_key);
-      }
+        new _sprite2.default(_this.ctx, obj.image_url, _this.spriteX(obj_idx), _this.spriteY(obj_idx), obj.srcX, obj.srcY
+        // type = obj.type // ??
+        );
+      });
     }
   }, {
     key: 'draw',
@@ -1378,6 +1382,32 @@ var TextArea = function () {
 }();
 
 exports.default = TextArea;
+
+/***/ }),
+
+/***/ "./app/util/animation_frame.js":
+/*!*************************************!*\
+  !*** ./app/util/animation_frame.js ***!
+  \*************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+// currently broken
+var requestAnimFrame = function () {
+  // https://github.com/jlongster/canvas-game-bootstrap/blob/a878158f39a91b19725f726675c752683c9e1c08/js/app.js
+  // try something better, else fallback to bedrock
+  return window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame || function (callback) {
+    window.setTimeout(callback, 1000 / 60);
+  };
+}();
+
+exports.default = requestAnimFrame;
 
 /***/ }),
 
