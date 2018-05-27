@@ -24,62 +24,49 @@ export default class PlayArea {
     }
   }
 
+  spriteX (obj_idx) { // same same, but diff.
+    let modulo = obj_idx % 9;
+    if (modulo < 0) { modulo = 8; }
+    return (353 + (modulo * 45));
+  }
+
+  spriteY (obj_idx) { // but same same.
+    let floored = Math.floor(obj_idx / 9);
+    return (88 + (floored * 45));
+  }
+
   drawLevel(room) {
     const ctx = this.ctx;
-    // dev: make objects from top left, snake right, then down, for consistency's sake.
+    // dev: make objects from top left, right, then typerwritter down, for consistency's sake.
 
-    // 'level' is a (complex) POJO
+    // 'room' is a (big) POJO
     for (let type_key in room) {
       // type_key == 'wall', 'floor', etc.
+      // room[type_key] => array
 
-      for (let object_key in room[type_key]) {
-        let sprite_data = room[type_key][object_key];
-
+      room[type_key].forEach((obj, obj_idx) => {
         switch(type_key) { // key == wall, floor, etc.
           case "walls":
 
-            // new Sprite (
-            //   this.ctx,
-            //   sprite_data.image_url,
-            //   sprite_data.x,
-            //   sprite_data.y
-            // );
+            if (!obj.srcX) {
+              // ensure attr's
+              obj.srcX = 0;
+              obj.srcY = 0;
+            }
+
+            new Sprite (
+              this.ctx,
+              obj.image_url,
+              this.spriteX(obj_idx),
+              this.spriteY(obj_idx),
+              obj.srcX,
+              obj.srcY
+              // this.type = type_key // ??
+            );
         }
-      }
+      });
     }
   }
-
-
-
-  makeAwall () {
-
-    // const wallSprite = new Sprite (
-    //   this.ctx,
-    //   "app/assets/sprites/walls/stone_wall.png",
-    //   375,175
-    // );
-    // same same
-
-    // const img =  new Image ();
-    //
-    // img.onload = () => {
-    //   debugger
-    //
-    //   this.ctx.drawImage(
-    //     img,
-    //       0, 0,
-    //       35, 35,
-    //       400, 150,
-    //       45, 45
-    //   );
-    // };
-    //
-    // img.src = "app/assets/sprites/walls/stone_wall.png";
-
-
-
-  }
-
 
   draw () {
     const ctx = this.ctx;

@@ -95,8 +95,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
   var mainrender = new _main_render2.default(canvasEl, ctx);
 
-  runOnce(mainrender, false, 10);
-  // render, once?, interval
+  runOnce(mainrender, true, 10);
+  // ( renderObj [, once?, interval if false] )
 });
 
 var runOnce = function runOnce(mainrender, bool, time) {
@@ -108,6 +108,114 @@ var runOnce = function runOnce(mainrender, bool, time) {
       console.log("I'm rendering slowly on purpose");
     }
     setInterval(mainrender.draw, time);
+  }
+};
+
+/***/ }),
+
+/***/ "./app/assets/sprites/walls/wall_urls.js":
+/*!***********************************************!*\
+  !*** ./app/assets/sprites/walls/wall_urls.js ***!
+  \***********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+// alphabet
+// stone_wall
+// bush
+// flowers
+// left_arrow
+// right_arrow
+// magic_mouth
+// rich_soil
+// shrubs
+
+var alphabet = exports.alphabet = "app/assets/sprites/walls/alphabet.png";
+
+var brick = exports.brick = "app/assets/sprites/walls/brick.png";
+
+var bush = exports.bush = "app/assets/sprites/walls/bush.png";
+
+var flowers = exports.flowers = "app/assets/sprites/walls/flowers.png";
+
+var left_arrow = exports.left_arrow = "app/assets/sprites/walls/left_arrow.png";
+
+var right_arrow = exports.right_arrow = "app/assets/sprites/walls/right_arrow.png";
+
+var magic_mouth = exports.magic_mouth = "app/assets/sprites/walls/magic_mouth.png";
+
+var rich_soil = exports.rich_soil = "app/assets/sprites/walls/rich_soil.png";
+
+var shrubs = exports.shrubs = "app/assets/sprites/walls/shrubs.png";
+
+var stone_wall = exports.stone_wall = "app/assets/sprites/walls/stone_wall.png";
+
+var posOf = exports.posOf = function posOf(letter) {
+  // is this what staring into the abyss feels like?
+
+  var position = 45;
+
+  switch (letter) {
+    case "A":
+      return 0;
+    // case "B":
+    //   return position;
+    case "C":
+      return position * 2;
+    // case "D":
+    //   return position*3;
+    case "E":
+      return position * 4;
+    // case "F":
+    //   return position*5;
+    // case "G":
+    //   return position*6;
+    // case "H":
+    //   return position*7;
+    case "I":
+      return position * 8;
+    // case "J":
+    //   return position*9;
+    // case "K":
+    //   return position*10;
+    case "L":
+      return position * 11;
+    case "M":
+      return position * 12;
+    // case "N":
+    //   return position*13;
+    case "O":
+      return position * 14;
+    // case "P":
+    //   return position*15;
+    // case "Q":
+    //   return position*16;
+    case "R":
+      return position * 17;
+    // case "S":
+    //   return position*18;
+    case "T":
+      return position * 19;
+    case "U":
+      return position * 20;
+    // case "V":
+    //   return position*21;
+    case "W":
+      return position * 22;
+    // case "X":
+    //   return position*23;
+    // case "Y":
+    //   return position*24;
+    // case "Z":
+    //   return position*25;
+    default:
+      return console.log("no matching character in png");
   }
 };
 
@@ -569,27 +677,126 @@ exports.default = Character;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.entryRoom = undefined;
+
+var _wall_urls = __webpack_require__(/*! ../../assets/sprites/walls/wall_urls */ "./app/assets/sprites/walls/wall_urls.js");
+
+var wall_urls = _interopRequireWildcard(_wall_urls);
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
 // from the top left, right, then down.
 
 var topLeftX = 353;
 var topLeftY = 88;
-var stone_wall_url = "app/assets/sprites/walls/wall.png";
+
+var alphabet = wall_urls.alphabet;
+var brick = wall_urls.brick;
+var stone_wall = wall_urls.stone_wall;
+var bush = wall_urls.bush;
+var flowers = wall_urls.flowers;
+var left_arrow = wall_urls.left_arrow;
+var right_arrow = wall_urls.right_arrow;
+var magic_mouth = wall_urls.magic_mouth;
+var rich_soil = wall_urls.rich_soil;
+var shrubs = wall_urls.shrubs;
+
+var posOf = wall_urls.posOf;
 
 var entryRoom = exports.entryRoom = {
-  walls: {
-    one: {
-      image_url: stone_wall_url,
-      x: topLeftX,
-      y: topLeftY
-    },
-    two: {
-      image_url: stone_wall_url,
-      x: topLeftX += 45,
-      y: topLeftY
-    }
-  },
+  walls: [{
+    image_url: stone_wall }, {
+    image_url: alphabet, srcX: posOf("T") }, {
+    image_url: alphabet, srcX: posOf("U") }, {
+    image_url: alphabet, srcX: posOf("T") }, {
+    image_url: alphabet, srcX: posOf("O") }, {
+    image_url: alphabet, srcX: posOf("R") }, {
+    image_url: alphabet, srcX: posOf("I") }, {
+    image_url: alphabet, srcX: posOf("A") }, {
+    image_url: alphabet, srcX: posOf("L")
+  }, { // 2nd row
+    image_url: stone_wall }, {
+    image_url: bush }, {
+    image_url: shrubs }, {
+    image_url: flowers }, {
+    image_url: flowers }, {
+    image_url: flowers }, {
+    image_url: shrubs }, {
+    image_url: bush }, {
+    image_url: stone_wall
+  }, { // 3rd row
+    image_url: alphabet, srcX: posOf("W") }, {
+    image_url: shrubs }, {
+    image_url: rich_soil }, {
+    image_url: rich_soil }, {
+    image_url: rich_soil }, {
+    image_url: rich_soil }, {
+    image_url: rich_soil }, {
+    image_url: shrubs }, {
+    image_url: alphabet, srcX: posOf("W")
+  }, { // 4th row
+    image_url: alphabet, srcX: posOf("E") }, {
+    image_url: flowers }, {
+    image_url: rich_soil }, {
+    image_url: brick }, {
+    image_url: brick }, {
+    image_url: brick }, {
+    image_url: rich_soil }, {
+    image_url: flowers }, {
+    image_url: alphabet, srcX: posOf("E")
+  }, { // 5th row
+    image_url: alphabet, srcX: posOf("L") }, {
+    image_url: flowers }, {
+    image_url: rich_soil }, {
+    image_url: brick }, {
+    image_url: brick }, {
+    image_url: brick }, {
+    image_url: rich_soil }, {
+    image_url: flowers }, {
+    image_url: alphabet, srcX: posOf("L")
+  }, { // 6th row
+    image_url: alphabet, srcX: posOf("C") }, {
+    image_url: flowers }, {
+    image_url: rich_soil }, {
+    image_url: brick }, {
+    image_url: brick }, {
+    image_url: brick }, {
+    image_url: rich_soil }, {
+    image_url: flowers }, {
+    image_url: alphabet, srcX: posOf("C")
+  }, { // 7th row
+    image_url: alphabet, srcX: posOf("O") }, {
+    image_url: shrubs }, {
+    image_url: rich_soil }, {
+    image_url: rich_soil }, {
+    image_url: brick }, {
+    image_url: rich_soil }, {
+    image_url: rich_soil }, {
+    image_url: shrubs }, {
+    image_url: alphabet, srcX: posOf("O")
+  }, { // 8th row
+    image_url: alphabet, srcX: posOf("M") }, {
+    image_url: bush }, {
+    image_url: shrubs }, {
+    image_url: rich_soil }, {
+    image_url: brick }, {
+    image_url: rich_soil }, {
+    image_url: shrubs }, {
+    image_url: bush }, {
+    image_url: alphabet, srcX: posOf("M")
+  }, { // 9th row
+    image_url: alphabet, srcX: posOf("E") }, {
+    image_url: stone_wall }, {
+    image_url: right_arrow }, {
+    image_url: right_arrow }, {
+    image_url: magic_mouth }, {
+    image_url: left_arrow }, {
+    image_url: left_arrow }, {
+    image_url: stone_wall }, {
+    image_url: alphabet, srcX: posOf("E")
+  }],
 
-  floors: {}
+  floors: [{}]
 };
 
 /***/ }),
@@ -673,7 +880,9 @@ var MainRender = function () {
     value: function inputSelector(e) {
       switch (e.keyCode) {
         case 37:case 38:case 39:case 40:
+          this.statsarea.updateStat("Stamina", -0.5);
           this.character.move(e.keyCode);
+
           break;
         case 65:
           // 'a' - action, drains stamina
@@ -702,7 +911,7 @@ var MainRender = function () {
       this.background.draw();
       this.textarea.draw();
 
-      this.textarea.displayText("Magic Mouth", "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi convallis gravida commodo. Vestibulum vel velit eget est pretium eleifend. Nulla ex ex, semper sit amet commodo at, tincidunt nec erat.");
+      this.textarea.displayText("Bob:", "HELP. I'm trapped in this box!");
 
       this.playarea.draw();
       this.statsarea.draw();
@@ -779,59 +988,56 @@ var PlayArea = function () {
       }
     }
   }, {
+    key: 'spriteX',
+    value: function spriteX(obj_idx) {
+      // same same, but diff.
+      var modulo = obj_idx % 9;
+      if (modulo < 0) {
+        modulo = 8;
+      }
+      return 353 + modulo * 45;
+    }
+  }, {
+    key: 'spriteY',
+    value: function spriteY(obj_idx) {
+      // but same same.
+      var floored = Math.floor(obj_idx / 9);
+      return 88 + floored * 45;
+    }
+  }, {
     key: 'drawLevel',
     value: function drawLevel(room) {
+      var _this = this;
+
       var ctx = this.ctx;
-      // dev: make objects from top left, snake right, then down, for consistency's sake.
+      // dev: make objects from top left, right, then typerwritter down, for consistency's sake.
 
-      // 'level' is a (complex) POJO
-      for (var type_key in room) {
+      // 'room' is a (big) POJO
+
+      var _loop = function _loop(type_key) {
         // type_key == 'wall', 'floor', etc.
+        // room[type_key] => array
 
-        for (var object_key in room[type_key]) {
-          var sprite_data = room[type_key][object_key];
-
+        room[type_key].forEach(function (obj, obj_idx) {
           switch (type_key) {// key == wall, floor, etc.
             case "walls":
 
-            // new Sprite (
-            //   this.ctx,
-            //   sprite_data.image_url,
-            //   sprite_data.x,
-            //   sprite_data.y
-            // );
+              if (!obj.srcX) {
+                // ensure attr's
+                obj.srcX = 0;
+                obj.srcY = 0;
+              }
+
+              new _sprite2.default(_this.ctx, obj.image_url, _this.spriteX(obj_idx), _this.spriteY(obj_idx), obj.srcX, obj.srcY
+              // this.type = type_key // ??
+              );
           }
-        }
+        });
+      };
+
+      for (var type_key in room) {
+        _loop(type_key);
       }
-    }
-  }, {
-    key: 'makeAwall',
-    value: function makeAwall() {
-
-      // const wallSprite = new Sprite (
-      //   this.ctx,
-      //   "app/assets/sprites/walls/stone_wall.png",
-      //   375,175
-      // );
-      // same same
-
-      // const img =  new Image ();
-      //
-      // img.onload = () => {
-      //   debugger
-      //
-      //   this.ctx.drawImage(
-      //     img,
-      //       0, 0,
-      //       35, 35,
-      //       400, 150,
-      //       45, 45
-      //   );
-      // };
-      //
-      // img.src = "app/assets/sprites/walls/stone_wall.png";
-
-
     }
   }, {
     key: 'draw',
@@ -921,7 +1127,7 @@ var StatsArea = function () {
 
   _createClass(StatsArea, [{
     key: 'updateStat',
-    value: function updateStat(stat, dVal) {
+    value: function updateStat(stat, dVal, callback) {
       // for affecting the pool
       if (dVal === "max") {
         var setVal = Object.assign(this.statVals[stat][1]);
@@ -929,6 +1135,10 @@ var StatsArea = function () {
       } else {
         if (this.statVals[stat][0] > 0) {
           this.statVals[stat][0] += dVal;
+
+          if (callback) {
+            callback();
+          } // not sure if I actually need/want this, but leaving it for now.
         } else {
           window.alert("You must rest! Press 'r' ");
         }

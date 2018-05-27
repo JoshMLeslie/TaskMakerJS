@@ -9,8 +9,8 @@ document.addEventListener("DOMContentLoaded", function(){
 
 
 
-  runOnce(mainrender, false, 10);
-  // render, once?, interval
+  runOnce( mainrender, true, 10 );
+      // ( renderObj [, once?, interval if false] )
 });
 
 const runOnce = (mainrender, bool, time) => {

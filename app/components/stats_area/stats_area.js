@@ -30,13 +30,16 @@ export default class StatsArea {
     this.draw = this.draw.bind(this);
   }
 
-  updateStat(stat, dVal) { // for affecting the pool
+  updateStat(stat, dVal, callback) {
+    // for affecting the pool
     if (dVal === "max") {
       const setVal = Object.assign(this.statVals[stat][1]);
       this.statVals[stat][0] = setVal;
     } else {
       if (this.statVals[stat][0] > 0) {
         this.statVals[stat][0] += dVal;
+
+        if ( callback ) { callback(); } // not sure if I actually need/want this, but leaving it for now.
       } else {
         window.alert("You must rest! Press 'r' ");
       }

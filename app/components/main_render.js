@@ -35,7 +35,9 @@ export default class MainRender {
   inputSelector (e) {
     switch (e.keyCode) {
       case 37: case 38: case 39: case 40:
+        this.statsarea.updateStat("Stamina", -0.5);
         this.character.move(e.keyCode);
+
         break;
       case 65: // 'a' - action, drains stamina
         this.statsarea.updateStat("Stamina", -2);
@@ -62,7 +64,7 @@ export default class MainRender {
     this.background.draw();
     this.textarea.draw();
 
-    this.textarea.displayText("Magic Mouth", "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi convallis gravida commodo. Vestibulum vel velit eget est pretium eleifend. Nulla ex ex, semper sit amet commodo at, tincidunt nec erat.");
+    this.textarea.displayText("Bob:", "HELP. I'm trapped in this box!");
 
     this.playarea.draw();
     this.statsarea.draw();
