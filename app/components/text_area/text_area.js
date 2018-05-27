@@ -23,7 +23,8 @@ export default class TextArea {
       let end = (i + 1) * 44;
       result.push(body.slice(start,end) );
     }
-  return result;
+    
+    return result;
   }
 
 

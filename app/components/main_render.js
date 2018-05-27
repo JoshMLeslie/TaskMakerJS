@@ -42,7 +42,7 @@ export default class MainRender {
 
     this.text_obj = {
       speaker: "Bob:",
-      body: "HELP! I'm trapped in this box! For now at least I can move with 'arrow keys' and examine my surroundings with 'e'. That's something, I suppose. "
+      body: "HELP! I'm trapped in this box! For now at least I can move with 'arrow keys' and examine my surroundings with 'e'. That's something, I suppose."
     };
   }
 
@@ -139,3 +139,55 @@ export default class MainRender {
 } // class end
 
 // textarea.displayText("Magic Mouth", "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi convallis gravida commodo. Vestibulum vel velit eget est pretium eleifend. Nulla ex ex, semper sit amet commodo at, tincidunt nec erat. Pellentesque id justo consectetur, posuere est eu, pulvinar ipsum. Praesent rutrum malesuada lacus quis bibendum. Suspendisse sed est luctus mi commodo luctus. Vestibulum ipsum sem, imperdiet at purus vehicula, commodo porttitor enim. Ut id sem nunc. Duis sollicitudin purus sagittis, consequat enim dignissim, pretium eros. Aenean nisi purus, bibendum vel pretium eget, varius id turpis. Etiam eu quam a nisl lobortis egestas nec id felis. Mauris vitae finibus eros. Duis viverra blandit nibh, a fringilla justo ultricies ac.");
+
+
+
+const str = "HELP! I'm trapped in this box! For now at least I can move with 'arrow keys' and examine my surroundings with 'e'. That's something, I suppose.";
+
+window.str = str;
+
+const find_whiteSpace = (str) => {
+  const break_at_or_before = 44;
+
+  let running_idx = 0;
+  let counter = 0;
+  let good_idxs = [];
+  let closest_idx = 0;
+
+  for (let i = 0; i < str.length; i++) {
+    let matched = str.slice(i,str.length).match(/\s/);
+    if (matched === null ) continue;
+
+    console.log(running_idx);
+
+    running_idx += matched.index;
+    if ((running_idx / break_at_or_before) - counter < 1) {
+      closest_idx = running_idx;
+    } else {
+      counter += 1;
+      good_idxs.push(closest_idx);
+    }
+
+    i += matched.index;
+  }
+
+  // console.log(good_idxs.length);
+
+  if (good_idxs.length < Math.floor(str.length / break_at_or_before) ) {
+    good_idxs.push(str.length);
+  }
+
+  let result = [];
+  let start = 0;
+  let end = 0;
+  good_idxs.forEach(idx => {
+    console.log(idx);
+    end = idx - 1;
+    result.push(str.slice(start, end));
+    start = idx;
+  });
+
+  console.log(result);
+};
+
+window.find_whiteSpace = find_whiteSpace;

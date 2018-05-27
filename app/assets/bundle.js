@@ -934,7 +934,7 @@ var MainRender = function () {
 
     this.text_obj = {
       speaker: "Bob:",
-      body: "HELP! I'm trapped in this box! For now at least I can move with 'arrow keys' and examine my surroundings with 'e'. That's something, I suppose. "
+      body: "HELP! I'm trapped in this box! For now at least I can move with 'arrow keys' and examine my surroundings with 'e'. That's something, I suppose."
     };
   }
 
@@ -1042,6 +1042,55 @@ var MainRender = function () {
 
 
 exports.default = MainRender;
+var str = "HELP! I'm trapped in this box! For now at least I can move with 'arrow keys' and examine my surroundings with 'e'. That's something, I suppose.";
+
+window.str = str;
+
+var find_whiteSpace = function find_whiteSpace(str) {
+  var break_at_or_before = 44;
+
+  var running_idx = 0;
+  var counter = 0;
+  var good_idxs = [];
+  var closest_idx = 0;
+
+  for (var i = 0; i < str.length; i++) {
+    var matched = str.slice(i, str.length).match(/\s/);
+    if (matched === null) continue;
+
+    console.log(running_idx);
+
+    running_idx += matched.index;
+    if (running_idx / break_at_or_before - counter < 1) {
+      closest_idx = running_idx;
+    } else {
+      counter += 1;
+      good_idxs.push(closest_idx);
+    }
+
+    i += matched.index;
+  }
+
+  // console.log(good_idxs.length);
+
+  if (good_idxs.length < Math.floor(str.length / break_at_or_before)) {
+    good_idxs.push(str.length);
+  }
+
+  var result = [];
+  var start = 0;
+  var end = 0;
+  good_idxs.forEach(function (idx) {
+    console.log(idx);
+    end = idx - 1;
+    result.push(str.slice(start, end));
+    start = idx;
+  });
+
+  console.log(result);
+};
+
+window.find_whiteSpace = find_whiteSpace;
 
 /***/ }),
 
@@ -1463,6 +1512,7 @@ var TextArea = function () {
         var end = (i + 1) * 44;
         result.push(body.slice(start, end));
       }
+
       return result;
     }
   }, {
