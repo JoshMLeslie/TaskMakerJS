@@ -20,7 +20,7 @@ const posOf = urls.posOf;
 
 export const entryRoom = [
   { // 1st row
-    image_url: stone_wall, type: 'wall', }, {
+    image_url: stone_wall }, {
     image_url: alphabet, type: 'wall', srcX: posOf("T") }, {
     image_url: alphabet, type: 'wall', srcX: posOf("U") }, {
     image_url: alphabet, type: 'wall', srcX: posOf("T") }, {
@@ -38,7 +38,7 @@ export const entryRoom = [
     image_url: flowers }, {
     image_url: shrubs }, {
     image_url: bush }, {
-    image_url: stone_wall, type: 'wall',
+    image_url: stone_wall
   }, { // 3rd row
     image_url: alphabet, type: 'wall', srcX: posOf("W") }, {
     image_url: shrubs }, {

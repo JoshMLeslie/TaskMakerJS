@@ -401,17 +401,17 @@ var Background = function () {
         // N => "N" @ 555, 40, EAST => "E" @ ... "A" @ .... "S" ...
         N: [555, 70],
         EAST: {
-          E: [768, vPos], // micro adjustments
-          A: [767.5, vPos += vAdj],
-          S: [769, vPos += vAdj],
-          T: [768, vPos += vAdj]
+          E: [766, vPos], // micro adjustments
+          A: [765, vPos += vAdj],
+          S: [766, vPos += vAdj],
+          T: [766, vPos += vAdj]
         },
         SOUTH: [540, 512.5],
         WEST: {
-          W: [331, vPos2],
-          E: [333, vPos2 += vAdj],
-          S: [333, vPos2 += vAdj],
-          T: [332, vPos2 += vAdj]
+          W: [333, vPos2],
+          E: [335, vPos2 += vAdj],
+          S: [335.5, vPos2 += vAdj],
+          T: [335, vPos2 += vAdj]
         }
       };
 
@@ -558,8 +558,7 @@ var Character = function () {
 
     this.move = this.move.bind(this);
     this.isFacing = this.isFacing.bind(this);
-    this.imageDirectionData = this.imageDirectionData.bind(this);
-    this.position = this.position.bind(this);
+    this.updateSpriteImage = this.updateSpriteImage.bind(this);
   }
 
   _createClass(Character, [{
@@ -568,40 +567,38 @@ var Character = function () {
       return [this.x, this.y];
     }
   }, {
-    key: 'mapKeyToMove',
-    value: function mapKeyToMove(key) {
-      // 37, left // 38, up // 39, right // 40, down
+    key: 'positionAhead',
+    value: function positionAhead() {
+      var diff = this.diffAhead();
+      return [this.x + diff[0], this.y + diff[1]];
+    }
+  }, {
+    key: 'mapKeyToDir',
+    value: function mapKeyToDir(key) {
       switch (key) {
         case 37:
-          if (this.isFacing("left")) {
-            return [-this.size, 0]; // then move left
-          } else {
-            return [0, 0];
-          }
-          break; // linters
+          return "left";
         case 38:
-          if (this.isFacing("up")) {
-            return [0, -this.size];
-          } else {
-            return [0, 0];
-          }
-          break;
+          return "up";
         case 39:
-          if (this.isFacing("right")) {
-            return [this.size, 0];
-          } else {
-            return [0, 0];
-          }
-          break;
+          return "right";
         case 40:
-          if (this.isFacing("down")) {
-            return [0, this.size];
-          } else {
-            return [0, 0];
-          }
-          break;
+          return "down";
         default:
           return [0, 0];
+      }
+    }
+  }, {
+    key: 'makeAmove',
+    value: function makeAmove(key) {
+      // 37, left // 38, up // 39, right // 40, down
+      var dir = this.mapKeyToDir(key);
+      var movement = this.isFacing(dir);
+
+      if (movement) {
+        return movement;
+      } else {
+        return [0, 0];
       }
     }
   }, {
@@ -611,11 +608,27 @@ var Character = function () {
         this.direction = direction;
         return false;
       } // else this.dir === dir
-      return true;
+      return this.diffAhead();
     }
   }, {
-    key: 'imageDirectionData',
-    value: function imageDirectionData() {
+    key: 'diffAhead',
+    value: function diffAhead() {
+      switch (this.direction) {
+        case "left":
+          return [-45, 0];
+        case "up":
+          return [0, -45];
+        case "right":
+          return [45, 0];
+        case "down":
+          return [0, 45];
+        default:
+          return [0, 0];
+      }
+    }
+  }, {
+    key: 'updateSpriteImage',
+    value: function updateSpriteImage() {
       switch (this.direction) {
         case "up":
           this.image_url = "app/assets/sprites/char/char_up_down.png";
@@ -635,26 +648,27 @@ var Character = function () {
       }
     }
   }, {
-    key: 'checkWalls',
-    value: function checkWalls(moveToX, moveToY, walls) {
+    key: 'checkWallCollision',
+    value: function checkWallCollision(moveToX, moveToY, walls) {
       for (var idx in walls) {
         var wallPos = walls[idx];
         if (wallPos[0] === moveToX && wallPos[1] === moveToY) {
           return false;
         }
       }
-
       return true;
     }
   }, {
-    key: 'checkPlayArea',
-    value: function checkPlayArea(moveToX, moveToY) {
+    key: 'checkPlayAreaCollision',
+    value: function checkPlayAreaCollision(moveToX, moveToY) {
       // hard coded maximum bounds
       return moveToX > 345 && moveToX < 750 && moveToY > 80 && moveToY < 485;
     }
   }, {
-    key: 'wontColide',
-    value: function wontColide(key, dx, dy, walls) {
+    key: 'wontCollide',
+    value: function wontCollide(key, dx, dy, walls) {
+      // returns bool
+
       // walls is an array/pojo:
       /*
         { 0: [353, 88],
@@ -663,16 +677,16 @@ var Character = function () {
 
       var moveToX = this.x + dx;
       var moveToY = this.y + dy;
-      return this.checkPlayArea(moveToX, moveToY) && this.checkWalls(moveToX, moveToY, walls);
+      return this.checkPlayAreaCollision(moveToX, moveToY) && this.checkWallCollision(moveToX, moveToY, walls);
     }
   }, {
     key: 'move',
     value: function move(key, walls) {
-      var movement = this.mapKeyToMove(key);
+      var movement = this.makeAmove(key);
       var dx = movement[0];
       var dy = movement[1];
 
-      if (this.wontColide(key, dx, dy, walls)) {
+      if (this.wontCollide(key, dx, dy, walls)) {
         this.x += dx;
         this.y += dy;
         this.draw();
@@ -682,7 +696,7 @@ var Character = function () {
     key: 'draw',
     value: function draw() {
       var ctx = this.ctx;
-      var sprite_data = this.imageDirectionData();
+      var sprite_data = this.updateSpriteImage();
       // updates image url, exports relevant image positioning since L-R and Up-Dw are combinded png's
 
       new _sprite2.default(this.ctx, this.image_url, this.x, this.y, sprite_data[0], sprite_data[1]);
@@ -740,7 +754,7 @@ var shrubs = urls.shrubs;
 var posOf = urls.posOf;
 
 var entryRoom = exports.entryRoom = [{ // 1st row
-  image_url: stone_wall, type: 'wall' }, {
+  image_url: stone_wall }, {
   image_url: alphabet, type: 'wall', srcX: posOf("T") }, {
   image_url: alphabet, type: 'wall', srcX: posOf("U") }, {
   image_url: alphabet, type: 'wall', srcX: posOf("T") }, {
@@ -758,7 +772,7 @@ var entryRoom = exports.entryRoom = [{ // 1st row
   image_url: flowers }, {
   image_url: shrubs }, {
   image_url: bush }, {
-  image_url: stone_wall, type: 'wall'
+  image_url: stone_wall
 }, { // 3rd row
   image_url: alphabet, type: 'wall', srcX: posOf("W") }, {
   image_url: shrubs }, {
@@ -898,6 +912,7 @@ var MainRender = function () {
     this.canvasEl.height = 530;
 
     this.walls = {};
+    this.entities = {};
     // oh, you'll see. I hate this. This is why State exists.
 
     var name = "Josh";
@@ -912,10 +927,19 @@ var MainRender = function () {
     this.draw = this.draw.bind(this);
     this.run = this.run.bind(this);
     this.inputSelector = this.inputSelector.bind(this);
+    this.drawPlayArea = this.drawPlayArea.bind(this);
 
     // inputSelector needs to be bound first.
     window.addEventListener("keydown", this.run);
+
+    this.text_obj = {
+      speaker: "Bob:",
+      body: "HELP! I'm trapped in this box! For now at least I can move with 'arrow keys' and examine my surroundings with 'e'. That's something, I suppose. "
+    };
   }
+
+  // UTILITY //
+
 
   _createClass(MainRender, [{
     key: 'inputSelector',
@@ -926,27 +950,52 @@ var MainRender = function () {
           this.statsarea.updateStat("Stamina", -0.5);
           this.character.move(e.keyCode, this.walls);
           // this.walls? madness. MADNESS. Forward the foundation!
-          return true; // prevent reloading on unbound keys
+          return 'character'; // prevent reloading from unbound keys
 
         case 65:
           // 'a' - action, drains stamina
           this.statsarea.updateStat("Stamina", -1);
-          return true;
+          return 'stats';
 
         case 69:
           // 'e' - examine
-          window.alert("examine!");
+          var pos = this.character.positionAhead();
+          this.examineEntity(pos);
+
           return true;
 
         case 82:
           // 'r' - rest // replenishes stamina
           this.statsarea.updateStat("Stamina", "max");
-          return true;
+          return 'stats';
 
         default:
           //   window.alert(`${e.key} is not bound`);
           return false;
       }
+    }
+  }, {
+    key: 'examineEntity',
+    value: function examineEntity(pos) {
+      for (var idx in this.entities) {
+        var ent = this.entities[idx];
+
+        if (ent.pos[0] === pos[0] && ent.pos[1] === pos[1]) {
+          var ent_text = cleanText(ent.type);
+          this.text_obj = { speaker: 'Examine:', body: 'That\'s ' + ent_text + '!' };
+        }
+      }
+    }
+    // \\ //
+
+    // RENDERING //
+
+  }, {
+    key: 'drawPlayArea',
+    value: function drawPlayArea() {
+      var temp = this.playarea.draw();
+      this.walls = temp.walls;
+      this.entities = temp.entities;
     }
   }, {
     key: 'draw',
@@ -959,26 +1008,35 @@ var MainRender = function () {
       this.background.draw();
 
       this.textarea.draw();
-      this.textarea.displayText("Bob:", "HELP. I'm trapped in this box!");
+      this.textarea.displayText(this.text_obj);
 
       this.statsarea.draw();
 
       // 'walls' bubbled up from within pa.draw
-      this.walls = this.playarea.draw();
+      this.drawPlayArea();
 
       this.character.draw();
     }
   }, {
     key: 'run',
     value: function run(e) {
-      if (this.inputSelector(e)) {
-        this.draw();
+      switch (this.inputSelector(e)) {
+        case 'character':
+          this.statsarea.draw();
+          this.drawPlayArea();
+          this.character.draw();
+          break;
+        case 'stats':
+          this.statsarea.draw();
+          break;
+        default:
+          this.draw();
       }
     }
   }]);
 
   return MainRender;
-}();
+}(); // class end
 
 // textarea.displayText("Magic Mouth", "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi convallis gravida commodo. Vestibulum vel velit eget est pretium eleifend. Nulla ex ex, semper sit amet commodo at, tincidunt nec erat. Pellentesque id justo consectetur, posuere est eu, pulvinar ipsum. Praesent rutrum malesuada lacus quis bibendum. Suspendisse sed est luctus mi commodo luctus. Vestibulum ipsum sem, imperdiet at purus vehicula, commodo porttitor enim. Ut id sem nunc. Duis sollicitudin purus sagittis, consequat enim dignissim, pretium eros. Aenean nisi purus, bibendum vel pretium eget, varius id turpis. Etiam eu quam a nisl lobortis egestas nec id felis. Mauris vitae finibus eros. Duis viverra blandit nibh, a fringilla justo ultricies ac.");
 
@@ -1083,6 +1141,7 @@ var PlayArea = function () {
       // 'room' is a (big) array / POJO
 
       var walls = {}; // to hold position of all walls on the map
+      var entities = {}; // to hold position of all entities " "
 
       room.forEach(function (obj, obj_idx) {
         var x = _this.spriteX(obj_idx);
@@ -1094,14 +1153,21 @@ var PlayArea = function () {
           obj.srcY = 0;
         }
 
-        if (obj.type && obj.type === "wall") {
+        var obj_type = obj.image_url.match(/(sprites\/\w*\/)(\w*)/)[2];
+
+        if (obj_type.includes('wall') || obj.type === 'wall') {
           Object.assign(walls, _defineProperty({}, obj_idx, [x, y]));
         }
+
+        Object.assign(entities, _defineProperty({}, obj_idx, {
+          pos: [x, y],
+          type: obj_type
+        }));
 
         new _sprite2.default(_this.ctx, obj.image_url, x, y, obj.srcX, obj.srcY);
       });
 
-      return walls;
+      return { walls: walls, entities: entities }; // bubbles up to drawLevels as pojo
     }
   }, {
     key: 'draw',
@@ -1385,24 +1451,28 @@ var TextArea = function () {
   }
 
   _createClass(TextArea, [{
-    key: "parseText",
-    value: function parseText(text) {
+    key: "parseBody",
+    value: function parseBody(body) {
       // parses a string into chunks of 44 characters:
       // max width of disp @ font = 16px
 
-      // improve to only break on white space nearest 44
+      // improve to only break on white space <= 44
       var result = [];
-      for (var i = 0; i < Math.ceil(text.length / 44); i++) {
+      for (var i = 0; i < Math.ceil(body.length / 44); i++) {
         var start = i * 44;
         var end = (i + 1) * 44;
-        result.push(text.slice(start, end));
+        result.push(body.slice(start, end));
       }
       return result;
     }
   }, {
     key: "displayText",
-    value: function displayText(speaker, text) {
-      var parsedText = this.parseText(text);
+    value: function displayText(_ref) {
+      var speaker = _ref.speaker,
+          body = _ref.body;
+
+
+      var parsedText = this.parseBody(body);
 
       var ctx = this.ctx;
       // this.currentText.push([speaker,text]);

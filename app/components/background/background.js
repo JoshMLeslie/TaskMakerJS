@@ -146,17 +146,17 @@ export default class Background {
       // N => "N" @ 555, 40, EAST => "E" @ ... "A" @ .... "S" ...
       N: [555, 70],
       EAST: {
-        E: [768, vPos], // micro adjustments
-        A: [767.5, vPos += vAdj],
-        S: [769, vPos += vAdj],
-        T: [768, vPos += vAdj],
+        E: [766, vPos], // micro adjustments
+        A: [765, vPos += vAdj],
+        S: [766, vPos += vAdj],
+        T: [766, vPos += vAdj],
       },
       SOUTH: [540, 512.5],
       WEST: {
-        W: [331, vPos2],
-        E: [333, vPos2 += vAdj],
-        S: [333, vPos2 += vAdj],
-        T: [332, vPos2 += vAdj]
+        W: [333, vPos2],
+        E: [335, vPos2 += vAdj],
+        S: [335.5, vPos2 += vAdj],
+        T: [335, vPos2 += vAdj]
       }
     };
 

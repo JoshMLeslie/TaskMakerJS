@@ -12,23 +12,24 @@ export default class TextArea {
     this.y = 40;
   }
 
-  parseText(text) {
+  parseBody(body) {
     // parses a string into chunks of 44 characters:
     // max width of disp @ font = 16px
 
-    // improve to only break on white space nearest 44
+    // improve to only break on white space <= 44
     let result = [];
-    for (let i = 0; i < Math.ceil(text.length/44); i++) {
+    for (let i = 0; i < Math.ceil(body.length/44); i++) {
       let start = i * 44;
       let end = (i + 1) * 44;
-      result.push(text.slice(start,end) );
+      result.push(body.slice(start,end) );
     }
   return result;
   }
 
 
-  displayText(speaker, text) {
-    let parsedText = this.parseText(text);
+  displayText({speaker, body}) {
+
+    let parsedText = this.parseBody(body);
 
     const ctx = this.ctx;
     // this.currentText.push([speaker,text]);

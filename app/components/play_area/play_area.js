@@ -45,6 +45,7 @@ export default class PlayArea {
     // 'room' is a (big) array / POJO
 
     let walls = {}; // to hold position of all walls on the map
+    let entities = {}; // to hold position of all entities " "
 
     room.forEach((obj, obj_idx) => {
       const x = this.spriteX(obj_idx);
@@ -56,9 +57,21 @@ export default class PlayArea {
         obj.srcY = 0;
       }
 
-      if (obj.type && obj.type === "wall") {
-        Object.assign(walls, { [obj_idx]: [x,y] });
+      let obj_type = (
+        obj.image_url.match( /(sprites\/\w*\/)(\w*)/ )[2]
+      );
+
+      if (obj_type.includes('wall') || obj.type === 'wall') {
+        Object.assign( walls, { [obj_idx]: [x,y] } );
       }
+
+      Object.assign(
+        entities,
+        { [obj_idx]: {
+          pos: [x,y],
+          type: obj_type
+        } }
+      );
 
       new Sprite (
         this.ctx,
@@ -68,7 +81,7 @@ export default class PlayArea {
       );
     });
 
-    return walls;
+    return {walls, entities}; // bubbles up to drawLevels as pojo
   }
 
   draw () {

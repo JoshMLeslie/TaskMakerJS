@@ -16,47 +16,42 @@ export default class Character {
 
     this.move = this.move.bind(this);
     this.isFacing = this.isFacing.bind(this);
-    this.imageDirectionData = this.imageDirectionData.bind(this);
-    this.position = this.position.bind(this);
+    this.updateSpriteImage = this.updateSpriteImage.bind(this);
   }
 
   position () {
     return [this.x, this.y];
   }
 
-  mapKeyToMove(key) {
-    // 37, left // 38, up // 39, right // 40, down
+  positionAhead () {
+    let diff = this.diffAhead();
+    return [this.x + diff[0], this.y + diff[1] ];
+  }
+
+  mapKeyToDir(key) {
     switch (key){
       case 37:
-        if ( this.isFacing("left") ) {
-          return [-this.size, 0]; // then move left
-        } else {
-          return [0,0];
-        }
-        break; // linters
+        return "left";
       case 38:
-        if ( this.isFacing("up") ) {
-          return [0, -this.size];
-        } else {
-          return [0,0];
-        }
-        break;
+        return "up";
       case 39:
-        if ( this.isFacing("right") ) {
-          return [this.size, 0];
-        } else {
-          return [0,0];
-        }
-        break;
+        return "right";
       case 40:
-        if ( this.isFacing("down") ) {
-          return [0, this.size];
-        } else {
-          return [0,0];
-        }
-        break;
+        return "down";
       default:
         return [0,0];
+    }
+  }
+
+  makeAmove(key) {
+    // 37, left // 38, up // 39, right // 40, down
+    let dir = this.mapKeyToDir(key);
+    let movement = this.isFacing(dir);
+
+    if (movement) {
+      return movement;
+    } else {
+      return [0, 0];
     }
   }
 
@@ -65,10 +60,25 @@ export default class Character {
       this.direction = direction;
       return false;
     } // else this.dir === dir
-    return true;
+    return this.diffAhead();
   }
 
-  imageDirectionData() {
+  diffAhead () {
+    switch(this.direction) {
+      case "left":
+        return [-45, 0];
+      case "up":
+        return [0, -45];
+      case "right":
+        return [45, 0];
+      case "down":
+        return [0, 45];
+      default:
+        return [0,0];
+    }
+  }
+
+  updateSpriteImage() {
     switch(this.direction) {
       case "up":
         this.image_url = "app/assets/sprites/char/char_up_down.png";
@@ -88,22 +98,23 @@ export default class Character {
     }
   }
 
-  checkWalls (moveToX, moveToY, walls) {
+  checkWallCollision (moveToX, moveToY, walls) {
     for (let idx in walls) {
       let wallPos = walls[idx];
       if (wallPos[0] === moveToX && wallPos[1] === moveToY) {
         return false;
       }
     }
-
     return true;
   }
 
-  checkPlayArea (moveToX, moveToY) { // hard coded maximum bounds
+  checkPlayAreaCollision (moveToX, moveToY) { // hard coded maximum bounds
     return (moveToX > 345 && moveToX < 750 ) && (moveToY > 80 && moveToY < 485);
   }
 
-  wontColide(key, dx, dy, walls) {
+  wontCollide(key, dx, dy, walls) {
+    // returns bool
+
     // walls is an array/pojo:
     /*
       { 0: [353, 88],
@@ -113,18 +124,17 @@ export default class Character {
     const moveToX = this.x + dx;
     const moveToY = this.y + dy;
     return (
-      this.checkPlayArea(moveToX, moveToY) &&
-      this.checkWalls(moveToX, moveToY, walls)
+      this.checkPlayAreaCollision(moveToX, moveToY) &&
+      this.checkWallCollision(moveToX, moveToY, walls)
     );
   }
 
   move(key, walls) {
-    const movement = this.mapKeyToMove(key);
+    const movement = this.makeAmove(key);
     const dx = movement[0];
     const dy = movement[1];
 
-
-    if ( this.wontColide(key, dx, dy, walls) ) {
+    if ( this.wontCollide(key, dx, dy, walls) ) {
       this.x += dx;
       this.y += dy;
       this.draw();
@@ -133,7 +143,7 @@ export default class Character {
 
   draw () {
     const ctx = this.ctx;
-    const sprite_data = this.imageDirectionData();
+    const sprite_data = this.updateSpriteImage();
     // updates image url, exports relevant image positioning since L-R and Up-Dw are combinded png's
 
     new Sprite (
