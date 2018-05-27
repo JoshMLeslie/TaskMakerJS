@@ -17,6 +17,11 @@ export default class Character {
     this.move = this.move.bind(this);
     this.isFacing = this.isFacing.bind(this);
     this.imageDirectionData = this.imageDirectionData.bind(this);
+    this.position = this.position.bind(this);
+  }
+
+  position () {
+    return [this.x, this.y];
   }
 
   mapKeyToMove(key) {
@@ -83,14 +88,43 @@ export default class Character {
     }
   }
 
-  move(key) {
+  checkWalls (moveToX, moveToY, walls) {
+    for (let idx in walls) {
+      let wallPos = walls[idx];
+      if (wallPos[0] === moveToX && wallPos[1] === moveToY) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  checkPlayArea (moveToX, moveToY) { // hard coded maximum bounds
+    return (moveToX > 345 && moveToX < 750 ) && (moveToY > 80 && moveToY < 485);
+  }
+
+  wontColide(key, dx, dy, walls) {
+    // walls is an array/pojo:
+    /*
+      { 0: [353, 88],
+      1: [398, 88] }
+    */
+
+    const moveToX = this.x + dx;
+    const moveToY = this.y + dy;
+    return (
+      this.checkPlayArea(moveToX, moveToY) &&
+      this.checkWalls(moveToX, moveToY, walls)
+    );
+  }
+
+  move(key, walls) {
     const movement = this.mapKeyToMove(key);
     const dx = movement[0];
     const dy = movement[1];
-    const checkX = this.x + dx;
-    const checkY = this.y + dy;
 
-    if ( (checkX > 345 && checkX < 750 ) && (checkY > 80 && checkY < 485) ) {
+
+    if ( this.wontColide(key, dx, dy, walls) ) {
       this.x += dx;
       this.y += dy;
       this.draw();
@@ -109,7 +143,7 @@ export default class Character {
       sprite_data[0], sprite_data[1]
     );
 
-    // ctx.beginPath();
+    // ctx.beginPath(); // simple character box
     //   ctx.fillStyle="#9cd0e5"; // pale blue dot
     // ctx.fillRect(this.x, this.y, this.width, this.height);
   }

@@ -15,10 +15,15 @@ export default class MainRender {
     this.canvasEl = canvasEl;
     this.ctx = ctx;
 
-    this.canvasEl.width = 790;  // this is the max width the game occupies
+    // init def for the max space the game occupies
+    this.canvasEl.width = 790;
     this.canvasEl.height = 530;
 
-    let name = "Josh"; // eventually replace with input from a login screen.
+    this.walls = {};
+    // oh, you'll see. I hate this. This is why State exists.
+
+    let name = "Josh";
+    // eventually replace with input from a login screen.
 
     this.background = new Background(name, canvasEl, ctx);
     this.playarea = new PlayArea(canvasEl, ctx);
@@ -36,9 +41,10 @@ export default class MainRender {
 
   inputSelector (e) {
     switch (e.keyCode) {
-      case 37: case 38: case 39: case 40:
+      case 37: case 38: case 39: case 40: // l, u, d, r ?
         this.statsarea.updateStat("Stamina", -0.5);
-        this.character.move(e.keyCode);
+        this.character.move(e.keyCode, this.walls);
+        // this.walls? madness. MADNESS. Forward the foundation!
         return true; // prevent reloading on unbound keys
 
       case 65: // 'a' - action, drains stamina
@@ -52,7 +58,7 @@ export default class MainRender {
       case 82: // 'r' - rest // replenishes stamina
         this.statsarea.updateStat("Stamina", "max");
         return true;
-        
+
       default:
       //   window.alert(`${e.key} is not bound`);
         return false;
@@ -64,16 +70,23 @@ export default class MainRender {
   draw () {
     const ctx = this.ctx;
 
-    ctx.clearRect(0, 0, 790, 530);
+    ctx.clearRect(
+      0, 0,
+      this.canvasEl.width,
+      this.canvasEl.height
+    );
 
     // modules
     this.background.draw();
-    this.textarea.draw();
 
+    this.textarea.draw();
     this.textarea.displayText("Bob:", "HELP. I'm trapped in this box!");
 
-    this.playarea.draw();
     this.statsarea.draw();
+
+    // 'walls' bubbled up from within pa.draw
+    this.walls = this.playarea.draw();
+
     this.character.draw();
   }
 

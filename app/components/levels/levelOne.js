@@ -20,17 +20,17 @@ const posOf = urls.posOf;
 
 export const entryRoom = [
   { // 1st row
-    image_url: stone_wall, }, {
-    image_url: alphabet, srcX: posOf("T") }, {
-    image_url: alphabet, srcX: posOf("U") }, {
-    image_url: alphabet, srcX: posOf("T") }, {
-    image_url: alphabet, srcX: posOf("O") }, {
-    image_url: alphabet, srcX: posOf("R") }, {
-    image_url: alphabet, srcX: posOf("I") }, {
-    image_url: alphabet, srcX: posOf("A") }, {
-    image_url: alphabet, srcX: posOf("L")
+    image_url: stone_wall, type: 'wall', }, {
+    image_url: alphabet, type: 'wall', srcX: posOf("T") }, {
+    image_url: alphabet, type: 'wall', srcX: posOf("U") }, {
+    image_url: alphabet, type: 'wall', srcX: posOf("T") }, {
+    image_url: alphabet, type: 'wall', srcX: posOf("O") }, {
+    image_url: alphabet, type: 'wall', srcX: posOf("R") }, {
+    image_url: alphabet, type: 'wall', srcX: posOf("I") }, {
+    image_url: alphabet, type: 'wall', srcX: posOf("A") }, {
+    image_url: alphabet, type: 'wall', srcX: posOf("L")
   }, { // 2nd row
-    image_url: stone_wall }, {
+    image_url: stone_wall, type: 'wall' }, {
     image_url: bush }, {
     image_url: shrubs }, {
     image_url: flowers }, {
@@ -38,9 +38,9 @@ export const entryRoom = [
     image_url: flowers }, {
     image_url: shrubs }, {
     image_url: bush }, {
-    image_url: stone_wall,
+    image_url: stone_wall, type: 'wall',
   }, { // 3rd row
-    image_url: alphabet, srcX: posOf("W") }, {
+    image_url: alphabet, type: 'wall', srcX: posOf("W") }, {
     image_url: shrubs }, {
     image_url: rich_soil }, {
     image_url: rich_soil }, {
@@ -48,9 +48,9 @@ export const entryRoom = [
     image_url: rich_soil }, {
     image_url: rich_soil }, {
     image_url: shrubs }, {
-    image_url: alphabet, srcX: posOf("W")
+    image_url: alphabet, type: 'wall', srcX: posOf("W")
   }, { // 4th row
-    image_url: alphabet, srcX: posOf("E") }, {
+    image_url: alphabet, type: 'wall', srcX: posOf("E") }, {
     image_url: flowers }, {
     image_url: rich_soil }, {
     image_url: brick }, {
@@ -58,9 +58,9 @@ export const entryRoom = [
     image_url: brick }, {
     image_url: rich_soil }, {
     image_url: flowers }, {
-    image_url: alphabet, srcX: posOf("E")
+    image_url: alphabet, type: 'wall', srcX: posOf("E")
   }, { // 5th row
-    image_url: alphabet, srcX: posOf("L") }, {
+    image_url: alphabet, type: 'wall', srcX: posOf("L") }, {
     image_url: flowers }, {
     image_url: rich_soil }, {
     image_url: brick }, {
@@ -68,9 +68,9 @@ export const entryRoom = [
     image_url: brick }, {
     image_url: rich_soil }, {
     image_url: flowers }, {
-    image_url: alphabet, srcX: posOf("L")
+    image_url: alphabet, type: 'wall', srcX: posOf("L")
   }, { // 6th row
-    image_url: alphabet, srcX: posOf("C") }, {
+    image_url: alphabet, type: 'wall', srcX: posOf("C") }, {
     image_url: flowers }, {
     image_url: rich_soil }, {
     image_url: brick }, {
@@ -78,9 +78,9 @@ export const entryRoom = [
     image_url: brick }, {
     image_url: rich_soil }, {
     image_url: flowers }, {
-    image_url: alphabet, srcX: posOf("C")
+    image_url: alphabet, type: 'wall', srcX: posOf("C")
   }, { // 7th row
-    image_url: alphabet, srcX: posOf("O") }, {
+    image_url: alphabet, type: 'wall', srcX: posOf("O") }, {
     image_url: shrubs }, {
     image_url: rich_soil }, {
     image_url: rich_soil }, {
@@ -88,9 +88,9 @@ export const entryRoom = [
     image_url: rich_soil }, {
     image_url: rich_soil }, {
     image_url: shrubs }, {
-    image_url: alphabet, srcX: posOf("O")
+    image_url: alphabet, type: 'wall', srcX: posOf("O")
   }, { // 8th row
-    image_url: alphabet, srcX: posOf("M") }, {
+    image_url: alphabet, type: 'wall', srcX: posOf("M") }, {
     image_url: bush }, {
     image_url: shrubs }, {
     image_url: rich_soil }, {
@@ -98,16 +98,16 @@ export const entryRoom = [
     image_url: rich_soil }, {
     image_url: shrubs }, {
     image_url: bush }, {
-    image_url: alphabet, srcX: posOf("M")
+    image_url: alphabet, type: 'wall', srcX: posOf("M")
   }, { // 9th row
-    image_url: alphabet, srcX: posOf("E") }, {
-    image_url: stone_wall }, {
-    image_url: right_arrow }, {
-    image_url: right_arrow }, {
+    image_url: alphabet, type: 'wall', srcX: posOf("E") }, {
+    image_url: stone_wall, type: 'wall' }, {
+    image_url: right_arrow, type: 'wall' }, {
+    image_url: right_arrow, type: 'wall' }, {
     image_url: magic_mouth }, {
-    image_url: left_arrow }, {
-    image_url: left_arrow }, {
-    image_url: stone_wall }, {
-    image_url: alphabet, srcX: posOf("E")
+    image_url: left_arrow, type: 'wall' }, {
+    image_url: left_arrow, type: 'wall' }, {
+    image_url: stone_wall, type: 'wall' }, {
+    image_url: alphabet, type: 'wall', srcX: posOf("E")
     }
 ]; // room end

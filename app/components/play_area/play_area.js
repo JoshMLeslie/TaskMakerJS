@@ -3,6 +3,8 @@ import * as Colors from '../../util/font_colors';
 import Sprite from '../../util/sprite';
 import Resources from '../../util/load_resources';
 
+import _ from 'underscore';
+
 export default class PlayArea {
 
   constructor (canvasEl, ctx) {
@@ -20,7 +22,7 @@ export default class PlayArea {
       const level = levels[level_key];
 
       for (let room_key in level) {
-        this.drawLevel(level[room_key]);
+        return this.drawLevel(level[room_key]); // bubble up 'walls'
       }
     }
   }
@@ -42,39 +44,41 @@ export default class PlayArea {
 
     // 'room' is a (big) array / POJO
 
+    let walls = {}; // to hold position of all walls on the map
+
     room.forEach((obj, obj_idx) => {
+      const x = this.spriteX(obj_idx);
+      const y = this.spriteY(obj_idx);
+
       if (!obj.srcX) {
         // ensure attr's
         obj.srcX = 0;
         obj.srcY = 0;
       }
 
+      if (obj.type && obj.type === "wall") {
+        Object.assign(walls, { [obj_idx]: [x,y] });
+      }
+
       new Sprite (
         this.ctx,
         obj.image_url,
-        this.spriteX(obj_idx),
-        this.spriteY(obj_idx),
-        obj.srcX,
-        obj.srcY
-        // type = obj.type // ??
+        x, y,
+        obj.srcX, obj.srcY
       );
     });
+
+    return walls;
   }
 
   draw () {
     const ctx = this.ctx;
     ctx.clearRect(this.x, this.y, this.width, this.height);
 
-
     ctx.fillStyle = "black";
     ctx.fillRect(this.x, this.y, this.height, this.width);
-    this.drawLevels({
+    return this.drawLevels({ // bubble up 'walls'
       levelOne
     });
-    // resources.load([
-    //   "../../assets/sprites/walls/stone_wall.png"
-    // ]);
-    // resources.onReady(this.makeAwall);
-    // this.makeAwall();
   }
 }

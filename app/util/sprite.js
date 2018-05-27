@@ -30,10 +30,10 @@ export default class Sprite  {
     ) */
     this.ctx.drawImage(
       this.image,
-        this.srcX, this.srcY,
-        45, 45,
-        this.x, this.y,
-        this.width, this.height
+      this.srcX, this.srcY,
+      45, 45,
+      this.x, this.y,
+      this.width, this.height
     );
   }
 }
