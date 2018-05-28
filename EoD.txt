@@ -1,3 +1,8 @@
+180528 - day 6
+  Flickering is still an issue I haven't addressed. Keep getting caught up on other things. One of the instructors suggested only updating the old-cell and the new-cell, which occurred to me, but there must be something better?
+
+  LOTS of refactoring, some of the main rendering class files are readable now (and not just blobs). Take a swing at this again tomorrow.
+
 180527 - day 5
   I made a functioning room.
   Magic mouths work when you walk on them.

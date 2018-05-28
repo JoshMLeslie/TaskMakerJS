@@ -70,8 +70,14 @@ export default class Character {
 
   move(key, walls) {
     const temp = makeAmove(this.direction, key);
-    const movement = temp[0];
-    this.direction = temp[1];
+    let movement;
+    
+    if (temp instanceof Array) {
+      movement = temp;
+    } else {
+      movement = [0,0];
+      this.direction = temp;
+    }
 
     const dx = movement[0];
     const dy = movement[1];

@@ -29,17 +29,18 @@ const mapKeyToDir = (key) => {
 };
 
 const isFacing = (current_dir, dir) => {
-  if (current_dir !== dir) { return dir; } // dir = "up"
-  return diffAhead(dir);
+  if (current_dir !== dir) {
+    // dir = "up", etc.
+    return dir;
+  } else {
+    return diffAhead(dir); // returns [x,y]
+  }
 };
 
 export const makeAmove = (current_dir, key) => {
   // 37, left // 38, up // 39, right // 40, down
   let dir = mapKeyToDir(key);
-  let moveOrDir = isFacing(current_dir, dir);
-
-  if (moveOrDir instanceof Array) { return moveOrDir; }
-  return {pos: [0, 0], dir: moveOrDir};
+  return isFacing(current_dir, dir);
 };
 
 export const checkWallCollision = (moveToX, moveToY, walls) => {

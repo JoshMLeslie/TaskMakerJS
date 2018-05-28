@@ -648,20 +648,17 @@ var mapKeyToDir = function mapKeyToDir(key) {
 
 var isFacing = function isFacing(current_dir, dir) {
   if (current_dir !== dir) {
+    // dir = "up", etc.
     return dir;
-  } // dir = "up"
-  return diffAhead(dir);
+  } else {
+    return diffAhead(dir); // returns [x,y]
+  }
 };
 
 var makeAmove = exports.makeAmove = function makeAmove(current_dir, key) {
   // 37, left // 38, up // 39, right // 40, down
   var dir = mapKeyToDir(key);
-  var moveOrDir = isFacing(current_dir, dir);
-
-  if (moveOrDir instanceof Array) {
-    return moveOrDir;
-  }
-  return { pos: [0, 0], dir: moveOrDir };
+  return isFacing(current_dir, dir);
 };
 
 var checkWallCollision = exports.checkWallCollision = function checkWallCollision(moveToX, moveToY, walls) {
@@ -781,8 +778,14 @@ var Character = function () {
     key: 'move',
     value: function move(key, walls) {
       var temp = (0, _char_util.makeAmove)(this.direction, key);
-      var movement = temp[0];
-      this.direction = temp[1];
+      var movement = void 0;
+
+      if (temp instanceof Array) {
+        movement = temp;
+      } else {
+        movement = [0, 0];
+        this.direction = temp;
+      }
 
       var dx = movement[0];
       var dy = movement[1];
