@@ -18,6 +18,8 @@ const shrubs = urls.shrubs;
 
 const posOf = urls.posOf;
 
+const exitWayMouthText = "Welcome! I hope you've enjoyed this tutorial so far. In case you needed a reminder, move with the 'arrow keys' and examine with 'e'! Actions can be performed with 'a', but there's nothing here yet to activate. Rest with 'r' to restore your stamina!";
+
 export const entryRoom = [
   // 1st row
   { image_url: stone_wall }, {
@@ -104,7 +106,7 @@ export const entryRoom = [
     image_url: stone_wall, type: 'wall' }, {
     image_url: right_arrow, type: 'wall' }, {
     image_url: right_arrow, type: 'wall' }, {
-    image_url: magic_mouth, text: "Welcome!" }, {
+    image_url: magic_mouth, type: "mouth", text: exitWayMouthText }, {
     image_url: left_arrow, type: 'wall' }, {
     image_url: left_arrow, type: 'wall' }, {
     image_url: stone_wall, type: 'wall' }, {

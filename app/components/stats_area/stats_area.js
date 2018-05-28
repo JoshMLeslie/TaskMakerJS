@@ -16,7 +16,7 @@ export default class StatsArea {
 
     this.statVals = {
       // starting vals ( 20, 20 )
-      // starting vals ( 20, 30 ) to display hatch
+      // starting vals ( 20, 30 ) to demo-display hatch
       Food: [20, 30],
       Health: [20, 30],
       Spirit: [20, 30],

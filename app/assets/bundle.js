@@ -753,6 +753,8 @@ var shrubs = urls.shrubs;
 
 var posOf = urls.posOf;
 
+var exitWayMouthText = "Welcome! I hope you've enjoyed this tutorial so far. In case you needed a reminder, move with the 'arrow keys' and examine with 'e'! Actions can be performed with 'a', but there's nothing here yet to activate. Rest with 'r' to restore your stamina!";
+
 var entryRoom = exports.entryRoom = [
 // 1st row
 { image_url: stone_wall }, {
@@ -839,7 +841,7 @@ var entryRoom = exports.entryRoom = [
   image_url: stone_wall, type: 'wall' }, {
   image_url: right_arrow, type: 'wall' }, {
   image_url: right_arrow, type: 'wall' }, {
-  image_url: magic_mouth, text: "Welcome!" }, {
+  image_url: magic_mouth, type: "mouth", text: exitWayMouthText }, {
   image_url: left_arrow, type: 'wall' }, {
   image_url: left_arrow, type: 'wall' }, {
   image_url: stone_wall, type: 'wall' }, {
@@ -951,16 +953,11 @@ var MainRender = function () {
       switch (e.keyCode) {
         case 37:case 38:case 39:case 40:
           // l, u, d, r ?
-          var char = this.character;
           this.statsarea.updateStat("Stamina", -0.5);
-          char.move(e.keyCode, this.walls);
+          this.character.move(e.keyCode, this.walls);
           // this.walls? madness. MADNESS. Forward the foundation!
 
-
-          // if (
-          //   char.position[0] === someX,
-          //   char.position[1] === someY
-          // ) { speakTheMagicMouth(); }
+          this.checkMagicMouths();
 
           return 'character'; // prevent reloading from unbound keys
 
@@ -981,7 +978,7 @@ var MainRender = function () {
           return 'stats';
 
         default:
-          var text = this.text_obj = { // is this even necessary?
+          this.text_obj = { // is this even necessary?
             speaker: 'Game', body: e.key + ' is not used!'
           };
           this.sendText();
@@ -989,11 +986,24 @@ var MainRender = function () {
           return 'idle';
       }
     }
+  }, {
+    key: 'checkMagicMouths',
+    value: function checkMagicMouths() {
+      this.magic_mouths = (0, _util_fns.findObjByKeyOrVal)(this.entities, "magic_mouth", 'val');
 
-    //   onMagicMouth() {
-    // this.magicMouths = findObjByKey
-    //   }
+      var char_pos = this.character.position();
+      var mouths = this.magic_mouths;
 
+      for (var key in mouths) {
+        var pos = mouths[key].pos;
+        if (char_pos[0] === pos[0], char_pos[1] === pos[1]) {
+          this.text_obj = {
+            speaker: 'Magic Mouth', body: '' + mouths[key].text
+          };
+          this.sendText();
+        }
+      }
+    }
   }, {
     key: 'sendText',
     value: function sendText() {
@@ -1186,21 +1196,22 @@ var PlayArea = function () {
         var x = _this.spriteX(obj_idx);
         var y = _this.spriteY(obj_idx);
 
-        if (!obj.srcX) {
-          // ensure attr's
-          obj.srcX = 0;
-          obj.srcY = 0;
-        }
+        // Who needs State anyways right? Me. I do. I need it.
+        obj.srcX = obj.srcX || 0;
+        obj.srcY = obj.srcY || 0;
+        obj.text = obj.text || "";
 
         var obj_type = obj.image_url.match(/(sprites\/\w*\/)(\w*)/)[2];
+        // match returns a lot of stuff, who knew? (rhetorical)
 
         if (obj_type.includes('wall') || obj.type === 'wall') {
           Object.assign(walls, _defineProperty({}, obj_idx, [x, y]));
-        }
+        } // you say bandage I say flexibility
 
         Object.assign(entities, _defineProperty({}, obj_idx, {
           pos: [x, y],
-          type: obj_type
+          type: obj_type,
+          text: obj.text
         }));
 
         new _sprite2.default(_this.ctx, obj.image_url, x, y, obj.srcX, obj.srcY);
@@ -1276,7 +1287,7 @@ var StatsArea = function () {
 
     this.statVals = {
       // starting vals ( 20, 20 )
-      // starting vals ( 20, 30 ) to display hatch
+      // starting vals ( 20, 30 ) to demo-display hatch
       Food: [20, 30],
       Health: [20, 30],
       Spirit: [20, 30],
@@ -1786,13 +1797,15 @@ exports.default = Sprite;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.findObjByKey = exports.upgradeText = exports.chopText = undefined;
+exports.findObjByKeyOrVal = exports.upgradeText = exports.chopText = undefined;
 
 var _pluralize = __webpack_require__(/*! pluralize */ "./node_modules/pluralize/pluralize.js");
 
 var _pluralize2 = _interopRequireDefault(_pluralize);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 var chopText = exports.chopText = function chopText(str) {
   var br = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 44;
@@ -1877,14 +1890,34 @@ var upgradeText = exports.upgradeText = function upgradeText(text) {
   return text.concat(last).join(" ");
 };
 
-var findObjByKey = exports.findObjByKey = function findObjByKey(set, findKey) {
-  // set is an array
-  if (!(set instanceof Array)) {
-    return console.log('findObjByKey type error!');
-  } else {
+var findObjByKeyOrVal = exports.findObjByKeyOrVal = function findObjByKeyOrVal(set, find) {
+  var type = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 'key';
+
+  // set is an array or obj
+  var result = void 0;
+  if (set instanceof Array) {
+    // result = []; // implement later
     return set.find(function (el) {
-      return Object.keys(el).includes(findKey);
+      return Object.keys(el).includes(find);
     });
+  } else if (set instanceof Object) {
+    result = {};
+
+    for (var key in set) {
+      if (type === 'key') {
+        if (set[key].hasOwnProperty(findKey)) {
+          Object.assign(result, _defineProperty({}, key, set[key]));
+        }
+      } else if (type === 'val') {
+        // there goes the O.
+        if (Object.values(set[key]).includes(find)) {
+          Object.assign(result, _defineProperty({}, key, set[key]));
+        }
+      }
+    }
+    return result; // otherwise I'd only ever get one back
+  } else {
+    return console.log('findObjByKey type error!');
   }
 };
 

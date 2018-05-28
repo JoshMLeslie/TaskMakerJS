@@ -86,13 +86,30 @@ export const upgradeText = (text) => {
   return text.concat(last).join(" ");
 };
 
-export const findObjByKey = (set, findKey) => {
-  // set is an array
-  if ( !(set instanceof Array) ) {
-    return console.log('findObjByKey type error!');
-  } else {
+export const findObjByKeyOrVal = (set, find, type='key') => {
+  // set is an array or obj
+  let result;
+  if ( (set instanceof Array) ) {
+    // result = []; // implement later
     return set.find( el =>
-       Object.keys(el).includes(findKey)
+      Object.keys(el).includes(find)
     );
+  } else if (set instanceof Object ){
+    result = {};
+    
+    for (let key in set) {
+      if (type === 'key') {
+        if (set[key].hasOwnProperty(findKey)) {
+          Object.assign(result, { [key]: set[key] } );
+        }
+      } else if (type === 'val') { // there goes the O.
+        if (Object.values(set[key]).includes(find) ) {
+          Object.assign(result, { [key]: set[key] } );
+        }
+      }
+    }
+    return result; // otherwise I'd only ever get one back
+  } else {
+    return console.log('findObjByKey type error!');
   }
 };

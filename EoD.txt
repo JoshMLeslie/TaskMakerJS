@@ -1,3 +1,13 @@
+180527 - day 5
+  I made a functioning room.
+  Magic mouths work when you walk on them.
+  Flickering is still an issue.
+  Walls are collidable. It WAS it's whole own thing. Ugh. This is why State exists. I see now. I believe.
+
+  Lots of under-the-hood improvements and refactoring.
+
+  Did I get examination done yesterday? Well, it's working now and I don't see it in my notes, so there's that. Resting also works, I think that was yesterday or the day before.
+
 180526 - day 4
   Got some real work done today. The first entry room is fully rendered now, sans collision detection with the environment. That's going to be its whole own thing.
 
@@ -7,7 +17,6 @@
   Some aesthetic tweaks. Got the character to move and render properly, plus boundaries within the main game box. The blocks are going to be tricky.
 
   Fuck sprites and images. Got them working, now have to get them working cleaner. More cleanly. cleanerly. Better. Going home.
-
 
 180524 - day 2
   Got the static elements down in canvas.

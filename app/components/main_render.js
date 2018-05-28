@@ -1,5 +1,5 @@
 import requestAnimFrame from '../util/animation_frame';
-import {upgradeText, findObjByKey} from '../util/util_fns';
+import {upgradeText, findObjByKeyOrVal} from '../util/util_fns';
 import Background from './background/background';
 import TextArea from './text_area/text_area';
 import PlayArea from './play_area/play_area';
@@ -53,17 +53,11 @@ export default class MainRender {
   inputSelector (e) {
     switch (e.keyCode) {
       case 37: case 38: case 39: case 40: // l, u, d, r ?
-        let char = this.character;
         this.statsarea.updateStat("Stamina", -0.5);
-        char.move(e.keyCode, this.walls);
+        this.character.move(e.keyCode, this.walls);
         // this.walls? madness. MADNESS. Forward the foundation!
 
-
-
-        // if (
-        //   char.position[0] === someX,
-        //   char.position[1] === someY
-        // ) { speakTheMagicMouth(); }
+        this.checkMagicMouths();
 
         return 'character'; // prevent reloading from unbound keys
 
@@ -81,7 +75,6 @@ export default class MainRender {
         return 'stats';
 
       default:
-        let text =
         this.text_obj = { // is this even necessary?
           speaker: 'Game', body: `${e.key} is not used!`
         };
@@ -91,9 +84,25 @@ export default class MainRender {
     }
   }
 
-//   onMagicMouth() {
-// this.magicMouths = findObjByKey
-//   }
+  checkMagicMouths() {
+    this.magic_mouths = findObjByKeyOrVal(this.entities, "magic_mouth", 'val');
+
+    const char_pos = this.character.position();
+    const mouths = this.magic_mouths;
+
+    for (let key in mouths) {
+      let pos = mouths[key].pos;
+      if (
+        char_pos[0] === pos[0],
+        char_pos[1] === pos[1]
+      ) {
+        this.text_obj = {
+          speaker: 'Magic Mouth', body: `${mouths[key].text}`
+        };
+        this.sendText();
+       }
+    }
+  }
 
   sendText() {
     this.textarea.draw();

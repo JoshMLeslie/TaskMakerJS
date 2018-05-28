@@ -51,25 +51,26 @@ export default class PlayArea {
       const x = this.spriteX(obj_idx);
       const y = this.spriteY(obj_idx);
 
-      if (!obj.srcX) {
-        // ensure attr's
-        obj.srcX = 0;
-        obj.srcY = 0;
-      }
+      // Who needs State anyways right? Me. I do. I need it.
+      obj.srcX = obj.srcX || 0;
+      obj.srcY = obj.srcY || 0;
+      obj.text = obj.text || "";
 
       let obj_type = (
         obj.image_url.match( /(sprites\/\w*\/)(\w*)/ )[2]
       );
+      // match returns a lot of stuff, who knew? (rhetorical)
 
       if (obj_type.includes('wall') || obj.type === 'wall') {
         Object.assign( walls, { [obj_idx]: [x,y] } );
-      }
+      } // you say bandage I say flexibility
 
       Object.assign(
         entities,
         { [obj_idx]: {
           pos: [x,y],
-          type: obj_type
+          type: obj_type,
+          text: obj.text
         } }
       );
 
@@ -86,7 +87,7 @@ export default class PlayArea {
 
   draw () {
     const ctx = this.ctx;
-    
+
     ctx.clearRect(this.x, this.y, this.width, this.height);
 
     ctx.fillStyle = "black";
