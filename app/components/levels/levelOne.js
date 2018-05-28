@@ -18,7 +18,7 @@ const shrubs = urls.shrubs;
 
 const posOf = urls.posOf;
 
-const exitWayMouthText = "Welcome! I hope you've enjoyed this tutorial so far. In case you needed a reminder, move with the 'arrow keys' and examine with 'e'! Actions can be performed with 'a', but there's nothing here yet to activate. Rest with 'r' to restore your stamina!";
+const exitWayMouthText = "Welcome! I hope you've enjoyed this tutorial so far. In the future, this is where you would continue on to the rest of the game. In case you needed a reminder, move with the 'arrow keys' and examine with 'e'! Actions can be performed with 'a', but there's nothing here yet to activate. Rest with 'r' to restore your stamina!";
 
 export const entryRoom = [
   // 1st row
