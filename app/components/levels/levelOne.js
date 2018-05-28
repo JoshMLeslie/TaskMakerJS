@@ -19,8 +19,8 @@ const shrubs = urls.shrubs;
 const posOf = urls.posOf;
 
 export const entryRoom = [
-  { // 1st row
-    image_url: stone_wall }, {
+  // 1st row
+  { image_url: stone_wall }, {
     image_url: alphabet, type: 'wall', srcX: posOf("T") }, {
     image_url: alphabet, type: 'wall', srcX: posOf("U") }, {
     image_url: alphabet, type: 'wall', srcX: posOf("T") }, {
@@ -104,10 +104,10 @@ export const entryRoom = [
     image_url: stone_wall, type: 'wall' }, {
     image_url: right_arrow, type: 'wall' }, {
     image_url: right_arrow, type: 'wall' }, {
-    image_url: magic_mouth }, {
+    image_url: magic_mouth, text: "Welcome!" }, {
     image_url: left_arrow, type: 'wall' }, {
     image_url: left_arrow, type: 'wall' }, {
     image_url: stone_wall, type: 'wall' }, {
     image_url: alphabet, type: 'wall', srcX: posOf("E")
-    }
+  }
 ]; // room end

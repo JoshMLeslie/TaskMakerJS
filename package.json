@@ -9,6 +9,7 @@
     "babel-core": "^6.26.3",
     "babel-loader": "^7.1.4",
     "babel-preset-env": "^1.7.0",
+    "pluralize": "^7.0.0",
     "underscore": "^1.9.0",
     "webpack": "^4.8.3"
   },

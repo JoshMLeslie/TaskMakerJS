@@ -86,12 +86,15 @@ export default class PlayArea {
 
   draw () {
     const ctx = this.ctx;
+    
     ctx.clearRect(this.x, this.y, this.width, this.height);
 
     ctx.fillStyle = "black";
     ctx.fillRect(this.x, this.y, this.height, this.width);
+
     return this.drawLevels({ // bubble up 'walls'
       levelOne
     });
+
   }
 }

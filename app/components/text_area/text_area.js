@@ -1,3 +1,4 @@
+import {chopText} from '../../util/util_fns';
 import * as Colors from '../../util/font_colors';
 
 export default class TextArea {
@@ -12,25 +13,9 @@ export default class TextArea {
     this.y = 40;
   }
 
-  parseBody(body) {
-    // parses a string into chunks of 44 characters:
-    // max width of disp @ font = 16px
-
-    // improve to only break on white space <= 44
-    let result = [];
-    for (let i = 0; i < Math.ceil(body.length/44); i++) {
-      let start = i * 44;
-      let end = (i + 1) * 44;
-      result.push(body.slice(start,end) );
-    }
-    
-    return result;
-  }
-
-
   displayText({speaker, body}) {
 
-    let parsedText = this.parseBody(body);
+    let parsedText = chopText(body);
 
     const ctx = this.ctx;
     // this.currentText.push([speaker,text]);
