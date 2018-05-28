@@ -241,6 +241,24 @@ var _font_colors = __webpack_require__(/*! ../../util/font_colors */ "./app/util
 
 var Colors = _interopRequireWildcard(_font_colors);
 
+var _top_bar = __webpack_require__(/*! ./top_bar */ "./app/components/background/top_bar.js");
+
+var _top_bar2 = _interopRequireDefault(_top_bar);
+
+var _play_area = __webpack_require__(/*! ./play_area */ "./app/components/background/play_area.js");
+
+var _play_area2 = _interopRequireDefault(_play_area);
+
+var _text_and_stats = __webpack_require__(/*! ./text_and_stats */ "./app/components/background/text_and_stats.js");
+
+var _text_and_stats2 = _interopRequireDefault(_text_and_stats);
+
+var _button_util = __webpack_require__(/*! ./button_util */ "./app/components/background/button_util.js");
+
+var _button_util2 = _interopRequireDefault(_button_util);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -255,252 +273,28 @@ var Background = function () {
     this.width = canvasEl.width; // max width the game occupies
     this.height = canvasEl.height; // borders etc should exist within this area
 
-    this.buttonClick = this.buttonClick.bind(this);
-    this.canvasEl.addEventListener('click', this.buttonClick, false);
+    this.callButtonClick = this.callButtonClick.bind(this);
+    this.canvasEl.addEventListener('click', this.callButtonClick, false);
   }
 
   _createClass(Background, [{
-    key: 'getMousePos',
-    value: function getMousePos(e) {
-      var canvasArea = this.canvasEl.getBoundingClientRect();
-      return {
-        x: e.clientX - canvasArea.left,
-        y: e.clientY - canvasArea.top
-      };
-    }
-  }, {
-    key: 'isInside',
-    value: function isInside(pos, rect) {
-      var posX = pos.x > rect.x;
-      var widthX = pos.x < rect.x + rect.width;
-      var widthY = pos.y < rect.y + rect.height;
-      return posX && widthX && widthY;
-    }
-  }, {
-    key: 'buttonClick',
-    value: function buttonClick(e) {
-      // https://stackoverflow.com/questions/24384368/simple-button-in-html5-canvas
-      var buttonArea = {
-        x: 18,
-        y: 8,
-        width: 16,
-        height: 16
-      };
-      var mousePos = this.getMousePos(e);
-
-      if (this.isInside(mousePos, buttonArea)) {
-        window.alert('Button clicked!');
-      }
-    }
-  }, {
-    key: 'drawTopBar',
-    value: function drawTopBar() {
-      var ctx = this.ctx;
-      // for-now-fake top bar
-
-      ctx.beginPath(); // bar background
-      ctx.fillStyle = "#F8F8F5";
-      ctx.fillRect(2, 2, 786, 30);
-
-      ctx.beginPath(); // bottom border bar
-      ctx.moveTo(2, 31);
-      ctx.strokeStyle = "#C0C0C0";
-      ctx.lineWidth = "2";
-      ctx.lineTo(788, 31);
-      ctx.stroke();
-
-      for (var i = 6; i < 28; i += 4) {
-        // horizontal striations
-        ctx.beginPath();
-        ctx.moveTo(4, i);
-        ctx.strokeStyle = "#C0C0C0";
-        ctx.lineWidth = "2";
-        ctx.lineTo(786, i);
-        ctx.stroke();
-      }
-
-      this.drawName();
-      this.drawButton();
-    }
-  }, {
-    key: 'drawName',
-    value: function drawName() {
-      var long = this.name.length;
-      var width = long * 8.5 + (long > 10 ? 0 : 10); // well enough.
-      var centering = (790 - width) / 2;
-
-      var ctx = this.ctx;
-      ctx.beginPath();
-      ctx.fillStyle = "#F8F8F5";
-      ctx.fillRect(centering, 4, width, 24);
-
-      ctx.beginPath(); // disp speaker
-      ctx.fillStyle = Colors.textBlack;
-      ctx.font = "20px serif";
-      ctx.fillText(this.name, centering + 5, 22.5); // +5 for padding
-    }
-  }, {
-    key: 'drawButton',
-    value: function drawButton() {
-      var ctx = this.ctx;
-
-      ctx.beginPath(); // non-func click-box
-      ctx.fillStyle = "#AEAEAE";
-      ctx.fillRect(18, 8, 16, 16);
-
-      ctx.beginPath(); // inner sq. border
-      ctx.strokeStyle = "#CFCDFF";
-      ctx.lineWidth = "2";
-      ctx.strokeRect(18, 8, 18, 18);
-
-      ctx.beginPath(); // outer sq. border
-      ctx.strokeStyle = "#F8F8F5";
-      ctx.lineWidth = "2";
-      ctx.strokeRect(14, 4, 24, 24);
-
-      ctx.beginPath(); // upper shadow border
-      ctx.moveTo(15, 6);
-      ctx.strokeStyle = "#343169";
-      ctx.lineWidth = "2";
-      ctx.lineTo(37, 6);
-      ctx.stroke();
-
-      ctx.beginPath(); // left shadow border
-      ctx.moveTo(16, 6);
-      ctx.strokeStyle = "#343169";
-      ctx.lineWidth = "2";
-      ctx.lineTo(16, 27);
-      ctx.stroke();
-
-      ctx.beginPath(); // lower shadow border
-      ctx.moveTo(19, 24);
-      ctx.strokeStyle = "#343169";
-      ctx.lineWidth = "2";
-      ctx.lineTo(35, 24);
-      ctx.stroke();
-
-      ctx.beginPath(); // right shadow border
-      ctx.moveTo(34, 9);
-      ctx.strokeStyle = "#343169";
-      ctx.lineWidth = "2";
-      ctx.lineTo(34, 25);
-      ctx.stroke();
-    }
-  }, {
-    key: 'drawCardinals',
-    value: function drawCardinals() {
-      // brace yourself.
-      var ctx = this.ctx;
-
-      var vPos = 275;
-      var vPos2 = 275; // since it gets called twice
-      var vAdj = 15;
-
-      var cardinals = {
-        // keys are rendered relative to x,y vals.
-        // N => "N" @ 555, 40, EAST => "E" @ ... "A" @ .... "S" ...
-        N: [555, 70],
-        EAST: {
-          E: [766, vPos], // micro adjustments
-          A: [765, vPos += vAdj],
-          S: [766, vPos += vAdj],
-          T: [766, vPos += vAdj]
-        },
-        SOUTH: [540, 512.5],
-        WEST: {
-          W: [333, vPos2],
-          E: [335, vPos2 += vAdj],
-          S: [335.5, vPos2 += vAdj],
-          T: [335, vPos2 += vAdj]
-        }
-      };
-
-      for (var key in cardinals) {
-        ctx.beginPath();
-        ctx.fillStyle = Colors.textGray;
-        ctx.font = "12px serif";
-
-        if (cardinals[key] instanceof Array) {
-          // if first level is an array
-          if (key === "N") {
-            ctx.font = "20px serif";
-          }
-          ctx.fillText(key, cardinals[key][0], cardinals[key][1]);
-        } else {
-          // else first level contains another object (E / W)
-          for (var subkey in cardinals[key]) {
-            ctx.fillText(subkey, cardinals[key][subkey][0], cardinals[key][subkey][1]);
-          }
-        }
-      }
-    } // cardinals() end
-
-
-  }, {
-    key: 'drawPlayAreaContainer',
-    value: function drawPlayAreaContainer() {
-      var ctx = this.ctx;
-      // playarea box
-
-      ctx.beginPath();
-      ctx.fillStyle = Colors.backgroundGray;
-      ctx.fillRect(325, 65, 460, 460);
-      // x, y, w, h
-
-      ctx.beginPath(); // border
-      ctx.strokeStyle = Colors.borderGray;
-      ctx.lineWidth = "2";
-      ctx.strokeRect(328, 68, 454, 454);
-
-      ctx.beginPath(); // filled circle around 'N'
-      ctx.fillStyle = Colors.backgroundGray;
-      ctx.arc(561, 70, 30, 0, Math.PI * 2);
-      // x, y, radius, startAngle, endAngle, anticlockwiseBool
-      ctx.fill();
-
-      ctx.beginPath(); // border within circle to match
-      ctx.fillStyle = Colors.borderGray;
-      ctx.arc(561, 70, 28, Math.PI, 0); // half-circle - passable.
-      ctx.stroke();
-
-      this.drawCardinals(); // render lettering ontop of everything above
-    }
-  }, {
-    key: 'drawTextAndStatsContainer',
-    value: function drawTextAndStatsContainer() {
-      var ctx = this.ctx;
-
-      ctx.beginPath();
-      ctx.fillStyle = Colors.backgroundGray; // hey bebebe
-      ctx.fillRect(5, 35, 315, 490);
-
-      ctx.beginPath(); // border
-      ctx.strokeStyle = Colors.borderGray;
-      ctx.lineWidth = "2";
-      ctx.strokeRect(8, 38, 309, 484);
-
-      ctx.beginPath(); // border line between text and stats
-      ctx.moveTo(9, 292); // (-1, +2) adjustment for line overlap / thickness
-      ctx.strokeStyle = Colors.borderGray;
-      ctx.lineWidth = "2";
-      ctx.lineTo(316, 292);
-      ctx.stroke();
+    key: 'callButtonClick',
+    value: function callButtonClick(e) {
+      (0, _button_util2.default)(e, this.canvasEl);
     }
   }, {
     key: 'draw',
     value: function draw() {
       var ctx = this.ctx;
-      // background render area
 
+      // black background
       ctx.beginPath();
       ctx.fillStyle = "#242424";
-      // background black
       ctx.fillRect(0, 0, 790, 530);
 
-      this.drawTopBar();
-
-      this.drawPlayAreaContainer();
-      this.drawTextAndStatsContainer();
+      (0, _top_bar2.default)(ctx, this.name);
+      (0, _play_area2.default)(ctx);
+      (0, _text_and_stats2.default)(ctx);
     }
   }]);
 
@@ -508,6 +302,382 @@ var Background = function () {
 }();
 
 exports.default = Background;
+
+/***/ }),
+
+/***/ "./app/components/background/button_util.js":
+/*!**************************************************!*\
+  !*** ./app/components/background/button_util.js ***!
+  \**************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var getMousePos = function getMousePos(e, canvasEl) {
+  var canvasArea = canvasEl.getBoundingClientRect();
+  return {
+    x: e.clientX - canvasArea.left,
+    y: e.clientY - canvasArea.top
+  };
+};
+
+var isInside = function isInside(pos, rect) {
+  var posX = pos.x > rect.x;
+  var widthX = pos.x < rect.x + rect.width;
+  var widthY = pos.y < rect.y + rect.height;
+  return posX && widthX && widthY;
+};
+
+var buttonClick = function buttonClick(e, canvasEl) {
+  // https://stackoverflow.com/questions/24384368/simple-button-in-html5-canvas
+  var buttonArea = {
+    x: 18,
+    y: 8,
+    width: 16,
+    height: 16
+  };
+  var mousePos = getMousePos(e, canvasEl);
+
+  if (isInside(mousePos, buttonArea)) {
+    window.alert('Button clicked!');
+  }
+};
+
+exports.default = buttonClick;
+
+/***/ }),
+
+/***/ "./app/components/background/play_area.js":
+/*!************************************************!*\
+  !*** ./app/components/background/play_area.js ***!
+  \************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _font_colors = __webpack_require__(/*! ../../util/font_colors */ "./app/util/font_colors.js");
+
+var Colors = _interopRequireWildcard(_font_colors);
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+var drawCardinals = function drawCardinals(ctx) {
+  // brace yourself.
+
+  var vPos = 275;
+  var vPos2 = 275; // since it gets called twice
+  var vAdj = 15;
+
+  var cardinals = {
+    // keys are rendered relative to x,y vals.
+    // N => "N" @ 555, 40, EAST => "E" @ ... "A" @ .... "S" ...
+    N: [555, 70],
+    EAST: {
+      E: [766, vPos], // micro adjustments
+      A: [765, vPos += vAdj],
+      S: [766, vPos += vAdj],
+      T: [766, vPos += vAdj]
+    },
+    SOUTH: [540, 512.5],
+    WEST: {
+      W: [333, vPos2],
+      E: [335, vPos2 += vAdj],
+      S: [335.5, vPos2 += vAdj],
+      T: [335, vPos2 += vAdj]
+    }
+  };
+
+  for (var key in cardinals) {
+    ctx.beginPath();
+    ctx.fillStyle = Colors.textGray;
+    ctx.font = "12px serif";
+
+    if (cardinals[key] instanceof Array) {
+      // if first level is an array
+      if (key === "N") {
+        ctx.font = "20px serif";
+      }
+      ctx.fillText(key, cardinals[key][0], cardinals[key][1]);
+    } else {
+      // else first level contains another object (E / W)
+      for (var subkey in cardinals[key]) {
+        ctx.fillText(subkey, cardinals[key][subkey][0], cardinals[key][subkey][1]);
+      }
+    }
+  }
+}; // cardinals() end
+
+
+var drawPlayAreaContainer = function drawPlayAreaContainer(ctx) {
+  // playarea box
+
+  ctx.beginPath();
+  ctx.fillStyle = Colors.backgroundGray;
+  ctx.fillRect(325, 65, 460, 460);
+  // x, y, w, h
+
+  ctx.beginPath(); // border
+  ctx.strokeStyle = Colors.borderGray;
+  ctx.lineWidth = "2";
+  ctx.strokeRect(328, 68, 454, 454);
+
+  ctx.beginPath(); // filled circle around 'N'
+  ctx.fillStyle = Colors.backgroundGray;
+  ctx.arc(561, 70, 30, 0, Math.PI * 2);
+  // x, y, radius, startAngle, endAngle, anticlockwiseBool
+  ctx.fill();
+
+  ctx.beginPath(); // border within circle to match
+  ctx.fillStyle = Colors.borderGray;
+  ctx.arc(561, 70, 28, Math.PI, 0); // half-circle - passable.
+  ctx.stroke();
+
+  drawCardinals(ctx); // render lettering ontop of everything above
+};
+
+exports.default = drawPlayAreaContainer;
+
+/***/ }),
+
+/***/ "./app/components/background/text_and_stats.js":
+/*!*****************************************************!*\
+  !*** ./app/components/background/text_and_stats.js ***!
+  \*****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _font_colors = __webpack_require__(/*! ../../util/font_colors */ "./app/util/font_colors.js");
+
+var Colors = _interopRequireWildcard(_font_colors);
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+var drawTextAndStatsContainer = function drawTextAndStatsContainer(ctx) {
+  ctx.beginPath();
+  ctx.fillStyle = Colors.backgroundGray; // hey bebebe
+  ctx.fillRect(5, 35, 315, 490);
+
+  ctx.beginPath(); // border
+  ctx.strokeStyle = Colors.borderGray;
+  ctx.lineWidth = "2";
+  ctx.strokeRect(8, 38, 309, 484);
+
+  ctx.beginPath(); // border line between text and stats
+  ctx.moveTo(9, 292); // (-1, +2) adjustment for line overlap / thickness
+  ctx.strokeStyle = Colors.borderGray;
+  ctx.lineWidth = "2";
+  ctx.lineTo(316, 292);
+  ctx.stroke();
+};
+
+exports.default = drawTextAndStatsContainer;
+
+/***/ }),
+
+/***/ "./app/components/background/top_bar.js":
+/*!**********************************************!*\
+  !*** ./app/components/background/top_bar.js ***!
+  \**********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _font_colors = __webpack_require__(/*! ../../util/font_colors */ "./app/util/font_colors.js");
+
+var Colors = _interopRequireWildcard(_font_colors);
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+var drawTopBar = function drawTopBar(ctx, name) {
+  // for-now-fake top bar
+
+  ctx.beginPath(); // bar background
+  ctx.fillStyle = "#F8F8F5";
+  ctx.fillRect(2, 2, 786, 30);
+
+  ctx.beginPath(); // bottom border bar
+  ctx.moveTo(2, 31);
+  ctx.strokeStyle = "#C0C0C0";
+  ctx.lineWidth = "2";
+  ctx.lineTo(788, 31);
+  ctx.stroke();
+
+  for (var i = 6; i < 28; i += 4) {
+    // horizontal striations
+    ctx.beginPath();
+    ctx.moveTo(4, i);
+    ctx.strokeStyle = "#C0C0C0";
+    ctx.lineWidth = "2";
+    ctx.lineTo(786, i);
+    ctx.stroke();
+  }
+
+  drawName(ctx, name);
+  drawButton(ctx);
+};
+
+var drawName = function drawName(ctx, name) {
+  var long = name.length;
+  var width = long * 8.5 + (long > 10 ? 0 : 10); // well enough.
+  var centering = (790 - width) / 2;
+
+  ctx.beginPath();
+  ctx.fillStyle = "#F8F8F5";
+  ctx.fillRect(centering, 4, width, 24);
+
+  ctx.beginPath(); // disp speaker
+  ctx.fillStyle = Colors.textBlack;
+  ctx.font = "20px serif";
+  ctx.fillText(name, centering + 5, 22.5); // +5 for padding
+};
+
+var drawButton = function drawButton(ctx) {
+  ctx.beginPath(); // non-func click-box
+  ctx.fillStyle = "#AEAEAE";
+  ctx.fillRect(18, 8, 16, 16);
+
+  ctx.beginPath(); // inner sq. border
+  ctx.strokeStyle = "#CFCDFF";
+  ctx.lineWidth = "2";
+  ctx.strokeRect(18, 8, 18, 18);
+
+  ctx.beginPath(); // outer sq. border
+  ctx.strokeStyle = "#F8F8F5";
+  ctx.lineWidth = "2";
+  ctx.strokeRect(14, 4, 24, 24);
+
+  ctx.beginPath(); // upper shadow border
+  ctx.moveTo(15, 6);
+  ctx.strokeStyle = "#343169";
+  ctx.lineWidth = "2";
+  ctx.lineTo(37, 6);
+  ctx.stroke();
+
+  ctx.beginPath(); // left shadow border
+  ctx.moveTo(16, 6);
+  ctx.strokeStyle = "#343169";
+  ctx.lineWidth = "2";
+  ctx.lineTo(16, 27);
+  ctx.stroke();
+
+  ctx.beginPath(); // lower shadow border
+  ctx.moveTo(19, 24);
+  ctx.strokeStyle = "#343169";
+  ctx.lineWidth = "2";
+  ctx.lineTo(35, 24);
+  ctx.stroke();
+
+  ctx.beginPath(); // right shadow border
+  ctx.moveTo(34, 9);
+  ctx.strokeStyle = "#343169";
+  ctx.lineWidth = "2";
+  ctx.lineTo(34, 25);
+  ctx.stroke();
+};
+
+exports.default = drawTopBar;
+
+/***/ }),
+
+/***/ "./app/components/character/char_util.js":
+/*!***********************************************!*\
+  !*** ./app/components/character/char_util.js ***!
+  \***********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var diffAhead = exports.diffAhead = function diffAhead(direction) {
+  switch (direction) {
+    case "left":
+      return [-45, 0];
+    case "up":
+      return [0, -45];
+    case "right":
+      return [45, 0];
+    case "down":
+      return [0, 45];
+    default:
+      return [0, 0];
+  }
+};
+
+var mapKeyToDir = function mapKeyToDir(key) {
+  switch (key) {
+    case 37:
+      return "left";
+    case 38:
+      return "up";
+    case 39:
+      return "right";
+    case 40:
+      return "down";
+    default:
+      return [0, 0];
+  }
+};
+
+var isFacing = function isFacing(current_dir, dir) {
+  if (current_dir !== dir) {
+    return dir;
+  } // dir = "up"
+  return diffAhead(dir);
+};
+
+var makeAmove = exports.makeAmove = function makeAmove(current_dir, key) {
+  // 37, left // 38, up // 39, right // 40, down
+  var dir = mapKeyToDir(key);
+  var moveOrDir = isFacing(current_dir, dir);
+
+  if (moveOrDir instanceof Array) {
+    return moveOrDir;
+  }
+  return { pos: [0, 0], dir: moveOrDir };
+};
+
+var checkWallCollision = exports.checkWallCollision = function checkWallCollision(moveToX, moveToY, walls) {
+  for (var idx in walls) {
+    var wallPos = walls[idx];
+    if (wallPos[0] === moveToX && wallPos[1] === moveToY) {
+      return false;
+    }
+  }
+  return true;
+};
+
+var checkPlayAreaCollision = exports.checkPlayAreaCollision = function checkPlayAreaCollision(moveToX, moveToY) {
+  // hard coded maximum bounds
+  return moveToX > 345 && moveToX < 750 && moveToY > 80 && moveToY < 485;
+};
 
 /***/ }),
 
@@ -535,6 +705,8 @@ var _sprite = __webpack_require__(/*! ../../util/sprite */ "./app/util/sprite.js
 
 var _sprite2 = _interopRequireDefault(_sprite);
 
+var _char_util = __webpack_require__(/*! ./char_util */ "./app/components/character/char_util.js");
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
@@ -557,7 +729,7 @@ var Character = function () {
     this.y = 268; // center y
 
     this.move = this.move.bind(this);
-    this.isFacing = this.isFacing.bind(this);
+    this.wontCollide = this.wontCollide.bind(this);
     this.updateSpriteImage = this.updateSpriteImage.bind(this);
   }
 
@@ -569,120 +741,49 @@ var Character = function () {
   }, {
     key: 'positionAhead',
     value: function positionAhead() {
-      var diff = this.diffAhead();
+      var diff = (0, _char_util.diffAhead)(this.direction);
       return [this.x + diff[0], this.y + diff[1]];
-    }
-  }, {
-    key: 'mapKeyToDir',
-    value: function mapKeyToDir(key) {
-      switch (key) {
-        case 37:
-          return "left";
-        case 38:
-          return "up";
-        case 39:
-          return "right";
-        case 40:
-          return "down";
-        default:
-          return [0, 0];
-      }
-    }
-  }, {
-    key: 'makeAmove',
-    value: function makeAmove(key) {
-      // 37, left // 38, up // 39, right // 40, down
-      var dir = this.mapKeyToDir(key);
-      var movement = this.isFacing(dir);
-
-      if (movement) {
-        return movement;
-      } else {
-        return [0, 0];
-      }
-    }
-  }, {
-    key: 'isFacing',
-    value: function isFacing(direction) {
-      if (this.direction !== direction) {
-        this.direction = direction;
-        return false;
-      } // else this.dir === dir
-      return this.diffAhead();
-    }
-  }, {
-    key: 'diffAhead',
-    value: function diffAhead() {
-      switch (this.direction) {
-        case "left":
-          return [-45, 0];
-        case "up":
-          return [0, -45];
-        case "right":
-          return [45, 0];
-        case "down":
-          return [0, 45];
-        default:
-          return [0, 0];
-      }
     }
   }, {
     key: 'updateSpriteImage',
     value: function updateSpriteImage() {
+      var up_down = "app/assets/sprites/char/char_up_down.png";
+      var left_right = "app/assets/sprites/char/char_left_right.png";
       switch (this.direction) {
         case "up":
-          this.image_url = "app/assets/sprites/char/char_up_down.png";
+          this.image_url = up_down;
           return [45, 0];
         case "down":
-          this.image_url = "app/assets/sprites/char/char_up_down.png";
+          this.image_url = up_down;
           return [0, 0];
         case "left":
-          this.image_url = "app/assets/sprites/char/char_left_right.png";
+          this.image_url = left_right;
           return [0, 0];
         case "right":
-          this.image_url = "app/assets/sprites/char/char_left_right.png";
+          this.image_url = left_right;
           return [45, 0];
         default:
-          this.image_url = "app/assets/sprites/char/char_up_down.png";
+          this.image_url = up_down;
           return [0, 0];
       }
-    }
-  }, {
-    key: 'checkWallCollision',
-    value: function checkWallCollision(moveToX, moveToY, walls) {
-      for (var idx in walls) {
-        var wallPos = walls[idx];
-        if (wallPos[0] === moveToX && wallPos[1] === moveToY) {
-          return false;
-        }
-      }
-      return true;
-    }
-  }, {
-    key: 'checkPlayAreaCollision',
-    value: function checkPlayAreaCollision(moveToX, moveToY) {
-      // hard coded maximum bounds
-      return moveToX > 345 && moveToX < 750 && moveToY > 80 && moveToY < 485;
     }
   }, {
     key: 'wontCollide',
     value: function wontCollide(key, dx, dy, walls) {
       // returns bool
-
-      // walls is an array/pojo:
-      /*
-        { 0: [353, 88],
-        1: [398, 88] }
-      */
+      // walls is an array/pojo: { 0: [353, 88], ...
 
       var moveToX = this.x + dx;
       var moveToY = this.y + dy;
-      return this.checkPlayAreaCollision(moveToX, moveToY) && this.checkWallCollision(moveToX, moveToY, walls);
+      return (0, _char_util.checkPlayAreaCollision)(moveToX, moveToY) && (0, _char_util.checkWallCollision)(moveToX, moveToY, walls);
     }
   }, {
     key: 'move',
     value: function move(key, walls) {
-      var movement = this.makeAmove(key);
+      var temp = (0, _char_util.makeAmove)(this.direction, key);
+      var movement = temp[0];
+      this.direction = temp[1];
+
       var dx = movement[0];
       var dy = movement[1];
 
@@ -978,7 +1079,7 @@ var MainRender = function () {
           return 'stats';
 
         default:
-          this.text_obj = { // is this even necessary?
+          this.text_obj = { // is storing this even necessary?
             speaker: 'Game', body: e.key + ' is not used!'
           };
           this.sendText();
@@ -1003,12 +1104,6 @@ var MainRender = function () {
           this.sendText();
         }
       }
-    }
-  }, {
-    key: 'sendText',
-    value: function sendText() {
-      this.textarea.draw();
-      this.textarea.displayText(this.text_obj);
     }
   }, {
     key: 'examineEntity',
@@ -1045,6 +1140,12 @@ var MainRender = function () {
       var temp = this.playarea.draw();
       this.walls = temp.walls;
       this.entities = temp.entities;
+    }
+  }, {
+    key: 'sendText',
+    value: function sendText() {
+      this.textarea.draw();
+      this.textarea.displayText(this.text_obj);
     }
   }, {
     key: 'draw',
@@ -1094,6 +1195,83 @@ exports.default = MainRender;
 
 /***/ }),
 
+/***/ "./app/components/play_area/draw_level.js":
+/*!************************************************!*\
+  !*** ./app/components/play_area/draw_level.js ***!
+  \************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _sprite = __webpack_require__(/*! ../../util/sprite */ "./app/util/sprite.js");
+
+var _sprite2 = _interopRequireDefault(_sprite);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+var spriteX = function spriteX(obj_idx) {
+  // same same, but diff.
+  var modulo = obj_idx % 9;
+  if (modulo < 0) {
+    modulo = 8;
+  }
+  return 353 + modulo * 45;
+};
+
+var spriteY = function spriteY(obj_idx) {
+  // but same same.
+  var floored = Math.floor(obj_idx / 9);
+  return 88 + floored * 45;
+};
+
+var drawLevel = function drawLevel(ctx, room) {
+  // dev: make objects from top left, right, then typerwritter down, for consistency's sake.
+
+  // 'room' is a (big) array / POJO
+
+  var walls = {}; // to hold position of all walls on the map
+  var entities = {}; // to hold position of all entities " "
+
+  room.forEach(function (obj, obj_idx) {
+    var x = spriteX(obj_idx);
+    var y = spriteY(obj_idx);
+
+    // Who needs State anyways right? Me. I do. I need it.
+    obj.srcX = obj.srcX || 0;
+    obj.srcY = obj.srcY || 0;
+    obj.text = obj.text || "";
+
+    var obj_type = obj.image_url.match(/(sprites\/\w*\/)(\w*)/)[2];
+    // match returns a lot of stuff, who knew? (rhetorical)
+
+    if (obj_type.includes('wall') || obj.type === 'wall') {
+      Object.assign(walls, _defineProperty({}, obj_idx, [x, y]));
+    } // you say bandage I say flexibility
+
+    Object.assign(entities, _defineProperty({}, obj_idx, {
+      pos: [x, y],
+      type: obj_type,
+      text: obj.text
+    }));
+
+    new _sprite2.default(ctx, obj.image_url, x, y, obj.srcX, obj.srcY);
+  });
+
+  return { walls: walls, entities: entities }; // bubbles up to drawLevels as pojo
+};
+
+exports.default = drawLevel;
+
+/***/ }),
+
 /***/ "./app/components/play_area/play_area.js":
 /*!***********************************************!*\
   !*** ./app/components/play_area/play_area.js ***!
@@ -1126,6 +1304,10 @@ var _load_resources = __webpack_require__(/*! ../../util/load_resources */ "./ap
 
 var _load_resources2 = _interopRequireDefault(_load_resources);
 
+var _draw_level = __webpack_require__(/*! ./draw_level */ "./app/components/play_area/draw_level.js");
+
+var _draw_level2 = _interopRequireDefault(_draw_level);
+
 var _underscore = __webpack_require__(/*! underscore */ "./node_modules/underscore/underscore.js");
 
 var _underscore2 = _interopRequireDefault(_underscore);
@@ -1133,8 +1315,6 @@ var _underscore2 = _interopRequireDefault(_underscore);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -1158,66 +1338,9 @@ var PlayArea = function () {
         var level = levels[level_key];
 
         for (var room_key in level) {
-          return this.drawLevel(level[room_key]); // bubble up 'walls'
+          return (0, _draw_level2.default)(this.ctx, level[room_key]); // bubble up 'walls + entities'
         }
       }
-    }
-  }, {
-    key: 'spriteX',
-    value: function spriteX(obj_idx) {
-      // same same, but diff.
-      var modulo = obj_idx % 9;
-      if (modulo < 0) {
-        modulo = 8;
-      }
-      return 353 + modulo * 45;
-    }
-  }, {
-    key: 'spriteY',
-    value: function spriteY(obj_idx) {
-      // but same same.
-      var floored = Math.floor(obj_idx / 9);
-      return 88 + floored * 45;
-    }
-  }, {
-    key: 'drawLevel',
-    value: function drawLevel(room) {
-      var _this = this;
-
-      var ctx = this.ctx;
-      // dev: make objects from top left, right, then typerwritter down, for consistency's sake.
-
-      // 'room' is a (big) array / POJO
-
-      var walls = {}; // to hold position of all walls on the map
-      var entities = {}; // to hold position of all entities " "
-
-      room.forEach(function (obj, obj_idx) {
-        var x = _this.spriteX(obj_idx);
-        var y = _this.spriteY(obj_idx);
-
-        // Who needs State anyways right? Me. I do. I need it.
-        obj.srcX = obj.srcX || 0;
-        obj.srcY = obj.srcY || 0;
-        obj.text = obj.text || "";
-
-        var obj_type = obj.image_url.match(/(sprites\/\w*\/)(\w*)/)[2];
-        // match returns a lot of stuff, who knew? (rhetorical)
-
-        if (obj_type.includes('wall') || obj.type === 'wall') {
-          Object.assign(walls, _defineProperty({}, obj_idx, [x, y]));
-        } // you say bandage I say flexibility
-
-        Object.assign(entities, _defineProperty({}, obj_idx, {
-          pos: [x, y],
-          type: obj_type,
-          text: obj.text
-        }));
-
-        new _sprite2.default(_this.ctx, obj.image_url, x, y, obj.srcX, obj.srcY);
-      });
-
-      return { walls: walls, entities: entities }; // bubbles up to drawLevels as pojo
     }
   }, {
     key: 'draw',

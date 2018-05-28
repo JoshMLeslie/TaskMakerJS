@@ -75,7 +75,7 @@ export default class MainRender {
         return 'stats';
 
       default:
-        this.text_obj = { // is this even necessary?
+        this.text_obj = { // is storing this even necessary?
           speaker: 'Game', body: `${e.key} is not used!`
         };
         this.sendText();
@@ -102,11 +102,6 @@ export default class MainRender {
         this.sendText();
        }
     }
-  }
-
-  sendText() {
-    this.textarea.draw();
-    this.textarea.displayText(this.text_obj);
   }
 
   examineEntity(pos) {
@@ -142,6 +137,11 @@ export default class MainRender {
     let temp = this.playarea.draw();
     this.walls = temp.walls;
     this.entities = temp.entities;
+  }
+
+  sendText() {
+    this.textarea.draw();
+    this.textarea.displayText(this.text_obj);
   }
 
   draw () {

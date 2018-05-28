@@ -1,4 +1,8 @@
 import * as Colors from '../../util/font_colors';
+import drawTopBarContainer from './top_bar';
+import drawPlayAreaContainer from './play_area';
+import drawTextAndStatsContainer from './text_and_stats';
+import buttonClick from './button_util';
 
 export default class Background {
   constructor (name, canvasEl, ctx) {
@@ -8,236 +12,24 @@ export default class Background {
     this.width = canvasEl.width;  // max width the game occupies
     this.height = canvasEl.height; // borders etc should exist within this area
 
-    this.buttonClick = this.buttonClick.bind(this);
-    this.canvasEl.addEventListener('click', this.buttonClick, false);
+    this.callButtonClick = this.callButtonClick.bind(this);
+    this.canvasEl.addEventListener('click', this.callButtonClick, false);
   }
 
-  getMousePos(e) {
-    let canvasArea = this.canvasEl.getBoundingClientRect();
-    return {
-      x: e.clientX - canvasArea.left,
-      y: e.clientY - canvasArea.top
-    };
-  }
-
-  isInside (pos, rect) {
-    const posX = pos.x > rect.x;
-    const widthX = pos.x < rect.x+rect.width;
-    const widthY = pos.y < rect.y+rect.height;
-    return posX && widthX && widthY;
-  }
-
-  buttonClick(e) {
-    // https://stackoverflow.com/questions/24384368/simple-button-in-html5-canvas
-    const buttonArea = {
-      x: 18,
-      y: 8,
-      width: 16,
-      height: 16
-    };
-    const mousePos = this.getMousePos(e);
-
-    if (this.isInside(mousePos, buttonArea)) {
-      window.alert('Button clicked!');
-    }
-  }
-
-  drawTopBar () {
-    const ctx = this.ctx;
-    // for-now-fake top bar
-
-    ctx.beginPath(); // bar background
-      ctx.fillStyle = "#F8F8F5";
-    ctx.fillRect(2, 2, 786, 30);
-
-    ctx.beginPath(); // bottom border bar
-      ctx.moveTo(2,31);
-      ctx.strokeStyle = "#C0C0C0";
-      ctx.lineWidth = "2";
-      ctx.lineTo(788,31);
-    ctx.stroke();
-
-    for (let i = 6; i < 28; i += 4) {
-      // horizontal striations
-      ctx.beginPath();
-        ctx.moveTo(4,i);
-        ctx.strokeStyle = "#C0C0C0";
-        ctx.lineWidth = "2";
-        ctx.lineTo(786,i);
-      ctx.stroke();
-    }
-
-    this.drawName();
-    this.drawButton();
-  }
-
-  drawName () {
-    const long = this.name.length;
-    const width = (long * 8.5) + (long > 10 ? 0 : 10); // well enough.
-    const centering = (790-width)/2;
-
-    const ctx = this.ctx;
-    ctx.beginPath();
-      ctx.fillStyle = "#F8F8F5";
-    ctx.fillRect(centering, 4, width, 24);
-
-    ctx.beginPath(); // disp speaker
-      ctx.fillStyle = Colors.textBlack;
-      ctx.font = "20px serif";
-    ctx.fillText(this.name, centering+5, 22.5); // +5 for padding
-  }
-
-  drawButton () {
-    const ctx = this.ctx;
-
-    ctx.beginPath(); // non-func click-box
-      ctx.fillStyle = "#AEAEAE";
-    ctx.fillRect(18, 8, 16, 16);
-
-    ctx.beginPath(); // inner sq. border
-      ctx.strokeStyle="#CFCDFF";
-      ctx.lineWidth="2";
-    ctx.strokeRect(18,8,18,18);
-
-    ctx.beginPath(); // outer sq. border
-      ctx.strokeStyle="#F8F8F5";
-      ctx.lineWidth="2";
-    ctx.strokeRect(14,4,24,24);
-
-    ctx.beginPath(); // upper shadow border
-      ctx.moveTo(15,6);
-      ctx.strokeStyle = "#343169";
-      ctx.lineWidth = "2";
-      ctx.lineTo(37,6);
-    ctx.stroke();
-
-    ctx.beginPath(); // left shadow border
-      ctx.moveTo(16,6);
-      ctx.strokeStyle = "#343169";
-      ctx.lineWidth = "2";
-      ctx.lineTo(16,27);
-    ctx.stroke();
-
-    ctx.beginPath(); // lower shadow border
-      ctx.moveTo(19,24);
-      ctx.strokeStyle = "#343169";
-      ctx.lineWidth = "2";
-      ctx.lineTo(35,24);
-    ctx.stroke();
-
-    ctx.beginPath(); // right shadow border
-      ctx.moveTo(34,9);
-      ctx.strokeStyle = "#343169";
-      ctx.lineWidth = "2";
-      ctx.lineTo(34,25);
-    ctx.stroke();
-  }
-
-  drawCardinals () {
-    // brace yourself.
-    const ctx = this.ctx;
-
-    let vPos = 275;
-    let vPos2 = 275; // since it gets called twice
-    const vAdj = 15;
-
-    const cardinals = {
-      // keys are rendered relative to x,y vals.
-      // N => "N" @ 555, 40, EAST => "E" @ ... "A" @ .... "S" ...
-      N: [555, 70],
-      EAST: {
-        E: [766, vPos], // micro adjustments
-        A: [765, vPos += vAdj],
-        S: [766, vPos += vAdj],
-        T: [766, vPos += vAdj],
-      },
-      SOUTH: [540, 512.5],
-      WEST: {
-        W: [333, vPos2],
-        E: [335, vPos2 += vAdj],
-        S: [335.5, vPos2 += vAdj],
-        T: [335, vPos2 += vAdj]
-      }
-    };
-
-    for (let key in cardinals) {
-      ctx.beginPath();
-      ctx.fillStyle = Colors.textGray;
-      ctx.font = "12px serif";
-
-      if (cardinals[key] instanceof Array) { // if first level is an array
-        if (key === "N") { ctx.font = "20px serif"; }
-        ctx.fillText(key, cardinals[key][0], cardinals[key][1]);
-      } else { // else first level contains another object (E / W)
-        for (let subkey in cardinals[key]) {
-          ctx.fillText(
-            subkey,
-            cardinals[key][subkey][0],
-            cardinals[key][subkey][1]
-          );
-  } } } } // cardinals() end
-
-
-  drawPlayAreaContainer () {
-    const ctx = this.ctx;
-    // playarea box
-
-    ctx.beginPath();
-      ctx.fillStyle = Colors.backgroundGray;
-    ctx.fillRect(325, 65, 460, 460);
-    // x, y, w, h
-
-    ctx.beginPath(); // border
-      ctx.strokeStyle=Colors.borderGray;
-      ctx.lineWidth="2";
-    ctx.strokeRect(328,68,454,454);
-
-    ctx.beginPath(); // filled circle around 'N'
-      ctx.fillStyle = Colors.backgroundGray;
-      ctx.arc(561, 70, 30, 0, Math.PI*2);
-      // x, y, radius, startAngle, endAngle, anticlockwiseBool
-    ctx.fill();
-
-    ctx.beginPath(); // border within circle to match
-      ctx.fillStyle = Colors.borderGray;
-      ctx.arc(561, 70, 28, Math.PI,0); // half-circle - passable.
-    ctx.stroke();
-
-    this.drawCardinals(); // render lettering ontop of everything above
-  }
-
-  drawTextAndStatsContainer () {
-    const ctx = this.ctx;
-
-    ctx.beginPath();
-      ctx.fillStyle = Colors.backgroundGray; // hey bebebe
-      ctx.fillRect(5, 35, 315, 490);
-
-    ctx.beginPath(); // border
-      ctx.strokeStyle = Colors.borderGray;
-      ctx.lineWidth = "2";
-    ctx.strokeRect(8,38,309,484);
-
-    ctx.beginPath(); // border line between text and stats
-      ctx.moveTo(9,292); // (-1, +2) adjustment for line overlap / thickness
-      ctx.strokeStyle = Colors.borderGray;
-      ctx.lineWidth = "2";
-      ctx.lineTo(316,292);
-    ctx.stroke();
+  callButtonClick(e) {
+    buttonClick(e, this.canvasEl);
   }
 
   draw () {
     const ctx = this.ctx;
-    // background render area
 
+    // black background
     ctx.beginPath();
     ctx.fillStyle = "#242424";
-    // background black
     ctx.fillRect(0, 0, 790, 530);
 
-    this.drawTopBar();
-
-    this.drawPlayAreaContainer();
-    this.drawTextAndStatsContainer();
+    drawTopBarContainer(ctx, this.name);
+    drawPlayAreaContainer(ctx);
+    drawTextAndStatsContainer(ctx);
   }
 }

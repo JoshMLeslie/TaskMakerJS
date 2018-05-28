@@ -16,7 +16,7 @@
 180525 - day 3
   Some aesthetic tweaks. Got the character to move and render properly, plus boundaries within the main game box. The blocks are going to be tricky.
 
-  Fuck sprites and images. Got them working, now have to get them working cleaner. More cleanly. cleanerly. Better. Going home.
+  Damn sprites and images. Got them working, now have to get them working cleaner. More cleanly. cleanerly. Better. Going home.
 
 180524 - day 2
   Got the static elements down in canvas.
