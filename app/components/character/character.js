@@ -20,9 +20,21 @@ export default class Character {
     this.x = 533; // center x
     this.y = 268; // center y
 
+    this.sprite = this.makeSprite();
+
     this.move = this.move.bind(this);
+    this.makeSprite = this.makeSprite.bind(this);
     this.wontCollide = this.wontCollide.bind(this);
     this.updateSpriteImage = this.updateSpriteImage.bind(this);
+  }
+
+  makeSprite () {
+    return new Sprite (
+      this.ctx,
+      this.image_url,
+      this.x, this.y,
+      0, 0
+    );
   }
 
   position () {
@@ -71,7 +83,7 @@ export default class Character {
   move(key, walls) {
     const temp = makeAmove(this.direction, key);
     let movement;
-    
+
     if (temp instanceof Array) {
       movement = temp;
     } else {
@@ -90,16 +102,18 @@ export default class Character {
   }
 
   draw () {
-    const ctx = this.ctx;
     const sprite_data = this.updateSpriteImage();
-    // updates image url, exports relevant image positioning since L-R and Up-Dw are combinded png's
+    console.log(this);
+    console.log(this.direction);
 
-    new Sprite (
-      this.ctx,
+    const ctx = this.ctx;
+    this.sprite.updateImage(
       this.image_url,
       this.x, this.y,
       sprite_data[0], sprite_data[1]
     );
+    // updates image url, exports relevant image positioning since L-R and Up-Dw are combinded png's
+
 
     // ctx.beginPath(); // simple character box
     //   ctx.fillStyle="#9cd0e5"; // pale blue dot

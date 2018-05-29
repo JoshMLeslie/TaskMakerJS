@@ -12,21 +12,38 @@ export default class PlayArea {
     this.width = 405;
     this.height = 405;
 
+    this.levels = {};
+    this.sprites = [];
+    this.newSprites = true;
+
     const centering = (canvasEl.height - this.height) / 2;
     this.x = canvasEl.width - this.width - centering + 30;
     this.y = canvasEl.height - this.height - centering + 25 ;
   }
 
-  drawLevels(levels) {
+  makeLevels(levels) {
     for (let level_key in levels) {
       const level = levels[level_key];
 
       for (let room_key in level) {
         return drawLevel(
-          this.ctx, level[room_key]
+          this.ctx, level[room_key], this.sprites
         ); // bubble up 'walls + entities'
       }
     }
+  }
+
+  distributeEntities (levels) {
+    let allEntities = this.makeLevels(levels);
+    this.sprites = allEntities.sprites;
+    return {
+      walls: allEntities.walls,
+      entities: allEntities.entities
+    };
+  }
+
+  drawLevels () {
+    this.sprites.forEach(sprite => { sprite.draw(); });
   }
 
   draw () {
@@ -37,9 +54,19 @@ export default class PlayArea {
     ctx.fillStyle = "black";
     ctx.fillRect(this.x, this.y, this.height, this.width);
 
-    return this.drawLevels({ // bubble up 'walls'
+    if (_.isEmpty(this.sprites) ) {
+      this.newSprites = true;
+    } else {
+      this.newSprites = false;
+    }
+
+    const entities = this.distributeEntities({
+      // bubble up 'walls', 'entities'
       levelOne
     });
 
+    this.drawLevels();
+
+    return entities;
   }
 }

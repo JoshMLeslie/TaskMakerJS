@@ -18,6 +18,16 @@ export default class Sprite  {
     };
 
     this.draw = this.draw.bind(this);
+    this.updateImage = this.updateImage.bind(this);
+  }
+
+  updateImage (imagePath,x,y,srcX, srcY) {
+    this.image.src = imagePath;
+    this.x = x;
+    this.y = y;
+    this.srcX = srcX;
+    this.srcY = srcY;
+    this.draw();
   }
 
   draw () {

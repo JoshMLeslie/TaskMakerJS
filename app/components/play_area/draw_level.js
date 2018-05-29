@@ -1,5 +1,7 @@
 import Sprite from '../../util/sprite';
 
+import _ from 'underscore';
+
 const spriteX = (obj_idx) => { // same same, but diff.
   let modulo = obj_idx % 9;
   if (modulo < 0) { modulo = 8; }
@@ -11,13 +13,27 @@ const spriteY = (obj_idx) => { // but same same.
   return (88 + (floored * 45));
 };
 
-const drawLevel = (ctx, room) => {
+const drawSprites = (sprites) => {
+  sprites.forEach( sprite => {
+    sprite.draw();
+  });
+};
+
+const drawLevel = (ctx, room, sprites) => {
   // dev: make objects from top left, right, then typerwritter down, for consistency's sake.
 
   // 'room' is a (big) array / POJO
 
   let walls = {}; // to hold position of all walls on the map
   let entities = {}; // to hold position of all entities " "
+  sprites = sprites || []; // to hold all sprites
+
+  let newSprites;
+  if (_.isEmpty(sprites) ) {
+    newSprites = true;
+  } else {
+    newSprites = false;
+  }
 
   room.forEach((obj, obj_idx) => {
     const x = spriteX(obj_idx);
@@ -46,15 +62,22 @@ const drawLevel = (ctx, room) => {
       } }
     );
 
-    new Sprite (
-      ctx,
-      obj.image_url,
-      x, y,
-      obj.srcX, obj.srcY
-    );
+    if (newSprites) {
+      debugger
+      sprites.push (
+        new Sprite (
+          ctx,
+          obj.image_url,
+          x, y,
+          obj.srcX, obj.srcY
+        )
+      );
+    } else {
+      drawSprites(sprites);
+    }
   });
 
-  return {walls, entities}; // bubbles up to drawLevels as pojo
+  return {walls, entities, sprites}; // bubbles up to drawLevels as pojo
 };
 
 export default drawLevel;

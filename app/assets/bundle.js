@@ -725,12 +725,20 @@ var Character = function () {
     this.x = 533; // center x
     this.y = 268; // center y
 
+    this.sprite = this.makeSprite();
+
     this.move = this.move.bind(this);
+    this.makeSprite = this.makeSprite.bind(this);
     this.wontCollide = this.wontCollide.bind(this);
     this.updateSpriteImage = this.updateSpriteImage.bind(this);
   }
 
   _createClass(Character, [{
+    key: 'makeSprite',
+    value: function makeSprite() {
+      return new _sprite2.default(this.ctx, this.image_url, this.x, this.y, 0, 0);
+    }
+  }, {
     key: 'position',
     value: function position() {
       return [this.x, this.y];
@@ -799,11 +807,14 @@ var Character = function () {
   }, {
     key: 'draw',
     value: function draw() {
-      var ctx = this.ctx;
       var sprite_data = this.updateSpriteImage();
+      console.log(this);
+      console.log(this.direction);
+
+      var ctx = this.ctx;
+      this.sprite.updateImage(this.image_url, this.x, this.y, sprite_data[0], sprite_data[1]);
       // updates image url, exports relevant image positioning since L-R and Up-Dw are combinded png's
 
-      new _sprite2.default(this.ctx, this.image_url, this.x, this.y, sprite_data[0], sprite_data[1]);
 
       // ctx.beginPath(); // simple character box
       //   ctx.fillStyle="#9cd0e5"; // pale blue dot
@@ -1216,6 +1227,10 @@ var _sprite = __webpack_require__(/*! ../../util/sprite */ "./app/util/sprite.js
 
 var _sprite2 = _interopRequireDefault(_sprite);
 
+var _underscore = __webpack_require__(/*! underscore */ "./node_modules/underscore/underscore.js");
+
+var _underscore2 = _interopRequireDefault(_underscore);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
@@ -1235,13 +1250,27 @@ var spriteY = function spriteY(obj_idx) {
   return 88 + floored * 45;
 };
 
-var drawLevel = function drawLevel(ctx, room) {
+var drawSprites = function drawSprites(sprites) {
+  sprites.forEach(function (sprite) {
+    sprite.draw();
+  });
+};
+
+var drawLevel = function drawLevel(ctx, room, sprites) {
   // dev: make objects from top left, right, then typerwritter down, for consistency's sake.
 
   // 'room' is a (big) array / POJO
 
   var walls = {}; // to hold position of all walls on the map
   var entities = {}; // to hold position of all entities " "
+  sprites = sprites || []; // to hold all sprites
+
+  var newSprites = void 0;
+  if (_underscore2.default.isEmpty(sprites)) {
+    newSprites = true;
+  } else {
+    newSprites = false;
+  }
 
   room.forEach(function (obj, obj_idx) {
     var x = spriteX(obj_idx);
@@ -1265,10 +1294,15 @@ var drawLevel = function drawLevel(ctx, room) {
       text: obj.text
     }));
 
-    new _sprite2.default(ctx, obj.image_url, x, y, obj.srcX, obj.srcY);
+    if (newSprites) {
+      debugger;
+      sprites.push(new _sprite2.default(ctx, obj.image_url, x, y, obj.srcX, obj.srcY));
+    } else {
+      drawSprites(sprites);
+    }
   });
 
-  return { walls: walls, entities: entities }; // bubbles up to drawLevels as pojo
+  return { walls: walls, entities: entities, sprites: sprites }; // bubbles up to drawLevels as pojo
 };
 
 exports.default = drawLevel;
@@ -1329,21 +1363,42 @@ var PlayArea = function () {
     this.width = 405;
     this.height = 405;
 
+    this.levels = {};
+    this.sprites = [];
+    this.newSprites = true;
+
     var centering = (canvasEl.height - this.height) / 2;
     this.x = canvasEl.width - this.width - centering + 30;
     this.y = canvasEl.height - this.height - centering + 25;
   }
 
   _createClass(PlayArea, [{
-    key: 'drawLevels',
-    value: function drawLevels(levels) {
+    key: 'makeLevels',
+    value: function makeLevels(levels) {
       for (var level_key in levels) {
         var level = levels[level_key];
 
         for (var room_key in level) {
-          return (0, _draw_level2.default)(this.ctx, level[room_key]); // bubble up 'walls + entities'
+          return (0, _draw_level2.default)(this.ctx, level[room_key], this.sprites); // bubble up 'walls + entities'
         }
       }
+    }
+  }, {
+    key: 'distributeEntities',
+    value: function distributeEntities(levels) {
+      var allEntities = this.makeLevels(levels);
+      this.sprites = allEntities.sprites;
+      return {
+        walls: allEntities.walls,
+        entities: allEntities.entities
+      };
+    }
+  }, {
+    key: 'drawLevels',
+    value: function drawLevels() {
+      this.sprites.forEach(function (sprite) {
+        sprite.draw();
+      });
     }
   }, {
     key: 'draw',
@@ -1355,9 +1410,20 @@ var PlayArea = function () {
       ctx.fillStyle = "black";
       ctx.fillRect(this.x, this.y, this.height, this.width);
 
-      return this.drawLevels({ // bubble up 'walls'
+      if (_underscore2.default.isEmpty(this.sprites)) {
+        this.newSprites = true;
+      } else {
+        this.newSprites = false;
+      }
+
+      var entities = this.distributeEntities({
+        // bubble up 'walls', 'entities'
         levelOne: levelOne
       });
+
+      this.drawLevels();
+
+      return entities;
     }
   }]);
 
@@ -1887,9 +1953,20 @@ var Sprite = function () {
     };
 
     this.draw = this.draw.bind(this);
+    this.updateImage = this.updateImage.bind(this);
   }
 
   _createClass(Sprite, [{
+    key: "updateImage",
+    value: function updateImage(imagePath, x, y, srcX, srcY) {
+      this.image.src = imagePath;
+      this.x = x;
+      this.y = y;
+      this.srcX = srcX;
+      this.srcY = srcY;
+      this.draw();
+    }
+  }, {
     key: "draw",
     value: function draw() {
       /* (

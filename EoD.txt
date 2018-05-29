@@ -1,3 +1,10 @@
+180529 - day 7
+  Got flickering resolved. In a rather bad looking way. Basically wrote similar logic for both the level and the character to only render once / only rerender if their image changed(mainly for the character)
+
+  spent about two hours? Maybe an hour? on this today.
+
+  This is where I wanted to leave the project for the time being, so that's good. Anything more is better, but this is good enough for now with everything else going on.
+
 180528 - day 6
   Flickering is still an issue I haven't addressed. Keep getting caught up on other things. One of the instructors suggested only updating the old-cell and the new-cell, which occurred to me, but there must be something better?
 
