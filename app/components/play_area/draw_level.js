@@ -63,7 +63,6 @@ const drawLevel = (ctx, room, sprites) => {
     );
 
     if (newSprites) {
-      debugger
       sprites.push (
         new Sprite (
           ctx,

@@ -1,3 +1,8 @@
+180530 - day 8
+  Updated score so that it starts at 0 and adds +1 when user examines something.
+
+  Quirk discovered where the character doesn't render on load / when facing down on load.
+
 180529 - day 7
   Got flickering resolved. In a rather bad looking way. Basically wrote similar logic for both the level and the character to only render once / only rerender if their image changed(mainly for the character)
 

@@ -103,8 +103,6 @@ export default class Character {
 
   draw () {
     const sprite_data = this.updateSpriteImage();
-    console.log(this);
-    console.log(this.direction);
 
     const ctx = this.ctx;
     this.sprite.updateImage(

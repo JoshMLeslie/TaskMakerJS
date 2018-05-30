@@ -35,14 +35,15 @@ export default class MainRender {
     this.character = new Character(canvasEl, ctx);
 
     this.draw = this.draw.bind(this);
+    this.bulkDraw = this.bulkDraw.bind(this);
     this.run = this.run.bind(this);
     this.inputSelector = this.inputSelector.bind(this);
     this.drawPlayArea = this.drawPlayArea.bind(this);
 
-    // inputSelector needs to be bound first.
+    // 'inputSelector' needs to be bound first.
     window.addEventListener("keydown", this.run);
 
-    this.text_obj = {
+    this.text_obj = { // is storing this repeatedly even necessary?
       speaker: "Bob:",
       body: "HELP! I'm trapped in this box! For now at least I can move with 'arrow keys' and examine my surroundings with 'e'. That's something, I suppose."
     };
@@ -52,23 +53,29 @@ export default class MainRender {
 // UTILITY //
   inputSelector (e) {
     switch (e.keyCode) {
-      case 37: case 38: case 39: case 40: // l, u, d, r ?
-        this.statsarea.updateStat("Stamina", -0.5);
+      case 37: case 38: case 39: case 40: // l, u, r, d
+        this.statsarea.updateStat("Stamina", -0.25);
         this.character.move(e.keyCode, this.walls);
         // this.walls? madness. MADNESS. Forward the foundation!
 
         this.checkMagicMouths();
 
-        return 'character'; // prevent reloading from unbound keys
+        return 'character'; // specific reloading
 
       case 65: // 'a' - action, drains stamina
         this.statsarea.updateStat("Stamina", -1);
+
+        this.text_obj = {
+          speaker: 'Game', body: 'Nothing to activate yet!'
+        };
+        this.sendText();
+
         return 'stats';
 
       case 69: // 'e' - examine
         let pos = this.character.positionAhead();
         this.examineEntity(pos);
-        return 'idle'; // hits default draw
+        return 'stats'; // hits default draw
 
       case 82: // 'r' - rest // replenishes stamina
         this.statsarea.updateStat("Stamina", "max");
@@ -127,6 +134,7 @@ export default class MainRender {
         speaker: "Examine:", body: "That's the abyss!"
       };
     }
+    this.statsarea.updateScore(1);
 
     this.sendText();
   }
@@ -144,33 +152,26 @@ export default class MainRender {
     this.textarea.displayText(this.text_obj);
   }
 
+  bulkDraw () {
+    this.statsarea.draw();
+    this.drawPlayArea();
+    this.character.draw();
+  }
+
   draw () {
-    const ctx = this.ctx;
+    this.ctx.clearRect( 0, 0, this.canvasEl.width, this.canvasEl.height );
 
-    ctx.clearRect(
-      0, 0,
-      this.canvasEl.width,
-      this.canvasEl.height
-    );
-
-    // modules
     this.background.draw();
     this.sendText();
 
-    this.statsarea.draw();
-
-    // 'walls' bubbled up from within pa.draw
-    this.drawPlayArea();
-
-    this.character.draw();
+    this.bulkDraw();
+    // there's some weird quirk going on when first loading where the character doesn't display. I think the play area is double rendering? But that shouldn't affect things since the character always gets called after?
   }
 
   run (e) {
     switch ( this.inputSelector(e) ) {
       case 'character':
-        this.statsarea.draw();
-        this.drawPlayArea();
-        this.character.draw();
+        this.bulkDraw();
         break;
       case 'stats':
         this.statsarea.draw();

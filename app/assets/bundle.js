@@ -808,8 +808,6 @@ var Character = function () {
     key: 'draw',
     value: function draw() {
       var sprite_data = this.updateSpriteImage();
-      console.log(this);
-      console.log(this.direction);
 
       var ctx = this.ctx;
       this.sprite.updateImage(this.image_url, this.x, this.y, sprite_data[0], sprite_data[1]);
@@ -1046,14 +1044,15 @@ var MainRender = function () {
     this.character = new _character2.default(canvasEl, ctx);
 
     this.draw = this.draw.bind(this);
+    this.bulkDraw = this.bulkDraw.bind(this);
     this.run = this.run.bind(this);
     this.inputSelector = this.inputSelector.bind(this);
     this.drawPlayArea = this.drawPlayArea.bind(this);
 
-    // inputSelector needs to be bound first.
+    // 'inputSelector' needs to be bound first.
     window.addEventListener("keydown", this.run);
 
-    this.text_obj = {
+    this.text_obj = { // is storing this repeatedly even necessary?
       speaker: "Bob:",
       body: "HELP! I'm trapped in this box! For now at least I can move with 'arrow keys' and examine my surroundings with 'e'. That's something, I suppose."
     };
@@ -1067,25 +1066,31 @@ var MainRender = function () {
     value: function inputSelector(e) {
       switch (e.keyCode) {
         case 37:case 38:case 39:case 40:
-          // l, u, d, r ?
-          this.statsarea.updateStat("Stamina", -0.5);
+          // l, u, r, d
+          this.statsarea.updateStat("Stamina", -0.25);
           this.character.move(e.keyCode, this.walls);
           // this.walls? madness. MADNESS. Forward the foundation!
 
           this.checkMagicMouths();
 
-          return 'character'; // prevent reloading from unbound keys
+          return 'character'; // specific reloading
 
         case 65:
           // 'a' - action, drains stamina
           this.statsarea.updateStat("Stamina", -1);
+
+          this.text_obj = {
+            speaker: 'Game', body: 'Nothing to activate yet!'
+          };
+          this.sendText();
+
           return 'stats';
 
         case 69:
           // 'e' - examine
           var pos = this.character.positionAhead();
           this.examineEntity(pos);
-          return 'idle'; // hits default draw
+          return 'stats'; // hits default draw
 
         case 82:
           // 'r' - rest // replenishes stamina
@@ -1141,6 +1146,7 @@ var MainRender = function () {
           speaker: "Examine:", body: "That's the abyss!"
         };
       }
+      this.statsarea.updateScore(1);
 
       this.sendText();
     }
@@ -1162,31 +1168,29 @@ var MainRender = function () {
       this.textarea.displayText(this.text_obj);
     }
   }, {
+    key: 'bulkDraw',
+    value: function bulkDraw() {
+      this.statsarea.draw();
+      this.drawPlayArea();
+      this.character.draw();
+    }
+  }, {
     key: 'draw',
     value: function draw() {
-      var ctx = this.ctx;
+      this.ctx.clearRect(0, 0, this.canvasEl.width, this.canvasEl.height);
 
-      ctx.clearRect(0, 0, this.canvasEl.width, this.canvasEl.height);
-
-      // modules
       this.background.draw();
       this.sendText();
 
-      this.statsarea.draw();
-
-      // 'walls' bubbled up from within pa.draw
-      this.drawPlayArea();
-
-      this.character.draw();
+      this.bulkDraw();
+      // there's some weird quirk going on when first loading where the character doesn't display. I think the play area is double rendering? But that shouldn't affect things since the character always gets called after?
     }
   }, {
     key: 'run',
     value: function run(e) {
       switch (this.inputSelector(e)) {
         case 'character':
-          this.statsarea.draw();
-          this.drawPlayArea();
-          this.character.draw();
+          this.bulkDraw();
           break;
         case 'stats':
           this.statsarea.draw();
@@ -1295,7 +1299,6 @@ var drawLevel = function drawLevel(ctx, room, sprites) {
     }));
 
     if (newSprites) {
-      debugger;
       sprites.push(new _sprite2.default(ctx, obj.image_url, x, y, obj.srcX, obj.srcY));
     } else {
       drawSprites(sprites);
@@ -1421,7 +1424,9 @@ var PlayArea = function () {
         levelOne: levelOne
       });
 
-      this.drawLevels();
+      if (!this.newSprites) {
+        this.drawLevels();
+      }
 
       return entities;
     }
@@ -1490,11 +1495,17 @@ var StatsArea = function () {
     };
 
     this.updateStat = this.updateStat.bind(this);
+    this.updateScore = this.updateScore.bind(this);
     this.boostStat = this.boostStat.bind(this);
     this.draw = this.draw.bind(this);
   }
 
   _createClass(StatsArea, [{
+    key: 'updateScore',
+    value: function updateScore(dVal) {
+      this.score += dVal;
+    }
+  }, {
     key: 'updateStat',
     value: function updateStat(stat, dVal, callback) {
       // for affecting the pool
@@ -1507,7 +1518,9 @@ var StatsArea = function () {
 
           if (callback) {
             callback();
-          } // not sure if I actually need/want this, but leaving it for now.
+          }
+          // not sure if I actually need/want this callback ability,
+          // but leaving it for now.
         } else {
           window.alert("You must rest! Press 'r' ");
         }
@@ -1522,9 +1535,8 @@ var StatsArea = function () {
   }, {
     key: 'displayScore',
     value: function displayScore() {
-      var score = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
-
       var ctx = this.ctx;
+      var score = this.score;
 
       var vPos = 315;
 
@@ -1560,7 +1572,7 @@ var StatsArea = function () {
     key: 'hatchRect',
     value: function hatchRect(x1, y1, dx, dy, delta, color) {
       // source: https://codepen.io/adammertel/pen/xZyWxy
-      // startX, Y, width, height, density-(lower val = more lines), color
+      // startX, Y, width, height, density->(lower val = more lines), color
       var ctx = this.ctx;
 
       ctx.rect(x1, y1, dx, dy);
@@ -1608,17 +1620,12 @@ var StatsArea = function () {
   }, {
     key: 'displayStats',
     value: function displayStats() {
-      // this.statVals is a hash of matching k-v pairs
-      // statVals = {
-      //   Food = [current, max],
-      //   ...
-      // }
       var ctx = this.ctx;
       var vPos = 350;
       var adj = 27;
       var h = 20;
 
-      var stats = {
+      var statsLoc = {
         Food: [h, vPos],
         Health: [h, vPos += adj],
         Spirit: [h, vPos += adj],
@@ -1628,13 +1635,13 @@ var StatsArea = function () {
         Stamina: [h, vPos += adj]
       };
 
-      for (var key in stats) {
+      for (var key in statsLoc) {
         ctx.beginPath(); // stat text
         ctx.fillStyle = Colors.textBlack;
         ctx.font = "16px serif";
-        ctx.fillText(key, stats[key][0], stats[key][1]);
+        ctx.fillText(key, statsLoc[key][0], statsLoc[key][1]);
 
-        this.statBar(key, stats[key], this.statVals[key]); // actual bar
+        this.statBar(key, statsLoc[key], this.statVals[key]); // actual bar
       }
     }
   }, {
@@ -1644,7 +1651,7 @@ var StatsArea = function () {
       ctx.fillStyle = "#DFDFDF";
       ctx.fillRect(this.x, this.y, this.width, this.height);
 
-      this.displayScore(314);
+      this.displayScore();
       this.displayStats();
     }
   }]);

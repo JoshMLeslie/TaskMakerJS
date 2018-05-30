@@ -27,8 +27,13 @@ export default class StatsArea {
     };
 
     this.updateStat = this.updateStat.bind(this);
+    this.updateScore = this.updateScore.bind(this);
     this.boostStat = this.boostStat.bind(this);
     this.draw = this.draw.bind(this);
+  }
+
+  updateScore(dVal) {
+    this.score += dVal;
   }
 
   updateStat(stat, dVal, callback) {
@@ -40,7 +45,9 @@ export default class StatsArea {
       if (this.statVals[stat][0] > 0) {
         this.statVals[stat][0] += dVal;
 
-        if ( callback ) { callback(); } // not sure if I actually need/want this, but leaving it for now.
+        if ( callback ) { callback(); }
+        // not sure if I actually need/want this callback ability,
+        // but leaving it for now.
       } else {
         window.alert("You must rest! Press 'r' ");
       }
@@ -51,8 +58,9 @@ export default class StatsArea {
     this.statVals[stat][1] += dVal;
   }
 
-  displayScore (score=0) {
+  displayScore () {
     const ctx = this.ctx;
+    const score = this.score;
 
     const vPos = 315;
 
@@ -82,7 +90,7 @@ export default class StatsArea {
 
   hatchRect (x1, y1, dx, dy, delta, color) {
     // source: https://codepen.io/adammertel/pen/xZyWxy
-    // startX, Y, width, height, density-(lower val = more lines), color
+    // startX, Y, width, height, density->(lower val = more lines), color
     const ctx = this.ctx;
 
     ctx.rect(x1, y1, dx, dy);
@@ -94,8 +102,8 @@ export default class StatsArea {
 
     _.each(_.range(-1*(majorAxe) , majorAxe, delta), (n, i) => {
       ctx.beginPath();
-      ctx.moveTo(n + x1, y1);
-      ctx.lineTo(dy + n + x1 , y1 + dy);
+        ctx.moveTo(n + x1, y1);
+        ctx.lineTo(dy + n + x1 , y1 + dy);
       ctx.stroke();
     });
 
@@ -129,17 +137,12 @@ export default class StatsArea {
   }
 
   displayStats () {
-    // this.statVals is a hash of matching k-v pairs
-    // statVals = {
-    //   Food = [current, max],
-    //   ...
-    // }
     const ctx = this.ctx;
     let vPos = 350;
     const adj = 27;
     const h = 20;
 
-    const stats = {
+    const statsLoc = {
       Food: [h, vPos],
       Health: [h, vPos += adj],
       Spirit: [h, vPos += adj],
@@ -149,13 +152,13 @@ export default class StatsArea {
       Stamina: [h, vPos += adj],
     };
 
-    for (let key in stats) {
+    for (let key in statsLoc) {
       ctx.beginPath(); // stat text
         ctx.fillStyle = Colors.textBlack;
         ctx.font = "16px serif";
-      ctx.fillText(key, stats[key][0], stats[key][1]);
+      ctx.fillText(key, statsLoc[key][0], statsLoc[key][1]);
 
-      this.statBar(key, stats[key], this.statVals[key]); // actual bar
+      this.statBar(key, statsLoc[key], this.statVals[key]); // actual bar
     }
   }
 
@@ -164,9 +167,7 @@ export default class StatsArea {
     ctx.fillStyle = "#DFDFDF";
     ctx.fillRect(this.x, this.y, this.width, this.height);
 
-
-
-    this.displayScore(314);
+    this.displayScore();
     this.displayStats();
   }
 }

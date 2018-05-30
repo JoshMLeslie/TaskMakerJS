@@ -65,7 +65,9 @@ export default class PlayArea {
       levelOne
     });
 
-    this.drawLevels();
+    if (!this.newSprites) {
+      this.drawLevels();
+    }
 
     return entities;
   }
