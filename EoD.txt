@@ -1,3 +1,11 @@
+180605 - day 9
+  got new rooms to render when moving off the screen, however:
+    running into a bug because the character is now on the edge of the new room, when the char moves, the game sees this as "you're trying to move into a new room!" so it tries to render that next room, which breaks everything.
+    Possible solutions - re: '/play_area.js#checkMoveRoom
+      Incorporate character direction with that logic? Write some kind of trinary-rotating logic
+        -> more than a flipflop -> False1->T->F2->... ?
+        -> moving on -> on border tile -> moving off
+
 180530 - day 8
   Updated score so that it starts at 0 and adds +1 when user examines something.
 

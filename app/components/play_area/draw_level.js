@@ -19,7 +19,7 @@ const drawSprites = (sprites) => {
   });
 };
 
-const drawLevel = (ctx, room, sprites) => {
+const drawLevel = (ctx, room, sprites, newSprites) => {
   // dev: make objects from top left, right, then typerwritter down, for consistency's sake.
 
   // 'room' is a (big) array / POJO
@@ -27,13 +27,6 @@ const drawLevel = (ctx, room, sprites) => {
   let walls = {}; // to hold position of all walls on the map
   let entities = {}; // to hold position of all entities " "
   sprites = sprites || []; // to hold all sprites
-
-  let newSprites;
-  if (_.isEmpty(sprites) ) {
-    newSprites = true;
-  } else {
-    newSprites = false;
-  }
 
   room.forEach((obj, obj_idx) => {
     const x = spriteX(obj_idx);

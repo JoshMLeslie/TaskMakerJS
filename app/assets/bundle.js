@@ -725,11 +725,13 @@ var Character = function () {
     this.x = 533; // center x
     this.y = 268; // center y
 
+    this.makeSprite = this.makeSprite.bind(this);
+
     this.sprite = this.makeSprite();
 
     this.move = this.move.bind(this);
-    this.makeSprite = this.makeSprite.bind(this);
     this.wontCollide = this.wontCollide.bind(this);
+    this.setRelativePos = this.setRelativePos.bind(this);
     this.updateSpriteImage = this.updateSpriteImage.bind(this);
   }
 
@@ -737,6 +739,14 @@ var Character = function () {
     key: 'makeSprite',
     value: function makeSprite() {
       return new _sprite2.default(this.ctx, this.image_url, this.x, this.y, 0, 0);
+    }
+  }, {
+    key: 'setRelativePos',
+    value: function setRelativePos(pos) {
+      if (pos) {
+        this.x = pos[0];
+        this.y = pos[1];
+      }
     }
   }, {
     key: 'position',
@@ -840,7 +850,7 @@ exports.default = Character;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.entryRoom = undefined;
+exports.secondRoom = exports.entryRoom = undefined;
 
 var _urls = __webpack_require__(/*! ../../assets/sprites/walls/urls */ "./app/assets/sprites/walls/urls.js");
 
@@ -865,8 +875,9 @@ var rich_soil = urls.rich_soil;
 var shrubs = urls.shrubs;
 
 var posOf = urls.posOf;
+// a fn for finding an alphabet ch
 
-var exitWayMouthText = "Welcome! I hope you've enjoyed this tutorial so far. In the future, this is where you would continue on to the rest of the game. In case you needed a reminder, move with the 'arrow keys' and examine with 'e'! Actions can be performed with 'a', but there's nothing here yet to activate. Rest with 'r' to restore your stamina!";
+var entryRoomExitMouth = "Welcome! I hope you've enjoyed this tutorial so far. In the future, this is where you would continue on to the rest of the game. In case you needed a reminder, move with the 'arrow keys' and examine with 'e'! Actions can be performed with 'a', but there's nothing here yet to activate. Rest with 'r' to restore your stamina!";
 
 var entryRoom = exports.entryRoom = [
 // 1st row
@@ -880,7 +891,7 @@ var entryRoom = exports.entryRoom = [
   image_url: alphabet, type: 'wall', srcX: posOf("A") }, {
   image_url: alphabet, type: 'wall', srcX: posOf("L")
 }, { // 2nd row
-  image_url: stone_wall, type: 'wall' }, {
+  image_url: stone_wall }, {
   image_url: bush }, {
   image_url: shrubs }, {
   image_url: flowers }, {
@@ -951,14 +962,106 @@ var entryRoom = exports.entryRoom = [
   image_url: alphabet, type: 'wall', srcX: posOf("M")
 }, { // 9th row
   image_url: alphabet, type: 'wall', srcX: posOf("E") }, {
-  image_url: stone_wall, type: 'wall' }, {
+  image_url: stone_wall }, {
   image_url: right_arrow, type: 'wall' }, {
   image_url: right_arrow, type: 'wall' }, {
-  image_url: magic_mouth, type: "mouth", text: exitWayMouthText }, {
+  image_url: magic_mouth, type: "mouth", text: entryRoomExitMouth }, {
   image_url: left_arrow, type: 'wall' }, {
   image_url: left_arrow, type: 'wall' }, {
-  image_url: stone_wall, type: 'wall' }, {
+  image_url: stone_wall }, {
   image_url: alphabet, type: 'wall', srcX: posOf("E")
+}]; // room end
+
+var secondRoom = exports.secondRoom = [
+// 1st row
+{ image_url: stone_wall }, {
+  image_url: stone_wall }, {
+  image_url: stone_wall }, {
+  image_url: stone_wall }, {
+  image_url: brick }, {
+  image_url: stone_wall }, {
+  image_url: stone_wall }, {
+  image_url: stone_wall }, {
+  image_url: stone_wall
+}, { // 2nd row
+  image_url: alphabet, type: 'wall', srcX: posOf("W") }, {
+  image_url: bush }, {
+  image_url: shrubs }, {
+  image_url: flowers }, {
+  image_url: brick }, {
+  image_url: flowers }, {
+  image_url: shrubs }, {
+  image_url: bush }, {
+  image_url: alphabet, type: 'wall', srcX: posOf("W") }, { // 3rd row
+  image_url: alphabet, type: 'wall', srcX: posOf("E") }, {
+  image_url: shrubs }, {
+  image_url: rich_soil }, {
+  image_url: rich_soil }, {
+  image_url: brick }, {
+  image_url: rich_soil }, {
+  image_url: rich_soil }, {
+  image_url: shrubs }, {
+  image_url: alphabet, type: 'wall', srcX: posOf("E")
+}, { // 4th row
+  image_url: alphabet, type: 'wall', srcX: posOf("L") }, {
+  image_url: flowers }, {
+  image_url: rich_soil }, {
+  image_url: rich_soil }, {
+  image_url: brick }, {
+  image_url: rich_soil }, {
+  image_url: rich_soil }, {
+  image_url: flowers }, {
+  image_url: alphabet, type: 'wall', srcX: posOf("L")
+}, { // 5th row
+  image_url: alphabet, type: 'wall', srcX: posOf("C") }, {
+  image_url: flowers }, {
+  image_url: rich_soil }, {
+  image_url: rich_soil }, {
+  image_url: brick }, {
+  image_url: rich_soil }, {
+  image_url: rich_soil }, {
+  image_url: flowers }, {
+  image_url: alphabet, type: 'wall', srcX: posOf("C")
+}, { // 6th row
+  image_url: alphabet, type: 'wall', srcX: posOf("O") }, {
+  image_url: flowers }, {
+  image_url: rich_soil }, {
+  image_url: rich_soil }, {
+  image_url: brick }, {
+  image_url: rich_soil }, {
+  image_url: rich_soil }, {
+  image_url: flowers }, {
+  image_url: alphabet, type: 'wall', srcX: posOf("O")
+}, { // 7th row
+  image_url: alphabet, type: 'wall', srcX: posOf("M") }, {
+  image_url: shrubs }, {
+  image_url: rich_soil }, {
+  image_url: rich_soil }, {
+  image_url: brick }, {
+  image_url: rich_soil }, {
+  image_url: rich_soil }, {
+  image_url: shrubs }, {
+  image_url: alphabet, type: 'wall', srcX: posOf("M")
+}, { // 8th row
+  image_url: alphabet, type: 'wall', srcX: posOf("E") }, {
+  image_url: bush }, {
+  image_url: shrubs }, {
+  image_url: rich_soil }, {
+  image_url: brick }, {
+  image_url: rich_soil }, {
+  image_url: shrubs }, {
+  image_url: bush }, {
+  image_url: alphabet, type: 'wall', srcX: posOf("E")
+}, { // 9th row
+  image_url: stone_wall }, {
+  image_url: stone_wall }, {
+  image_url: right_arrow, type: 'wall' }, {
+  image_url: right_arrow, type: 'wall' }, {
+  image_url: magic_mouth, type: "mouth", text: entryRoomExitMouth }, {
+  image_url: left_arrow, type: 'wall' }, {
+  image_url: left_arrow, type: 'wall' }, {
+  image_url: stone_wall }, {
+  image_url: stone_wall
 }]; // room end
 
 /***/ }),
@@ -1042,6 +1145,7 @@ var MainRender = function () {
     this.textarea = new _text_area2.default(canvasEl, ctx);
     this.statsarea = new _stats_area2.default(canvasEl, ctx);
     this.character = new _character2.default(canvasEl, ctx);
+    this.readyRoom = false;
 
     this.draw = this.draw.bind(this);
     this.bulkDraw = this.bulkDraw.bind(this);
@@ -1072,6 +1176,13 @@ var MainRender = function () {
           // this.walls? madness. MADNESS. Forward the foundation!
 
           this.checkMagicMouths();
+
+          if (this.readyRoom) {
+            this.nextRoom();
+          }
+
+          this.prepareRoom(); // char is now on tile, flips for next render.
+
 
           return 'character'; // specific reloading
 
@@ -1105,6 +1216,27 @@ var MainRender = function () {
 
           return 'idle';
       }
+    }
+  }, {
+    key: 'prepareRoom',
+    value: function prepareRoom() {
+      var char_pos = this.character.position();
+      // if the player is on a boundry tile
+      if (this.playarea.checkMoveRoom(char_pos)) {
+        this.readyRoom = true;
+      } else {
+        this.readyRoom = false;
+      }
+    }
+  }, {
+    key: 'nextRoom',
+    value: function nextRoom() {
+      this.playarea.updateRoom();
+
+      var char_pos = this.character.position();
+      var invert_char_pos = this.playarea.invertPos(char_pos);
+      this.character.setRelativePos(invert_char_pos);
+      console.log("next room!");
     }
   }, {
     key: 'checkMagicMouths',
@@ -1260,7 +1392,7 @@ var drawSprites = function drawSprites(sprites) {
   });
 };
 
-var drawLevel = function drawLevel(ctx, room, sprites) {
+var drawLevel = function drawLevel(ctx, room, sprites, newSprites) {
   // dev: make objects from top left, right, then typerwritter down, for consistency's sake.
 
   // 'room' is a (big) array / POJO
@@ -1268,13 +1400,6 @@ var drawLevel = function drawLevel(ctx, room, sprites) {
   var walls = {}; // to hold position of all walls on the map
   var entities = {}; // to hold position of all entities " "
   sprites = sprites || []; // to hold all sprites
-
-  var newSprites = void 0;
-  if (_underscore2.default.isEmpty(sprites)) {
-    newSprites = true;
-  } else {
-    newSprites = false;
-  }
 
   room.forEach(function (obj, obj_idx) {
     var x = spriteX(obj_idx);
@@ -1366,30 +1491,149 @@ var PlayArea = function () {
     this.width = 405;
     this.height = 405;
 
-    this.levels = {};
+    this.levels = [];
     this.sprites = [];
     this.newSprites = true;
+    this.loadLevels(); // manual input of levels
+
+    this.renderedLevel = 0;
+    this.renderedRoom = 0;
+    this.currentLevel = 0;
+    this.currentRoom = 0;
 
     var centering = (canvasEl.height - this.height) / 2;
     this.x = canvasEl.width - this.width - centering + 30;
     this.y = canvasEl.height - this.height - centering + 25;
+
+    this.bounds = {
+      "00": [353, 88],
+      "10": [398, 88],
+      "20": [443, 88],
+      "30": [488, 88],
+      "40": [533, 88],
+      "50": [578, 88],
+      "60": [623, 88],
+      "70": [668, 88],
+      "80": [713, 88],
+      "01": [353, 133],
+      "81": [713, 133],
+      "02": [353, 178],
+      "82": [713, 178],
+      "03": [353, 223],
+      "83": [713, 223],
+      "04": [353, 268],
+      "84": [713, 268],
+      "05": [353, 313],
+      "85": [713, 313],
+      "06": [353, 358],
+      "86": [713, 358],
+      "07": [353, 403],
+      "87": [713, 403],
+      "08": [353, 448],
+      "18": [398, 448],
+      "28": [443, 448],
+      "38": [488, 448],
+      "48": [533, 448],
+      "58": [578, 448],
+      "68": [623, 448],
+      "78": [668, 448],
+      "88": [713, 448]
+    };
   }
 
   _createClass(PlayArea, [{
     key: 'makeLevels',
-    value: function makeLevels(levels) {
-      for (var level_key in levels) {
-        var level = levels[level_key];
-
-        for (var room_key in level) {
-          return (0, _draw_level2.default)(this.ctx, level[room_key], this.sprites); // bubble up 'walls + entities'
+    value: function makeLevels() {
+      var level = this.thisLevel();
+      var room_key = this.thisRoom();
+      return (0, _draw_level2.default)(this.ctx, level[room_key], this.sprites, this.newSprites); // bubble up 'walls + entities'
+    }
+  }, {
+    key: 'invertPos',
+    value: function invertPos(charPos) {
+      // basically same chunk as 'this.checkMoveRoom'
+      var charPosKey = [];
+      for (var key in this.bounds) {
+        var bndPos = this.bounds[key];
+        if (bndPos[0] === charPos[0] && bndPos[1] === charPos[1]) {
+          charPosKey = key;
         }
+      }
+
+      var invertedPos = void 0;
+      // won't play well with corners.
+      // whiplash interpolation
+      if (charPosKey[0] == 0) {
+        // flip across vertical L->R
+        invertedPos = 8 + charPosKey[1];
+      } else if (charPosKey[0] == 8) {
+        // flip across vertical R->L
+        invertedPos = 0 + charPosKey[1];
+      } else if (charPosKey[1] == 0) {
+        // else flip across horizon T->B
+        invertedPos = charPosKey[0] + 8;
+      } else if (charPosKey[1] == 8) {
+        // else flip across horizon B->T
+        invertedPos = charPosKey[0] + 0;
+      }
+
+      return this.bounds[invertedPos];
+    }
+  }, {
+    key: 'loadLevels',
+    value: function loadLevels() {
+      // the term 'load' is loose here,
+      // since this is a manual input
+      this.levels = [levelOne];
+    }
+  }, {
+    key: 'thisLevel',
+    value: function thisLevel() {
+      // id into obj
+      return this.levels[this.currentLevel];
+    }
+  }, {
+    key: 'thisRoom',
+    value: function thisRoom() {
+      // id into key
+      return Object.keys(this.levels[this.currentLevel])[this.currentRoom];
+    }
+  }, {
+    key: 'checkSprites',
+    value: function checkSprites() {
+      return _underscore2.default.isEmpty(this.sprites) || this.renderedLevel !== this.renderedRoom || this.currentLevel !== this.currentRoom;
+    }
+  }, {
+    key: 'checkMoveRoom',
+    value: function checkMoveRoom(char_pos) {
+      for (var key in this.bounds) {
+        if (this.bounds[key][0] === char_pos[0] && this.bounds[key][1] === char_pos[1]) {
+          return true;
+        }
+      }
+      return false;
+    }
+  }, {
+    key: 'updateRoom',
+    value: function updateRoom() {
+      this.currentRoom++; // good enough for now.
+    }
+  }, {
+    key: 'moveLevel',
+    value: function moveLevel(level) {
+      switch (level) {
+        case "entryRoom":
+          return 0;
+        case "secondRoom":
+          return 1;
+        default:
+          return 0;
       }
     }
   }, {
     key: 'distributeEntities',
-    value: function distributeEntities(levels) {
-      var allEntities = this.makeLevels(levels);
+    value: function distributeEntities() {
+      var allEntities = this.makeLevels();
       this.sprites = allEntities.sprites;
       return {
         walls: allEntities.walls,
@@ -1408,21 +1652,21 @@ var PlayArea = function () {
     value: function draw() {
       var ctx = this.ctx;
 
+      this.thisLevel();
+
       ctx.clearRect(this.x, this.y, this.width, this.height);
 
       ctx.fillStyle = "black";
       ctx.fillRect(this.x, this.y, this.height, this.width);
 
-      if (_underscore2.default.isEmpty(this.sprites)) {
+      if (this.checkSprites()) {
         this.newSprites = true;
       } else {
         this.newSprites = false;
       }
 
-      var entities = this.distributeEntities({
-        // bubble up 'walls', 'entities'
-        levelOne: levelOne
-      });
+      // bubble up 'walls', 'entities'
+      var entities = this.distributeEntities();
 
       if (!this.newSprites) {
         this.drawLevels();

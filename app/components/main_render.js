@@ -33,6 +33,7 @@ export default class MainRender {
     this.textarea = new TextArea(canvasEl, ctx);
     this.statsarea = new StatsArea(canvasEl, ctx);
     this.character = new Character(canvasEl, ctx);
+    this.readyRoom = false;
 
     this.draw = this.draw.bind(this);
     this.bulkDraw = this.bulkDraw.bind(this);
@@ -59,6 +60,13 @@ export default class MainRender {
         // this.walls? madness. MADNESS. Forward the foundation!
 
         this.checkMagicMouths();
+
+        if (this.readyRoom) {
+          this.nextRoom();
+        }
+
+        this.prepareRoom(); // char is now on tile, flips for next render.
+
 
         return 'character'; // specific reloading
 
@@ -89,6 +97,26 @@ export default class MainRender {
 
         return 'idle';
     }
+  }
+
+  prepareRoom() {
+    const char_pos = this.character.position();
+    // if the player is on a boundry tile
+    if (this.playarea.checkMoveRoom(char_pos)) {
+      this.readyRoom = true;
+    } else {
+      this.readyRoom = false;
+    }
+  }
+
+
+  nextRoom() {
+      this.playarea.updateRoom();
+
+      const char_pos = this.character.position();
+      const invert_char_pos = this.playarea.invertPos(char_pos);
+      this.character.setRelativePos(invert_char_pos);
+      console.log("next room!");
   }
 
   checkMagicMouths() {

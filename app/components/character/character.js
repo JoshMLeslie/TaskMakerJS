@@ -20,11 +20,13 @@ export default class Character {
     this.x = 533; // center x
     this.y = 268; // center y
 
+    this.makeSprite = this.makeSprite.bind(this);
+
     this.sprite = this.makeSprite();
 
     this.move = this.move.bind(this);
-    this.makeSprite = this.makeSprite.bind(this);
     this.wontCollide = this.wontCollide.bind(this);
+    this.setRelativePos = this.setRelativePos.bind(this);
     this.updateSpriteImage = this.updateSpriteImage.bind(this);
   }
 
@@ -35,6 +37,13 @@ export default class Character {
       this.x, this.y,
       0, 0
     );
+  }
+
+  setRelativePos (pos) {
+    if (pos) {
+      this.x = pos[0];
+      this.y = pos[1];
+    }
   }
 
   position () {

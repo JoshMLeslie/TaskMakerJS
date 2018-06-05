@@ -17,8 +17,9 @@ const rich_soil = urls.rich_soil;
 const shrubs = urls.shrubs;
 
 const posOf = urls.posOf;
+// a fn for finding an alphabet ch
 
-const exitWayMouthText = "Welcome! I hope you've enjoyed this tutorial so far. In the future, this is where you would continue on to the rest of the game. In case you needed a reminder, move with the 'arrow keys' and examine with 'e'! Actions can be performed with 'a', but there's nothing here yet to activate. Rest with 'r' to restore your stamina!";
+const entryRoomExitMouth = "Welcome! I hope you've enjoyed this tutorial so far. In the future, this is where you would continue on to the rest of the game. In case you needed a reminder, move with the 'arrow keys' and examine with 'e'! Actions can be performed with 'a', but there's nothing here yet to activate. Rest with 'r' to restore your stamina!";
 
 export const entryRoom = [
   // 1st row
@@ -32,7 +33,7 @@ export const entryRoom = [
     image_url: alphabet, type: 'wall', srcX: posOf("A") }, {
     image_url: alphabet, type: 'wall', srcX: posOf("L")
   }, { // 2nd row
-    image_url: stone_wall, type: 'wall' }, {
+    image_url: stone_wall }, {
     image_url: bush }, {
     image_url: shrubs }, {
     image_url: flowers }, {
@@ -103,13 +104,106 @@ export const entryRoom = [
     image_url: alphabet, type: 'wall', srcX: posOf("M")
   }, { // 9th row
     image_url: alphabet, type: 'wall', srcX: posOf("E") }, {
-    image_url: stone_wall, type: 'wall' }, {
+    image_url: stone_wall }, {
     image_url: right_arrow, type: 'wall' }, {
     image_url: right_arrow, type: 'wall' }, {
-    image_url: magic_mouth, type: "mouth", text: exitWayMouthText }, {
+    image_url: magic_mouth, type: "mouth", text: entryRoomExitMouth }, {
     image_url: left_arrow, type: 'wall' }, {
     image_url: left_arrow, type: 'wall' }, {
-    image_url: stone_wall, type: 'wall' }, {
+    image_url: stone_wall }, {
     image_url: alphabet, type: 'wall', srcX: posOf("E")
+  }
+]; // room end
+
+export const secondRoom = [
+  // 1st row
+  { image_url: stone_wall }, {
+    image_url: stone_wall }, {
+    image_url: stone_wall }, {
+    image_url: stone_wall }, {
+    image_url: brick }, {
+    image_url: stone_wall }, {
+    image_url: stone_wall }, {
+    image_url: stone_wall }, {
+    image_url: stone_wall
+  }, { // 2nd row
+    image_url: alphabet, type: 'wall', srcX: posOf("W") }, {
+    image_url: bush }, {
+    image_url: shrubs }, {
+    image_url: flowers }, {
+    image_url: brick }, {
+    image_url: flowers }, {
+    image_url: shrubs }, {
+    image_url: bush }, {
+    image_url: alphabet, type: 'wall', srcX: posOf("W") }, { // 3rd row
+    image_url: alphabet, type: 'wall', srcX: posOf("E") }, {
+    image_url: shrubs }, {
+    image_url: rich_soil }, {
+    image_url: rich_soil }, {
+    image_url: brick }, {
+    image_url: rich_soil }, {
+    image_url: rich_soil }, {
+    image_url: shrubs }, {
+    image_url: alphabet, type: 'wall', srcX: posOf("E")
+  }, { // 4th row
+    image_url: alphabet, type: 'wall', srcX: posOf("L") }, {
+    image_url: flowers }, {
+    image_url: rich_soil }, {
+    image_url: rich_soil }, {
+    image_url: brick }, {
+    image_url: rich_soil }, {
+    image_url: rich_soil }, {
+    image_url: flowers }, {
+    image_url: alphabet, type: 'wall', srcX: posOf("L")
+  }, { // 5th row
+    image_url: alphabet, type: 'wall', srcX: posOf("C") }, {
+    image_url: flowers }, {
+    image_url: rich_soil }, {
+    image_url: rich_soil }, {
+    image_url: brick }, {
+    image_url: rich_soil }, {
+    image_url: rich_soil }, {
+    image_url: flowers }, {
+    image_url: alphabet, type: 'wall', srcX: posOf("C")
+  }, { // 6th row
+    image_url: alphabet, type: 'wall', srcX: posOf("O") }, {
+    image_url: flowers }, {
+    image_url: rich_soil }, {
+    image_url: rich_soil }, {
+    image_url: brick }, {
+    image_url: rich_soil }, {
+    image_url: rich_soil }, {
+    image_url: flowers }, {
+    image_url: alphabet, type: 'wall', srcX: posOf("O")
+  }, { // 7th row
+    image_url: alphabet, type: 'wall', srcX: posOf("M") }, {
+    image_url: shrubs }, {
+    image_url: rich_soil }, {
+    image_url: rich_soil }, {
+    image_url: brick }, {
+    image_url: rich_soil }, {
+    image_url: rich_soil }, {
+    image_url: shrubs }, {
+    image_url: alphabet, type: 'wall', srcX: posOf("M")
+  }, { // 8th row
+    image_url: alphabet, type: 'wall', srcX: posOf("E") }, {
+    image_url: bush }, {
+    image_url: shrubs }, {
+    image_url: rich_soil }, {
+    image_url: brick }, {
+    image_url: rich_soil }, {
+    image_url: shrubs }, {
+    image_url: bush }, {
+    image_url: alphabet, type: 'wall', srcX: posOf("E")
+  }, { // 9th row
+    image_url: stone_wall }, {
+    image_url: stone_wall }, {
+    image_url: right_arrow, type: 'wall' }, {
+    image_url: right_arrow, type: 'wall' }, {
+    image_url: magic_mouth, type: "mouth", text: entryRoomExitMouth }, {
+    image_url: left_arrow, type: 'wall' }, {
+    image_url: left_arrow, type: 'wall' }, {
+    image_url: stone_wall }, {
+    image_url: stone_wall
   }
 ]; // room end
