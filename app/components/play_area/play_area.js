@@ -22,6 +22,8 @@ export default class PlayArea {
     this.currentLevel = 0;
     this.currentRoom = 0;
 
+    this.updateRoom = this.updateRoom.bind(this);
+
     const centering = (canvasEl.height - this.height) / 2;
     this.x = canvasEl.width - this.width - centering + 30;
     this.y = canvasEl.height - this.height - centering + 25 ;
@@ -65,9 +67,14 @@ export default class PlayArea {
   makeLevels() {
     const level = this.thisLevel();
     const room_key = this.thisRoom();
-      return drawLevel(
-        this.ctx, level[room_key], this.sprites, this.newSprites
-      ); // bubble up 'walls + entities'
+
+    this.ensureDrawnIndices();
+    return drawLevel(
+        this.ctx,
+        level[room_key],
+        this.sprites,
+        this.newSprites
+    ); // bubble up 'walls + entities'
   }
 
   invertPos(charPos) {
@@ -111,10 +118,21 @@ export default class PlayArea {
     ];
   }
 
+  ensureDrawnIndices() {
+      if (this.currentLevel !== this.renderedLevel) {
+          this.renderedLevel = this.currentLevel;
+      }
+
+      if (this.currentRoom !== this.renderedRoom) {
+          this.renderedRoom = this.currentRoom;
+      }
+  }
+
   thisLevel() {
     // id into obj
     return this.levels[this.currentLevel];
   }
+
 
   thisRoom() {
     // id into key
@@ -122,11 +140,15 @@ export default class PlayArea {
   }
 
   checkSprites() {
-    return (
-      _.isEmpty(this.sprites) ||
-      this.renderedLevel !== this.renderedRoom ||
-      this.currentLevel !== this.currentRoom
-    );
+      if (
+          _.isEmpty(this.sprites) ||
+          this.renderedLevel !== this.currentLevel ||
+          this.renderedRoom !== this.currentRoom
+      ) {
+          this.newSprites = true;
+      } else {
+          this.newSprites = false;
+      }
   }
 
   checkMoveRoom(char_pos) {
@@ -141,11 +163,23 @@ export default class PlayArea {
     return false;
   }
 
-  updateRoom () {
-    this.currentRoom++; // good enough for now.
+  updateRoom (char_dir) {
+      // good enough for now.
+      switch(char_dir) {
+          case "up":
+          if (this.currentRoom > 0) {
+            this.currentRoom--;
+          } else {
+            this.currentRoom = 0;
+          }
+            break;
+          case "down":
+              this.currentRoom++;
+              break;
+      }
   }
 
-  moveLevel(level) {
+  moveLevel(level) { // a bit of hard coding
     switch(level) {
       case "entryRoom":
         return 0;
@@ -169,21 +203,18 @@ export default class PlayArea {
     this.sprites.forEach(sprite => { sprite.draw(); });
   }
 
-  draw () {
+  clearArea() {
     const ctx = this.ctx;
-
-    this.thisLevel();
-
     ctx.clearRect(this.x, this.y, this.width, this.height);
 
     ctx.fillStyle = "black";
     ctx.fillRect(this.x, this.y, this.height, this.width);
+  }
 
-    if ( this.checkSprites() ) {
-      this.newSprites = true;
-    } else {
-      this.newSprites = false;
-    }
+  draw () {
+    this.clearArea();
+
+    this.checkSprites();
 
     // bubble up 'walls', 'entities'
     const entities = this.distributeEntities();

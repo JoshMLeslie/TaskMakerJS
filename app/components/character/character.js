@@ -13,7 +13,7 @@ export default class Character {
     this.size = 45;
     this.width = this.size;
     this.height = this.size;
-    this.image_url = "app/assets/sprites/char/char_up_down.png";
+    this.image_url  = "app/assets/sprites/char/char_up_down.png";
     // init facing down
     this.direction = "down";
 

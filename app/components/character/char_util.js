@@ -29,6 +29,7 @@ const mapKeyToDir = (key) => {
 };
 
 const isFacing = (current_dir, dir) => {
+    // used for turning, then moving
   if (current_dir !== dir) {
     // dir = "up", etc.
     return dir;

@@ -24,7 +24,7 @@ const buttonClick = (e, canvasEl) =>  {
   const mousePos = getMousePos(e, canvasEl);
 
   if (isInside(mousePos, buttonArea)) {
-    window.alert('Button clicked!');
+    window.alert("You can't close me!");
   }
 };
 

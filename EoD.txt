@@ -1,3 +1,8 @@
+180606 - day 10
+    Got multiple rooms working? Got two rooms working at least. Can move between them.
+        Had a flickering issue with the second room because 'truth' wasn't updating in the render method for caching already-rendered sprites.
+        Had an overload issue where chrome started lagging with two-rooms-worth of background-sprites (162)
+
 180605 - day 9
   got new rooms to render when moving off the screen, however:
     running into a bug because the character is now on the edge of the new room, when the char moves, the game sees this as "you're trying to move into a new room!" so it tries to render that next room, which breaks everything.

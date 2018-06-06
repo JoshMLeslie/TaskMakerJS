@@ -344,7 +344,7 @@ var buttonClick = function buttonClick(e, canvasEl) {
   var mousePos = getMousePos(e, canvasEl);
 
   if (isInside(mousePos, buttonArea)) {
-    window.alert('Button clicked!');
+    window.alert("You can't close me!");
   }
 };
 
@@ -647,6 +647,7 @@ var mapKeyToDir = function mapKeyToDir(key) {
 };
 
 var isFacing = function isFacing(current_dir, dir) {
+  // used for turning, then moving
   if (current_dir !== dir) {
     // dir = "up", etc.
     return dir;
@@ -877,7 +878,7 @@ var shrubs = urls.shrubs;
 var posOf = urls.posOf;
 // a fn for finding an alphabet ch
 
-var entryRoomExitMouth = "Welcome! I hope you've enjoyed this tutorial so far. In the future, this is where you would continue on to the rest of the game. In case you needed a reminder, move with the 'arrow keys' and examine with 'e'! Actions can be performed with 'a', but there's nothing here yet to activate. Rest with 'r' to restore your stamina!";
+var entryRoomExitMouth = "Welcome! I hope you've enjoyed this tutorial so far. As a reminder, examine with 'e'! Actions can be performed with 'a', but there's nothing to activate yet. Rest with 'r' to restore your stamina!";
 
 var entryRoom = exports.entryRoom = [
 // 1st row
@@ -1055,11 +1056,11 @@ var secondRoom = exports.secondRoom = [
 }, { // 9th row
   image_url: stone_wall }, {
   image_url: stone_wall }, {
-  image_url: right_arrow, type: 'wall' }, {
-  image_url: right_arrow, type: 'wall' }, {
-  image_url: magic_mouth, type: "mouth", text: entryRoomExitMouth }, {
-  image_url: left_arrow, type: 'wall' }, {
-  image_url: left_arrow, type: 'wall' }, {
+  image_url: stone_wall }, {
+  image_url: stone_wall }, {
+  image_url: stone_wall }, {
+  image_url: stone_wall }, {
+  image_url: stone_wall }, {
   image_url: stone_wall }, {
   image_url: stone_wall
 }]; // room end
@@ -1140,6 +1141,8 @@ var MainRender = function () {
     var name = "Josh";
     // eventually replace with input from a login screen.
 
+    this.trinary = -1; // -1, 0, 1
+
     this.background = new _background2.default(name, canvasEl, ctx);
     this.playarea = new _play_area2.default(canvasEl, ctx);
     this.textarea = new _text_area2.default(canvasEl, ctx);
@@ -1172,6 +1175,7 @@ var MainRender = function () {
         case 37:case 38:case 39:case 40:
           // l, u, r, d
           this.statsarea.updateStat("Stamina", -0.25);
+
           this.character.move(e.keyCode, this.walls);
           // this.walls? madness. MADNESS. Forward the foundation!
 
@@ -1181,8 +1185,8 @@ var MainRender = function () {
             this.nextRoom();
           }
 
-          this.prepareRoom(); // char is now on tile, flips for next render.
-
+          this.prepareRoom();
+          // char is now on tile, flips for next render.
 
           return 'character'; // specific reloading
 
@@ -1213,7 +1217,6 @@ var MainRender = function () {
             speaker: 'Game', body: e.key + ' is not used!'
           };
           this.sendText();
-
           return 'idle';
       }
     }
@@ -1222,21 +1225,57 @@ var MainRender = function () {
     value: function prepareRoom() {
       var char_pos = this.character.position();
       // if the player is on a boundry tile
-      if (this.playarea.checkMoveRoom(char_pos)) {
-        this.readyRoom = true;
-      } else {
+      if (this.readyRoom || this.trinaryToBool()) {
         this.readyRoom = false;
+      } else if (this.playarea.checkMoveRoom(char_pos)) {
+        this.readyRoom = true;
+      }
+
+      this.trinaryCycleUp();
+    }
+  }, {
+    key: 'trinaryCycleUp',
+    value: function trinaryCycleUp() {
+      switch (this.trinary) {
+        case -1:
+          this.trinary = 0;
+          break;
+        case 0:
+          this.trinary = 1;
+          break;
+        case 1:
+          this.trinary = -1;
+          break;
+      }
+      return this.trinary;
+    }
+  }, {
+    key: 'trinaryToBool',
+    value: function trinaryToBool() {
+      if (this.trinary >= 0) {
+        return true;
+      } else {
+        return false;
       }
     }
+
+    // isBoundryAhead() {
+    //     const char_ahead = this.character.positionAhead();
+    //     this.playarea.checkMoveRoom(char_ahead);
+    //     ...
+    // }
+
   }, {
     key: 'nextRoom',
     value: function nextRoom() {
-      this.playarea.updateRoom();
+      this.playarea.updateRoom(this.character.direction);
 
       var char_pos = this.character.position();
       var invert_char_pos = this.playarea.invertPos(char_pos);
       this.character.setRelativePos(invert_char_pos);
       console.log("next room!");
+
+      this.prepareRoom();
     }
   }, {
     key: 'checkMagicMouths',
@@ -1296,8 +1335,8 @@ var MainRender = function () {
   }, {
     key: 'sendText',
     value: function sendText() {
-      this.textarea.draw();
-      this.textarea.displayText(this.text_obj);
+      this.textarea.draw(); // clears textarea
+      this.textarea.displayText(this.text_obj); // draws text_obj
     }
   }, {
     key: 'bulkDraw',
@@ -1338,6 +1377,7 @@ var MainRender = function () {
   return MainRender;
 }(); // class end
 
+// large text breaks the whitespace-breaker I rolled for this.
 // textarea.displayText("Magic Mouth", "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi convallis gravida commodo. Vestibulum vel velit eget est pretium eleifend. Nulla ex ex, semper sit amet commodo at, tincidunt nec erat. Pellentesque id justo consectetur, posuere est eu, pulvinar ipsum. Praesent rutrum malesuada lacus quis bibendum. Suspendisse sed est luctus mi commodo luctus. Vestibulum ipsum sem, imperdiet at purus vehicula, commodo porttitor enim. Ut id sem nunc. Duis sollicitudin purus sagittis, consequat enim dignissim, pretium eros. Aenean nisi purus, bibendum vel pretium eget, varius id turpis. Etiam eu quam a nisl lobortis egestas nec id felis. Mauris vitae finibus eros. Duis viverra blandit nibh, a fringilla justo ultricies ac.");
 
 
@@ -1396,10 +1436,13 @@ var drawLevel = function drawLevel(ctx, room, sprites, newSprites) {
   // dev: make objects from top left, right, then typerwritter down, for consistency's sake.
 
   // 'room' is a (big) array / POJO
-
   var walls = {}; // to hold position of all walls on the map
   var entities = {}; // to hold position of all entities " "
   sprites = sprites || []; // to hold all sprites
+
+  if (newSprites) {
+    sprites = [];
+  }
 
   room.forEach(function (obj, obj_idx) {
     var x = spriteX(obj_idx);
@@ -1501,6 +1544,8 @@ var PlayArea = function () {
     this.currentLevel = 0;
     this.currentRoom = 0;
 
+    this.updateRoom = this.updateRoom.bind(this);
+
     var centering = (canvasEl.height - this.height) / 2;
     this.x = canvasEl.width - this.width - centering + 30;
     this.y = canvasEl.height - this.height - centering + 25;
@@ -1546,6 +1591,8 @@ var PlayArea = function () {
     value: function makeLevels() {
       var level = this.thisLevel();
       var room_key = this.thisRoom();
+
+      this.ensureDrawnIndices();
       return (0, _draw_level2.default)(this.ctx, level[room_key], this.sprites, this.newSprites); // bubble up 'walls + entities'
     }
   }, {
@@ -1587,6 +1634,17 @@ var PlayArea = function () {
       this.levels = [levelOne];
     }
   }, {
+    key: 'ensureDrawnIndices',
+    value: function ensureDrawnIndices() {
+      if (this.currentLevel !== this.renderedLevel) {
+        this.renderedLevel = this.currentLevel;
+      }
+
+      if (this.currentRoom !== this.renderedRoom) {
+        this.renderedRoom = this.currentRoom;
+      }
+    }
+  }, {
     key: 'thisLevel',
     value: function thisLevel() {
       // id into obj
@@ -1601,7 +1659,11 @@ var PlayArea = function () {
   }, {
     key: 'checkSprites',
     value: function checkSprites() {
-      return _underscore2.default.isEmpty(this.sprites) || this.renderedLevel !== this.renderedRoom || this.currentLevel !== this.currentRoom;
+      if (_underscore2.default.isEmpty(this.sprites) || this.renderedLevel !== this.currentLevel || this.renderedRoom !== this.currentRoom) {
+        this.newSprites = true;
+      } else {
+        this.newSprites = false;
+      }
     }
   }, {
     key: 'checkMoveRoom',
@@ -1615,12 +1677,25 @@ var PlayArea = function () {
     }
   }, {
     key: 'updateRoom',
-    value: function updateRoom() {
-      this.currentRoom++; // good enough for now.
+    value: function updateRoom(char_dir) {
+      // good enough for now.
+      switch (char_dir) {
+        case "up":
+          if (this.currentRoom > 0) {
+            this.currentRoom--;
+          } else {
+            this.currentRoom = 0;
+          }
+          break;
+        case "down":
+          this.currentRoom++;
+          break;
+      }
     }
   }, {
     key: 'moveLevel',
     value: function moveLevel(level) {
+      // a bit of hard coding
       switch (level) {
         case "entryRoom":
           return 0;
@@ -1648,22 +1723,20 @@ var PlayArea = function () {
       });
     }
   }, {
-    key: 'draw',
-    value: function draw() {
+    key: 'clearArea',
+    value: function clearArea() {
       var ctx = this.ctx;
-
-      this.thisLevel();
-
       ctx.clearRect(this.x, this.y, this.width, this.height);
 
       ctx.fillStyle = "black";
       ctx.fillRect(this.x, this.y, this.height, this.width);
+    }
+  }, {
+    key: 'draw',
+    value: function draw() {
+      this.clearArea();
 
-      if (this.checkSprites()) {
-        this.newSprites = true;
-      } else {
-        this.newSprites = false;
-      }
+      this.checkSprites();
 
       // bubble up 'walls', 'entities'
       var entities = this.distributeEntities();

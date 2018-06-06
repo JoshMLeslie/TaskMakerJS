@@ -28,6 +28,8 @@ export default class MainRender {
     let name = "Josh";
     // eventually replace with input from a login screen.
 
+    this.trinary = -1; // -1, 0, 1
+
     this.background = new Background(name, canvasEl, ctx);
     this.playarea = new PlayArea(canvasEl, ctx);
     this.textarea = new TextArea(canvasEl, ctx);
@@ -56,6 +58,7 @@ export default class MainRender {
     switch (e.keyCode) {
       case 37: case 38: case 39: case 40: // l, u, r, d
         this.statsarea.updateStat("Stamina", -0.25);
+
         this.character.move(e.keyCode, this.walls);
         // this.walls? madness. MADNESS. Forward the foundation!
 
@@ -65,8 +68,8 @@ export default class MainRender {
           this.nextRoom();
         }
 
-        this.prepareRoom(); // char is now on tile, flips for next render.
-
+        this.prepareRoom();
+        // char is now on tile, flips for next render.
 
         return 'character'; // specific reloading
 
@@ -94,7 +97,6 @@ export default class MainRender {
           speaker: 'Game', body: `${e.key} is not used!`
         };
         this.sendText();
-
         return 'idle';
     }
   }
@@ -102,21 +104,53 @@ export default class MainRender {
   prepareRoom() {
     const char_pos = this.character.position();
     // if the player is on a boundry tile
-    if (this.playarea.checkMoveRoom(char_pos)) {
-      this.readyRoom = true;
-    } else {
-      this.readyRoom = false;
+    if (this.readyRoom || this.trinaryToBool() ) {
+        this.readyRoom = false;
+    } else if (this.playarea.checkMoveRoom(char_pos)) {
+        this.readyRoom = true;
     }
+
+    this.trinaryCycleUp();
   }
 
+    trinaryCycleUp() {
+        switch(this.trinary) {
+            case -1:
+                this.trinary = 0;
+                break;
+            case 0:
+                this.trinary = 1;
+                break;
+            case 1:
+                this.trinary = -1;
+                break;
+        }
+        return this.trinary;
+    }
+
+    trinaryToBool() {
+        if (this.trinary >= 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+  // isBoundryAhead() {
+  //     const char_ahead = this.character.positionAhead();
+  //     this.playarea.checkMoveRoom(char_ahead);
+  //     ...
+  // }
 
   nextRoom() {
-      this.playarea.updateRoom();
+    this.playarea.updateRoom(this.character.direction);
 
-      const char_pos = this.character.position();
-      const invert_char_pos = this.playarea.invertPos(char_pos);
-      this.character.setRelativePos(invert_char_pos);
-      console.log("next room!");
+    const char_pos = this.character.position();
+    const invert_char_pos = this.playarea.invertPos(char_pos);
+    this.character.setRelativePos(invert_char_pos);
+    console.log("next room!");
+
+    this.prepareRoom();
   }
 
   checkMagicMouths() {
@@ -176,8 +210,8 @@ export default class MainRender {
   }
 
   sendText() {
-    this.textarea.draw();
-    this.textarea.displayText(this.text_obj);
+    this.textarea.draw(); // clears textarea
+    this.textarea.displayText(this.text_obj); // draws text_obj
   }
 
   bulkDraw () {
@@ -213,4 +247,5 @@ export default class MainRender {
 
 } // class end
 
+// large text breaks the whitespace-breaker I rolled for this.
 // textarea.displayText("Magic Mouth", "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi convallis gravida commodo. Vestibulum vel velit eget est pretium eleifend. Nulla ex ex, semper sit amet commodo at, tincidunt nec erat. Pellentesque id justo consectetur, posuere est eu, pulvinar ipsum. Praesent rutrum malesuada lacus quis bibendum. Suspendisse sed est luctus mi commodo luctus. Vestibulum ipsum sem, imperdiet at purus vehicula, commodo porttitor enim. Ut id sem nunc. Duis sollicitudin purus sagittis, consequat enim dignissim, pretium eros. Aenean nisi purus, bibendum vel pretium eget, varius id turpis. Etiam eu quam a nisl lobortis egestas nec id felis. Mauris vitae finibus eros. Duis viverra blandit nibh, a fringilla justo ultricies ac.");
