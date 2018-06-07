@@ -878,7 +878,11 @@ var shrubs = urls.shrubs;
 var posOf = urls.posOf;
 // a fn for finding an alphabet ch
 
-var entryRoomExitMouth = "Welcome! I hope you've enjoyed this tutorial so far. As a reminder, examine with 'e'! Actions can be performed with 'a', but there's nothing to activate yet. Rest with 'r' to restore your stamina!";
+var entryRoomEntryMouth = "Hey, welcome back.";
+
+var entryRoomExitMouth = "You've made progress! I hope you've enjoyed this tutorial so far. As a reminder, examine with 'e'! Actions can be performed with 'a', but there's nothing to activate yet. Rest with 'r' to restore your stamina!";
+
+var secondRoomMiddleMouth = "You made it to the second room! Nice! That's it for the tutorial, feel free to continue roaming and examining things!";
 
 var entryRoom = exports.entryRoom = [
 // 1st row
@@ -926,7 +930,7 @@ var entryRoom = exports.entryRoom = [
   image_url: flowers }, {
   image_url: rich_soil }, {
   image_url: brick }, {
-  image_url: brick }, {
+  image_url: magic_mouth, type: "mouth", text: entryRoomEntryMouth }, {
   image_url: brick }, {
   image_url: rich_soil }, {
   image_url: flowers }, {
@@ -988,9 +992,9 @@ var secondRoom = exports.secondRoom = [
   image_url: alphabet, type: 'wall', srcX: posOf("W") }, {
   image_url: bush }, {
   image_url: shrubs }, {
-  image_url: flowers }, {
+  image_url: rich_soil }, {
   image_url: brick }, {
-  image_url: flowers }, {
+  image_url: rich_soil }, {
   image_url: shrubs }, {
   image_url: bush }, {
   image_url: alphabet, type: 'wall', srcX: posOf("W") }, { // 3rd row
@@ -1007,9 +1011,9 @@ var secondRoom = exports.secondRoom = [
   image_url: alphabet, type: 'wall', srcX: posOf("L") }, {
   image_url: flowers }, {
   image_url: rich_soil }, {
-  image_url: rich_soil }, {
   image_url: brick }, {
-  image_url: rich_soil }, {
+  image_url: brick }, {
+  image_url: brick }, {
   image_url: rich_soil }, {
   image_url: flowers }, {
   image_url: alphabet, type: 'wall', srcX: posOf("L")
@@ -1017,9 +1021,9 @@ var secondRoom = exports.secondRoom = [
   image_url: alphabet, type: 'wall', srcX: posOf("C") }, {
   image_url: flowers }, {
   image_url: rich_soil }, {
-  image_url: rich_soil }, {
   image_url: brick }, {
-  image_url: rich_soil }, {
+  image_url: magic_mouth, type: "mouth", text: secondRoomMiddleMouth }, {
+  image_url: brick }, {
   image_url: rich_soil }, {
   image_url: flowers }, {
   image_url: alphabet, type: 'wall', srcX: posOf("C")
@@ -1027,9 +1031,9 @@ var secondRoom = exports.secondRoom = [
   image_url: alphabet, type: 'wall', srcX: posOf("O") }, {
   image_url: flowers }, {
   image_url: rich_soil }, {
-  image_url: rich_soil }, {
   image_url: brick }, {
-  image_url: rich_soil }, {
+  image_url: brick }, {
+  image_url: brick }, {
   image_url: rich_soil }, {
   image_url: flowers }, {
   image_url: alphabet, type: 'wall', srcX: posOf("O")
@@ -1038,7 +1042,7 @@ var secondRoom = exports.secondRoom = [
   image_url: shrubs }, {
   image_url: rich_soil }, {
   image_url: rich_soil }, {
-  image_url: brick }, {
+  image_url: rich_soil }, {
   image_url: rich_soil }, {
   image_url: rich_soil }, {
   image_url: shrubs }, {
@@ -1047,9 +1051,9 @@ var secondRoom = exports.secondRoom = [
   image_url: alphabet, type: 'wall', srcX: posOf("E") }, {
   image_url: bush }, {
   image_url: shrubs }, {
-  image_url: rich_soil }, {
-  image_url: brick }, {
-  image_url: rich_soil }, {
+  image_url: flowers }, {
+  image_url: flowers }, {
+  image_url: flowers }, {
   image_url: shrubs }, {
   image_url: bush }, {
   image_url: alphabet, type: 'wall', srcX: posOf("E")
@@ -1159,10 +1163,11 @@ var MainRender = function () {
     // 'inputSelector' needs to be bound first.
     window.addEventListener("keydown", this.run);
 
-    this.text_obj = { // is storing this repeatedly even necessary?
-      speaker: "Bob:",
-      body: "HELP! I'm trapped in this box! For now at least I can move with 'arrow keys' and examine my surroundings with 'e'. That's something, I suppose."
+    this.text_obj = {
+      speaker: "Magic Mouth",
+      body: "Welcome! Bob is trapped in here! For now at least you can move him with the 'arrow keys' and examine his surroundings with 'e'"
     };
+    // is storing this repeatedly even necessary?
   }
 
   // UTILITY //
@@ -1189,7 +1194,6 @@ var MainRender = function () {
           // char is now on tile, flips for next render.
 
           return 'character'; // specific reloading
-
         case 65:
           // 'a' - action, drains stamina
           this.statsarea.updateStat("Stamina", -1);
@@ -1200,18 +1204,15 @@ var MainRender = function () {
           this.sendText();
 
           return 'stats';
-
         case 69:
           // 'e' - examine
           var pos = this.character.positionAhead();
           this.examineEntity(pos);
           return 'stats'; // hits default draw
-
         case 82:
           // 'r' - rest // replenishes stamina
           this.statsarea.updateStat("Stamina", "max");
           return 'stats';
-
         default:
           this.text_obj = { // is storing this even necessary?
             speaker: 'Game', body: e.key + ' is not used!'

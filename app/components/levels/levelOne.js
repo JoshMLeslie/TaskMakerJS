@@ -19,7 +19,11 @@ const shrubs = urls.shrubs;
 const posOf = urls.posOf;
 // a fn for finding an alphabet ch
 
-const entryRoomExitMouth = "Welcome! I hope you've enjoyed this tutorial so far. As a reminder, examine with 'e'! Actions can be performed with 'a', but there's nothing to activate yet. Rest with 'r' to restore your stamina!";
+const entryRoomEntryMouth = "Hey, welcome back.";
+
+const entryRoomExitMouth = "You've made progress! I hope you've enjoyed this tutorial so far. As a reminder, examine with 'e'! Actions can be performed with 'a', but there's nothing to activate yet. Rest with 'r' to restore your stamina!";
+
+const secondRoomMiddleMouth = "You made it to the second room! Nice! That's it for the tutorial, feel free to continue roaming and examining things!";
 
 export const entryRoom = [
   // 1st row
@@ -67,7 +71,7 @@ export const entryRoom = [
     image_url: flowers }, {
     image_url: rich_soil }, {
     image_url: brick }, {
-    image_url: brick }, {
+    image_url: magic_mouth, type: "mouth", text: entryRoomEntryMouth }, {
     image_url: brick }, {
     image_url: rich_soil }, {
     image_url: flowers }, {
@@ -130,9 +134,9 @@ export const secondRoom = [
     image_url: alphabet, type: 'wall', srcX: posOf("W") }, {
     image_url: bush }, {
     image_url: shrubs }, {
-    image_url: flowers }, {
+    image_url: rich_soil }, {
     image_url: brick }, {
-    image_url: flowers }, {
+    image_url: rich_soil }, {
     image_url: shrubs }, {
     image_url: bush }, {
     image_url: alphabet, type: 'wall', srcX: posOf("W") }, { // 3rd row
@@ -149,9 +153,9 @@ export const secondRoom = [
     image_url: alphabet, type: 'wall', srcX: posOf("L") }, {
     image_url: flowers }, {
     image_url: rich_soil }, {
-    image_url: rich_soil }, {
     image_url: brick }, {
-    image_url: rich_soil }, {
+    image_url: brick }, {
+    image_url: brick }, {
     image_url: rich_soil }, {
     image_url: flowers }, {
     image_url: alphabet, type: 'wall', srcX: posOf("L")
@@ -159,9 +163,9 @@ export const secondRoom = [
     image_url: alphabet, type: 'wall', srcX: posOf("C") }, {
     image_url: flowers }, {
     image_url: rich_soil }, {
-    image_url: rich_soil }, {
     image_url: brick }, {
-    image_url: rich_soil }, {
+    image_url: magic_mouth, type: "mouth", text: secondRoomMiddleMouth }, {
+    image_url: brick }, {
     image_url: rich_soil }, {
     image_url: flowers }, {
     image_url: alphabet, type: 'wall', srcX: posOf("C")
@@ -169,9 +173,9 @@ export const secondRoom = [
     image_url: alphabet, type: 'wall', srcX: posOf("O") }, {
     image_url: flowers }, {
     image_url: rich_soil }, {
-    image_url: rich_soil }, {
     image_url: brick }, {
-    image_url: rich_soil }, {
+    image_url: brick }, {
+    image_url: brick }, {
     image_url: rich_soil }, {
     image_url: flowers }, {
     image_url: alphabet, type: 'wall', srcX: posOf("O")
@@ -180,7 +184,7 @@ export const secondRoom = [
     image_url: shrubs }, {
     image_url: rich_soil }, {
     image_url: rich_soil }, {
-    image_url: brick }, {
+    image_url: rich_soil }, {
     image_url: rich_soil }, {
     image_url: rich_soil }, {
     image_url: shrubs }, {
@@ -189,9 +193,9 @@ export const secondRoom = [
     image_url: alphabet, type: 'wall', srcX: posOf("E") }, {
     image_url: bush }, {
     image_url: shrubs }, {
-    image_url: rich_soil }, {
-    image_url: brick }, {
-    image_url: rich_soil }, {
+    image_url: flowers }, {
+    image_url: flowers }, {
+    image_url: flowers }, {
     image_url: shrubs }, {
     image_url: bush }, {
     image_url: alphabet, type: 'wall', srcX: posOf("E")

@@ -46,10 +46,11 @@ export default class MainRender {
     // 'inputSelector' needs to be bound first.
     window.addEventListener("keydown", this.run);
 
-    this.text_obj = { // is storing this repeatedly even necessary?
-      speaker: "Bob:",
-      body: "HELP! I'm trapped in this box! For now at least I can move with 'arrow keys' and examine my surroundings with 'e'. That's something, I suppose."
+    this.text_obj = {
+        speaker: "Magic Mouth",
+        body: "Welcome! Bob is trapped in here! For now at least you can move him with the 'arrow keys' and examine his surroundings with 'e'"
     };
+    // is storing this repeatedly even necessary?
   }
 
 
@@ -72,7 +73,6 @@ export default class MainRender {
         // char is now on tile, flips for next render.
 
         return 'character'; // specific reloading
-
       case 65: // 'a' - action, drains stamina
         this.statsarea.updateStat("Stamina", -1);
 
@@ -82,16 +82,13 @@ export default class MainRender {
         this.sendText();
 
         return 'stats';
-
       case 69: // 'e' - examine
         let pos = this.character.positionAhead();
         this.examineEntity(pos);
         return 'stats'; // hits default draw
-
       case 82: // 'r' - rest // replenishes stamina
         this.statsarea.updateStat("Stamina", "max");
         return 'stats';
-
       default:
         this.text_obj = { // is storing this even necessary?
           speaker: 'Game', body: `${e.key} is not used!`
